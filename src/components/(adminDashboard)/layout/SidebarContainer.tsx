@@ -4,14 +4,18 @@ import Sider from "antd/es/layout/Sider";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/logo.png";
-import { navLinks } from "@/utils/navLinks";
+import { navLinks as adminNavlinks, ShelterNavLinks } from "@/utils/navLinks";
 import { usePathname } from "next/navigation";
 import { IoLogInOutline } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const SidebarContainer = ({ collapsed }: { collapsed: boolean }) => {
 
+  const { user } = useSelector((state: RootState) => state.userSlice);
+
   const onClick: MenuProps["onClick"] = (e) => {
-   
+
     if (e.key === "logout") {
       localStorage.removeItem("activeNav");
       return;
@@ -19,7 +23,7 @@ const SidebarContainer = ({ collapsed }: { collapsed: boolean }) => {
     localStorage.setItem("activeNav", e.key);
   };
 
-  const currentPathname = usePathname()?.replace("/admin/", "")?.split(" ")[0];
+  const currentPathname = usePathname()?.replace(user?.role == "ADMIN" ? "/admin/" : "/shelter/", "")?.split(" ")[0];
 
   return (
     <Sider
@@ -47,9 +51,8 @@ const SidebarContainer = ({ collapsed }: { collapsed: boolean }) => {
           />
         </Link>
         <h1
-          className={`${
-            collapsed ? "text-sm" : "text-xl"
-          }   font-extrabold text-white`}
+          className={`${collapsed ? "text-sm" : "text-xl"
+            }   font-extrabold text-white`}
         ></h1>
       </div>
       <Menu
@@ -58,26 +61,9 @@ const SidebarContainer = ({ collapsed }: { collapsed: boolean }) => {
         selectedKeys={[currentPathname]}
         mode="inline"
         className="sidebar-menu text-lg space-y-4 !border-none"
-        items={navLinks}
+        items={user?.role == "ADMIN" ? adminNavlinks : ShelterNavLinks}
       />
-      <div className="absolute w-[90%] bottom-5 flex justify-center items-center px-2">
-        {!collapsed ? (
-          <Link href={"/login"} className="w-full">
-            <Button
-              icon={<IoLogInOutline size={22} />}
-              className=" w-full !bg-black !border-main-color flex items-center justify-center font-600 text-18  border border-white text-white !py-5"
-            >
-              Log Out
-            </Button>
-          </Link>
-        ) : (
-          <Link href={"/login"}>
-            <div className=" px-3 py-2 bg-main-color rounded">
-              <IoLogInOutline color="#fff" size={24} />
-            </div>
-          </Link>
-        )}
-      </div>
+
     </Sider>
   );
 };

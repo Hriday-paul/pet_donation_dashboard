@@ -61,6 +61,7 @@ const TermsConditionsEditor = () => {
           marginTop: "20px",
           border: "none",
         }}
+          type="primary"
       >
         Save Changes
       </Button>

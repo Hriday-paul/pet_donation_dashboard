@@ -59,10 +59,7 @@ const PersonalInformationContainer = () => {
         </div>
         <div className={edit ? "hidden" : ""}>
           <Button
-            style={{
-              backgroundColor: "var(--color-secondary)",
-              border: "none",
-            }}
+            
             onClick={() => setEdit(true)}
             size="large"
             icon={<FiEdit />}
@@ -75,7 +72,7 @@ const PersonalInformationContainer = () => {
 
       {/* personal information */}
       <div className="mt-10 flex justify-center flex-col xl:flex-row items-center  gap-10">
-        <div className="bg-primary-gray h-[365px] md:w-[350px] rounded-xl border border-main-color flex justify-center items-center  text-text-color">
+        <div className="bg-white h-[365px] md:w-[350px] rounded-xl shadow-sm flex justify-center items-center  text-text-color">
           <div className="space-y-1 relative">
             <div className="relative group">
               <Image
@@ -123,16 +120,16 @@ const PersonalInformationContainer = () => {
         <div className="w-2/4">
           <ConfigProvider
             theme={{
-              components: {
-                Input: {
-                  colorBgContainer: "var(--color-primary-gray)",
-                  colorText: "#fff",
-                  colorTextPlaceholder: "#fff",
-                },
-                Form: {
-                  labelColor: "#fff",
-                },
-              },
+              // components: {
+              //   Input: {
+              //     colorBgContainer: "var(--color-primary-gray)",
+              //     colorText: "#fff",
+              //     colorTextPlaceholder: "#fff",
+              //   },
+              //   Form: {
+              //     labelColor: "#fff",
+              //   },
+              // },
             }}
           >
             <Form
@@ -191,6 +188,7 @@ const PersonalInformationContainer = () => {
                 <Button
                   htmlType="submit"
                   size="large"
+                  type="primary"
                   block
                   style={{ border: "none" }}
                 >

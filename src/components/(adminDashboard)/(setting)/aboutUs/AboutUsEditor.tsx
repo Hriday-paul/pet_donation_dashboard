@@ -55,6 +55,7 @@ const AboutUsEditor = () => {
       <Button
         size="large"
         block
+        type="primary"
         style={{
           marginTop: "20px",
           border: "none",

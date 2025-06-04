@@ -35,7 +35,7 @@ const AddwebDetails = ({ open, setOpen, isEdit }: TPropsType) => {
             onCancel={() => setOpen(false)}
             closeIcon={false}>
 
-            <div >
+            <div>
 
                 <div className="flex justify-end items-center">
                     <div

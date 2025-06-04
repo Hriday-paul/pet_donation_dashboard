@@ -54,16 +54,16 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
           {/* form */}
           <ConfigProvider
             theme={{
-              components: {
-                Input: {
-                  colorBgContainer: "var(--color-primary-gray)",
-                  colorText: "#fff",
-                  colorTextPlaceholder: "#fff",
-                },
-                Form: {
-                  labelColor: "#fff",
-                },
-              },
+              // components: {
+              //   Input: {
+              //     colorBgContainer: "var(--color-primary-gray)",
+              //     colorText: "#fff",
+              //     colorTextPlaceholder: "#fff",
+              //   },
+              //   Form: {
+              //     labelColor: "#fff",
+              //   },
+              // },
             }}
           >
             <Form
@@ -114,7 +114,7 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
                 />
               </Form.Item>
 
-              <p
+              {/* <p
                 onClick={() => {
                   setOpen(false);
                   setOpenModal(true);
@@ -122,11 +122,12 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
                 className="mb-5 font-medium cursor-pointer text-gray-200"
               >
                 Forget password?
-              </p>
+              </p> */}
 
               <Button
                 htmlType="submit"
                 size="large"
+                type="primary"
                 block
                 className="!border-none !py-6"
               >

@@ -104,7 +104,7 @@ const UsersTable = () => {
   ];
 
   return (
-    <div className="rounded-md">
+    <div>
       <div className="flex justify-between items-center px-10 py-5">
         <h1 className="  text-2xl text-text-color">Users</h1>
         <Input

@@ -15,15 +15,15 @@ const links = [
   },
   {
     lable: "Terms & Condition",
-    path: "terms-condition",
+    path: "admin/terms-condition",
   },
   {
     lable: "Privacy Policy",
-    path: "privacy-policy",
+    path: "admin/privacy-policy",
   },
   {
     lable: "About Us",
-    path: "about-us",
+    path: "admin/about-us",
   },
 ];
 
@@ -37,22 +37,22 @@ const SettingContainer = () => {
             <div
               key={inx}
               onClick={() => setOpen(!open)}
-              className="bg-primary-gray  p-5 rounded flex justify-between items-center cursor-pointer"
+              className="bg-white p-5 rounded flex justify-between items-center cursor-pointer shadow"
             >
               <h4 className="text-text-color font-medium text-lg">
                 {link?.lable}
               </h4>
-              <IoIosArrowForward size={18} color="#fff" />
+              <IoIosArrowForward size={18} color="#000000" />
             </div>
           );
         } else {
           return (
             <Link key={link.path} href={`/${link.path}`}>
-              <div className="bg-primary-gray  p-5 rounded flex justify-between items-center">
+              <div className="bg-white p-5 rounded flex justify-between items-center shadow">
                 <h4 className="text-text-color font-medium text-lg">
                   {link?.lable}
                 </h4>
-                <IoIosArrowForward size={18} color="#fff" />
+                <IoIosArrowForward size={18} color="#000000" />
               </div>
             </Link>
           );
