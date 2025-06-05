@@ -79,7 +79,7 @@ const SurveyDetailscontainer = () => {
                     {/* Profile Section */}
                     <div className="text-center mb-5">
                         <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden">
-                            <Image src={surverUser} alt="Robert Fox" className="w-full h-full object-cover rounded-full" />
+                            <Image placeholder='blur' src={surverUser} alt="Robert Fox" className="w-full h-full object-cover rounded-full" />
                         </div>
                         <h1 className="text-xl font-medium text-gray-900">Robert Fox</h1>
                     </div>

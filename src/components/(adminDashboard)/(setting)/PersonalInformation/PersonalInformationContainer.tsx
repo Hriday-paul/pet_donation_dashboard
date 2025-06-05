@@ -78,6 +78,7 @@ const PersonalInformationContainer = () => {
               <Image
                 src={imageUrl || profile}
                 alt="adminProfile"
+                placeholder='blur'
                 width={1200}
                 height={1200}
                 className="size-36 rounded-full flex justify-center items-center"

@@ -24,16 +24,16 @@ const WebCard = ({ carddata }: { carddata: { id: number, title: string, details:
                 <div className='w-2/3'>
                     <h2 className='text-2xl font-semibold text-black'>{carddata?.title}</h2>
                     <section className='flex flex-row gap-x-2 items-center my-3'>
-                        <Image src={catImg} className='h-8 w-auto' alt='web image' />
-                        <Image src={dogImg} className='h-8 w-auto' alt='web image' />
+                        <Image placeholder='blur' src={catImg} className='h-8 w-auto' alt='web image' />
+                        <Image placeholder='blur' src={dogImg} className='h-8 w-auto' alt='web image' />
                     </section>
                     <p className='text-text-color text-base font-medium'>{carddata?.details}</p>
                 </div>
                 <div className='w-1/3'>
-                    <Image src={webImg} className='h-28 w-auto ml-auto' alt='web image' />
+                    <Image placeholder='blur' src={webImg} className='h-28 w-auto ml-auto' alt='web image' />
                 </div>
             </div>
-            <button  {...listeners}>
+            <button {...listeners}>
                 <Menu size={30} className='text-main-color' />
             </button>
         </div>

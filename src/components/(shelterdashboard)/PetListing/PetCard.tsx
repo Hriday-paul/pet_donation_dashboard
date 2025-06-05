@@ -20,7 +20,7 @@ const PetCard = () => {
         <div className='bg-white border border-stroke rounded-xl shadow-sm'>
 
             <div className='h-40 w-full'>
-                <Image src={catLg} alt='service icon' className='h-full w-full object-cover mx-auto rounded-t-2xl' />
+                <Image src={catLg} placeholder='blur' alt='service icon' className='h-full w-full object-cover mx-auto rounded-t-2xl' />
             </div>
 
             <section className='p-6'>

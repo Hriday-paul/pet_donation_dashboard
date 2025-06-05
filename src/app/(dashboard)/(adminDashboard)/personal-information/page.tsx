@@ -4,7 +4,7 @@ import React from "react";
 const PersonalInformationPage = () => {
   return (
     <div>
-      <PersonalInformationContainer></PersonalInformationContainer>
+      <PersonalInformationContainer />
     </div>
   );
 };
