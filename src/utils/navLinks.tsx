@@ -75,6 +75,6 @@ export const ShelterNavLinks = [
   {
     key: "settings",
     icon: <IoSettingsOutline size={18} />,
-    label: <Link href={"/admin/settings"}>Settings</Link>,
+    label: <Link href={"/shelter/settings"}>Settings</Link>,
   },
 ];

@@ -118,9 +118,9 @@ body {
 } */
 
 /* ============== change default eye icon color in  password input field =================================== */
-.ant-input-password-icon svg {
+/* .ant-input-password-icon svg {
   fill: #ffffff !important;
-}
+} */
 
 .month-select .anticon-down svg {
   fill: var(--color-main);

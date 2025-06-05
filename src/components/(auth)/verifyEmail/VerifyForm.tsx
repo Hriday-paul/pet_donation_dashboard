@@ -32,11 +32,13 @@ const VerifyEmailForm = () => {
       autoComplete="off"
       layout="vertical"
     >
-      <Form.Item<FieldType> name="opt">
+      <Form.Item<FieldType> name="opt" rules={[
+          { required: true, message: "Please input your otp!" },
+        ]}>
         <Input.OTP size="large" />
       </Form.Item>
 
-      <Button htmlType="submit" size="large" block style={{ border: "none" }}>
+      <Button type="primary" htmlType="submit" size="large" block style={{ border: "none" }}>
         Verify Email
       </Button>
     </Form>

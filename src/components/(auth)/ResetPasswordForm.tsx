@@ -1,6 +1,7 @@
 "use client";
 import type { FormProps } from "antd";
 import { Button, Form, Input } from "antd";
+import { LockKeyhole } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type FieldType = {
@@ -33,18 +34,20 @@ const ResetPasswordForm = () => {
         name="setPassword"
         rules={[{ required: true, message: "Please your set password!" }]}
       >
-        <Input.Password size="large" placeholder="Set your password" />
+        <Input.Password size="large" placeholder="Set New Password" prefix={<LockKeyhole size={16} />} />
       </Form.Item>
 
       <Form.Item<FieldType>
         name="reSetPassword"
         rules={[{ required: true, message: "Please input your password!" }]}
       >
-        <Input.Password size="large" placeholder="Re-enter password" />
+        <Input.Password size="large" placeholder="Re-enter Password" prefix={<LockKeyhole size={16} />} />
       </Form.Item>
-      <Button htmlType="submit" size="large" block style={{ border: "none" }}>
-        Sign In
+
+      <Button htmlType="submit" type="primary" size="large" block style={{ border: "none" }}>
+        Reset Password
       </Button>
+
     </Form>
   );
 };

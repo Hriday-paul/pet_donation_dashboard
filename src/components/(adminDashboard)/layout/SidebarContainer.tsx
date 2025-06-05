@@ -6,7 +6,6 @@ import Link from "next/link";
 import logo from "@/assets/logo.png";
 import { navLinks as adminNavlinks, ShelterNavLinks } from "@/utils/navLinks";
 import { usePathname } from "next/navigation";
-import { IoLogInOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 

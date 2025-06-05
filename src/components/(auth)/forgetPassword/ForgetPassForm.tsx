@@ -1,6 +1,7 @@
 "use client";
 import type { FormProps } from "antd";
 import { Button, Form, Input } from "antd";
+import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type FieldType = {
@@ -42,10 +43,10 @@ const ForgetPassForm = () => {
           },
         ]}
       >
-        <Input size="large" placeholder="Email" />
+        <Input size="large" type="email" placeholder="User Email" prefix={<Mail size={16} />} />
       </Form.Item>
 
-      <Button htmlType="submit" size="large" block style={{ border: "none" }}>
+      <Button htmlType="submit" type="primary" size="large" block style={{ border: "none" }}>
         Send OTP
       </Button>
     </Form>

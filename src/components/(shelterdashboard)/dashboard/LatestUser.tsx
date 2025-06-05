@@ -4,6 +4,7 @@ import { Image, TableProps } from "antd";
 import { useState } from "react";
 import DataTable from "@/utils/DataTable";
 import { ArrowDownWideNarrowIcon, Eye } from "lucide-react";
+import Link from "next/link";
 
 type TDataType = {
   key?: number;
@@ -25,7 +26,6 @@ const data: TDataType[] = Array.from({ length: 5 }).map((data, inx) => ({
 }));
 
 const LatestUser = () => {
-  const [open, setOpen] = useState(false);
 
   const columns: TableProps<TDataType>["columns"] = [
     {
@@ -73,13 +73,13 @@ const LatestUser = () => {
     },
 
     {
-      title: "Join Date",
+      title: "Date",
       dataIndex: "date",
     },
     {
       title: "Action",
       dataIndex: "action",
-      render: () => <button onClick={() => setOpen(true)}><Eye /></button>
+      render: () => <Link href="/shelter/survey-ques/1"><Eye /></Link>
     },
   ];
 

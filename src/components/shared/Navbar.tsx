@@ -64,12 +64,12 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
             </span>
           </Link>
 
-          <button className="w-full flex items-center px-3 py-2 mt-1 text-sm font-medium hover:bg-slate-50 duration-200" >
+          <Link href={'/login'} className="w-full flex items-center px-3 py-2 mt-1 text-sm font-medium hover:bg-slate-50 duration-200" >
             <LogOut size={20} />
             <span className={`ml-3 transition-opacity duration-200 text-red-500`}>
               Logout
             </span>
-          </button>
+          </Link>
 
         </div>} trigger={"click"}>
 
