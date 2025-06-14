@@ -1,5 +1,5 @@
 "use client"
-import { Input } from 'antd';
+import { Input, Pagination } from 'antd';
 import { Search } from 'lucide-react';
 import React from 'react';
 import AddPet from './AddPet';
@@ -29,6 +29,8 @@ const PetListingContainer = () => {
                 <PetCard />
                 <PetCard />
             </div>
+
+            <Pagination defaultCurrent={1} total={50} pageSize={10} hideOnSinglePage align="end" showSizeChanger={false} />
 
 
 

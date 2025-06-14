@@ -1,5 +1,5 @@
 "use client";
-import { Users } from "lucide-react";
+import { PawPrint, Users } from "lucide-react";
 import { useState } from "react";
 
 const Statistic = () => {
@@ -39,14 +39,14 @@ const Statistic = () => {
         </div>
       </div>
 
-      {/* ====================================== Total Vendor ========================================== */}
+      {/* ====================================== Total Pets ========================================== */}
       <div className="bg-section-bg rounded-3xl border border-stroke p-8 flex-1">
         <div className="flex items-center gap-4">
           <div className="bg-main-color rounded-full p-4 flex items-center justify-center">
-            <Users className="w-6 h-6 text-white" />
+            <PawPrint className="w-6 h-6 text-white"/>
           </div>
           <div className="flex flex-col">
-            <span className="text-main-color text-lg font-medium">Total User</span>
+            <span className="text-main-color text-lg font-medium">Total Pets</span>
             <span className="text-main-color text-3xl font-semibold">5,021</span>
           </div>
         </div>

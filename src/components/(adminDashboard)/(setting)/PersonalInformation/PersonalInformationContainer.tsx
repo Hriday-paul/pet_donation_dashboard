@@ -1,5 +1,5 @@
 "use client";
-import { Button, ConfigProvider, Form, Input } from "antd";
+import { Button, Form, FormProps, Input } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -8,16 +8,24 @@ import profile from "@/assets/image/adminProfile.png";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Camera, Trash2, X } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+
+type FieldType = {
+  name: string,
+  email: string,
+  contact: string,
+  location?: string,
+  website_link?: string,
+}
 
 const PersonalInformationContainer = () => {
   const route = useRouter();
-  const [form] = Form.useForm();
+  const { user } = useSelector((root: RootState) => root?.userSlice)
   const [edit, setEdit] = useState(false);
-  const [fileName, setFileName] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
-  // @ts-expect-error: Ignoring TypeScript error due to inferred 'any' type for 'values' which is handled in the form submit logic
-  const handleSubmit = (values) => {
+  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     toast.success("Successfully Change personal information", {
       duration: 1000,
     });
@@ -28,19 +36,10 @@ const PersonalInformationContainer = () => {
     const input = event.target;
 
     const file = input.files?.[0];
-    console.log(file);
 
     if (file) {
-      const url = URL.createObjectURL(file);
-      console.log(url);
-      setImageUrl(url);
-      setFileName(file);
-    } else {
-      setImageUrl(null);
-      setFileName(null);
+      setFile(file)
     }
-
-    input.value = "";
   };
 
   return (
@@ -59,7 +58,7 @@ const PersonalInformationContainer = () => {
         </div>
         <div className={edit ? "hidden" : ""}>
           <Button
-            
+
             onClick={() => setEdit(true)}
             size="large"
             icon={<FiEdit />}
@@ -71,31 +70,32 @@ const PersonalInformationContainer = () => {
       <hr className="my-4" />
 
       {/* personal information */}
-      <div className="mt-10 flex justify-center flex-col xl:flex-row items-center  gap-10">
-        <div className="bg-white h-[365px] md:w-[350px] rounded-xl shadow-sm flex justify-center items-center  text-text-color">
-          <div className="space-y-1 relative">
+      <div className="mt-10 flex justify-center flex-col xl:flex-row items-start  gap-10">
+
+        <div className="bg-white h-[365px] md:w-[350px] rounded-xl shadow-sm flex justify-center items-center text-text-color">
+          <div className="space-y-2 relative">
             <div className="relative group">
               <Image
-                src={imageUrl || profile}
+                src={file ? URL.createObjectURL(file) : "https://soleswap-dashboard.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FadminProfile.c5ca04cd.png&w=1200&q=75"}
                 alt="adminProfile"
-                placeholder='blur'
+
                 width={1200}
                 height={1200}
-                className="size-36 rounded-full flex justify-center items-center"
+                className="size-36 rounded-full flex justify-center items-center object-cover"
               ></Image>
 
               {/* cancel button */}
-              {fileName && imageUrl && (
+              {file && (
                 <div
                   className="absolute left-4 top-2 cursor-pointer rounded-md bg-primary-pink opacity-0 duration-1000 group-hover:opacity-100"
                   onClick={() => {
-                    setFileName(null);
-                    setImageUrl(null);
+                    setFile(null)
                   }}
                 >
                   <Trash2 size={20} color="red" />
                 </div>
               )}
+
               {/* upload image */}
               <input
                 type="file"
@@ -114,90 +114,89 @@ const PersonalInformationContainer = () => {
                 </div>
               </label>
             </div>
-            <h3 className="text-2xl text-center">Admin</h3>
+            <h3 className="text-xl text-center">{user?.role}</h3>
           </div>
         </div>
+
         {/* form */}
         <div className="w-2/4">
-          <ConfigProvider
-            theme={{
-              // components: {
-              //   Input: {
-              //     colorBgContainer: "var(--color-primary-gray)",
-              //     colorText: "#fff",
-              //     colorTextPlaceholder: "#fff",
-              //   },
-              //   Form: {
-              //     labelColor: "#fff",
-              //   },
-              // },
+          <Form
+
+            onFinish={onFinish}
+            layout="vertical"
+            style={{
+              marginTop: "25px",
+            }}
+            initialValues={{
+              name: "James Tracy",
+              email: "enrique@gmail.com",
+              contact: "3000597212",
+              location: "Dhaka, Bangladesh",
+              website_link: "https://google.com"
             }}
           >
-            <Form
-              form={form}
-              onFinish={handleSubmit}
-              layout="vertical"
-              style={{
-                marginTop: "25px",
-              }}
-              initialValues={{
-                name: "James Tracy",
-                email: "enrique@gmail.com",
-                phone: "3000597212",
-              }}
-            >
-              {/*  input  name */}
-              <Form.Item label="Name" name="name">
-                {edit ? (
-                  <Input size="large" placeholder="Enter full name "></Input>
-                ) : (
+            {/*  input  name */}
+            <Form.Item<FieldType> label="Name" name="name" rules={[{ required: true, message: "Name is required" }]}>
+              <Input
+                size="large"
+                placeholder="Enter full name "
+                readOnly={!edit}
+              ></Input>
+            </Form.Item>
+
+            {/*  input  email */}
+            <Form.Item<FieldType> label="Email" name="email" rules={[{ required: true, message: "Email name is required" }]}>
+              <Input
+                size="large"
+                placeholder="Enter email"
+                readOnly={!edit}
+              ></Input>
+            </Form.Item>
+
+            {/* input  phone number  */}
+            <Form.Item<FieldType> label="Phone Number" name="contact" rules={[{ required: true, message: "Contact is required" }]}>
+              <Input
+                size="large"
+                placeholder="Enter Phone number"
+                readOnly={!edit}
+              ></Input>
+            </Form.Item>
+
+
+            {/* --------------------shelter extra fields--------------- */}
+            {
+              user?.role == "SHELTER" && <>
+                <Form.Item<FieldType> label="Location" name="location" rules={[{ required: user?.role == "SHELTER", message: "Location is required" }]}>
                   <Input
                     size="large"
-                    placeholder="Enter full name "
-                    readOnly
+                    placeholder="Enter Location"
+                    readOnly={!edit}
                   ></Input>
-                )}
-              </Form.Item>
+                </Form.Item>
 
-              {/*  input  email */}
-              <Form.Item label="Email" name="email">
-                {edit ? (
-                  <Input size="large" placeholder="Enter email "></Input>
-                ) : (
+                <Form.Item<FieldType> label="Website Link" name="website_link" rules={[{ required: user?.role == "SHELTER", message: "Website link is required" }]}>
                   <Input
                     size="large"
-                    placeholder="Enter email"
-                    readOnly
+                    placeholder="Enter website link"
+                    readOnly={!edit}
                   ></Input>
-                )}
-              </Form.Item>
+                </Form.Item>
+              </>
+            }
 
-              {/* input  phone number  */}
-              <Form.Item label="Phone Number" name="phone">
-                {edit ? (
-                  <Input size="large" placeholder="Enter Phone number"></Input>
-                ) : (
-                  <Input
-                    size="large"
-                    placeholder="Enter Phone number"
-                    readOnly
-                  ></Input>
-                )}
-              </Form.Item>
 
-              <div className={edit ? "" : "hidden"}>
-                <Button
-                  htmlType="submit"
-                  size="large"
-                  type="primary"
-                  block
-                  style={{ border: "none" }}
-                >
-                  Save Change
-                </Button>
-              </div>
-            </Form>
-          </ConfigProvider>
+            <div className={edit ? "" : "hidden"}>
+              <Button
+                htmlType="submit"
+                size="large"
+                type="primary"
+                block
+                style={{ border: "none" }}
+              >
+                Save Change
+              </Button>
+            </div>
+          </Form>
         </div>
       </div>
     </div>

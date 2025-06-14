@@ -60,6 +60,7 @@ const LoginForm = () => {
 
       <Form.Item<FieldType>
         name="email"
+        label="Email"
         rules={[
           { required: true, message: "Please input your email!" },
           {
@@ -73,25 +74,36 @@ const LoginForm = () => {
 
       <Form.Item<FieldType>
         name="password"
+        label="Password"
         rules={[{ required: true, message: "Please input your password!" }]}
       >
         <Input.Password size="large" placeholder="Password" prefix={<LockKeyhole size={16} />} />
       </Form.Item>
 
-      {/* <Form.Item<FieldType> name="remember" valuePropName="checked"> */}
       <Flex justify="space-between" align="center" className="mb-4">
-        {/* <Checkbox>
-            <p className=" font-semibold">Remember me</p>
-          </Checkbox> */}
         <Link href={"/forget-password"} style={{ textDecoration: "" }}>
           <p className="font-medium">Forgot Password?</p>
         </Link>
       </Flex>
-      {/* </Form.Item> */}
 
       <Button htmlType="submit" type="primary" size="large" block style={{ border: "none " }}>
         Sign In
       </Button>
+
+      <Form.Item shouldUpdate>
+        {({ getFieldValue }) => {
+          const repeat = getFieldValue('role');
+
+          return repeat === "SHELTER" && <div className="my-4 flex flex-row gap-x-2 items-center">
+            <p className="text-base text-text-color">Don't have account ?</p>
+            <Link className="text-base text-main-color" href={"/signup"}>
+              <p className="font-medium">Create Account</p>
+            </Link>
+          </div>
+
+        }}
+      </Form.Item>
+
     </Form>
   );
 };

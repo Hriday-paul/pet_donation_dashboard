@@ -16,7 +16,6 @@ const AddPet = () => {
 
 export default AddPet;
 
-import { CloudDownload } from "lucide-react";
 import { RiCloseLargeLine } from "react-icons/ri";
 import Image from 'next/image';
 import { useCallback } from 'react';
@@ -98,7 +97,7 @@ export const AddPetForm = ({ open, setOpen, isEdit }: TPropsType) => {
 
                     <section className='mb-3'>
                         <p className="mb-1.5 block text-black font-poppins text-base text-left">Upload Image</p>
-                        <div className='flex flex-row gap-x-2 items-center flex-wrap'>
+                        <div className='flex flex-row gap-2 items-center flex-wrap'>
                             {
                                 images?.map((img, indx) => {
                                     return <div key={indx} >

@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Admin Login",
-  description: "Admin login for SoleSwap.",
+  description: "Admin login for Amipeta.",
 };
 
 const LoginPage = () => {
