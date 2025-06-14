@@ -6,7 +6,7 @@ import ResetPasswordForm from "@/components/(auth)/ResetPasswordForm";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Forget Password",
+  title: "reset Password",
 };
 
 const ResetPassword = () => {
