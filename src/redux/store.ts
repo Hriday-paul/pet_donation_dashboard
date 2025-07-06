@@ -13,7 +13,7 @@ import {
 } from 'redux-persist'
 
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
-// import baseApi from './api/baseApi';
+import baseApi from './api/baseApi';
 
 const createNoopStorage = () => {
     return {
@@ -43,19 +43,19 @@ const persistConfig = {
 
 const reducer = combineReducers({
       userSlice: userSlice,
-    // [baseApi.reducerPath]: baseApi.reducer,
+    [baseApi.reducerPath]: baseApi.reducer,
 });
 
 const persistedReduces = persistReducer(persistConfig, reducer);
 
 export const makeStore = configureStore({
     reducer: persistedReduces,
-    // middleware: (getDefaultMiddleware) =>
-    //     getDefaultMiddleware({
-    //         serializableCheck: {
-    //             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-    //         },
-    //     }).concat(baseApi.middleware),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            },
+        }).concat(baseApi.middleware),
 })
 
 // Create a persistor instance

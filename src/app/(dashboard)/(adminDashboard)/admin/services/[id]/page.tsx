@@ -7,11 +7,7 @@ const ServiceDetails = () => {
 
     return (
         <div className=''>
-
-           
-
             <WebCardsContainer />
-
         </div>
     );
 };

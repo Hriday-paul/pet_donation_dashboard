@@ -1,51 +1,61 @@
 "use client";
+import { useResetPasswordMutation } from "@/redux/api/auth.api";
 import type { FormProps } from "antd";
 import { Button, Form, Input } from "antd";
 import { LockKeyhole } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ImSpinner3 } from "react-icons/im";
+import { toast } from "sonner";
 
 type FieldType = {
-  setPassword?: string;
-  reSetPassword?: string;
-};
-
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-  console.log("Failed:", errorInfo);
+  newPassword: string;
+  confirmPassword: string;
 };
 
 const ResetPasswordForm = () => {
+  const [postReset, { isLoading }] = useResetPasswordMutation()
   const route = useRouter();
 
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
-    route.push("/login");
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    try {
+      await postReset(values).unwrap();
+
+      toast.success('Password Reset Successfully');
+
+      route.push("/login");
+
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Something went wrong, try again');
+    }
   };
+
 
   return (
     <Form
       name="basic"
       initialValues={{ remember: true }}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       autoComplete="off"
       layout="vertical"
     >
       <Form.Item<FieldType>
-        name="setPassword"
-        rules={[{ required: true, message: "Please your set password!" }]}
+        label="New password"
+        name="newPassword"
+        rules={[{ required: true, message: "Please set your password!" }]}
       >
         <Input.Password size="large" placeholder="Set New Password" prefix={<LockKeyhole size={16} />} />
       </Form.Item>
 
       <Form.Item<FieldType>
-        name="reSetPassword"
+        label="Confirm Password"
+        name="confirmPassword"
         rules={[{ required: true, message: "Please input your password!" }]}
       >
         <Input.Password size="large" placeholder="Re-enter Password" prefix={<LockKeyhole size={16} />} />
       </Form.Item>
 
-      <Button htmlType="submit" type="primary" size="large" block style={{ border: "none" }}>
-        Reset Password
+      <Button disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end" type="primary" htmlType="submit" size="large" block>
+        Submit
       </Button>
 
     </Form>

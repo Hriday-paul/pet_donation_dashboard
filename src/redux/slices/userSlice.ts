@@ -9,21 +9,21 @@ export interface userType {
     user: {
         name: string | null,
         // profilePicture: string | null, 
-        role: "ADMIN" | "SHELTER"
+        role: "admin" | "shelter"
     }
 }
 
 type addUserType = {
     name: string,
     // profilePicture: string, 
-    role: "ADMIN" | "SHELTER"
+    role: "admin" | "shelter"
 }
 
 const initialState: userType = {
     user: {
         name: null,
         // profilePicture: null,
-        role: "SHELTER"
+        role: "shelter"
     }
 }
 

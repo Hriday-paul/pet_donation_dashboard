@@ -22,7 +22,7 @@ const SidebarContainer = ({ collapsed }: { collapsed: boolean }) => {
     localStorage.setItem("activeNav", e.key);
   };
 
-  const currentPathname = usePathname()?.replace(user?.role == "ADMIN" ? "/admin/" : "/shelter/", "")?.split(" ")[0];
+  const currentPathname = usePathname()?.replace(user?.role == "admin" ? "/admin/" : "/shelter/", "")?.split(" ")[0];
 
   return (
     <Sider
@@ -60,7 +60,7 @@ const SidebarContainer = ({ collapsed }: { collapsed: boolean }) => {
         selectedKeys={[currentPathname]}
         mode="inline"
         className="sidebar-menu text-lg space-y-4 !border-none"
-        items={user?.role == "ADMIN" ? adminNavlinks : ShelterNavLinks}
+        items={user?.role == "admin" ? adminNavlinks : ShelterNavLinks}
       />
 
     </Sider>

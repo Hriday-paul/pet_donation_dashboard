@@ -165,8 +165,8 @@ const PersonalInformationContainer = () => {
 
             {/* --------------------shelter extra fields--------------- */}
             {
-              user?.role == "SHELTER" && <>
-                <Form.Item<FieldType> label="Location" name="location" rules={[{ required: user?.role == "SHELTER", message: "Location is required" }]}>
+              user?.role == "shelter" && <>
+                <Form.Item<FieldType> label="Location" name="location" rules={[{ required: user?.role == "shelter", message: "Location is required" }]}>
                   <Input
                     size="large"
                     placeholder="Enter Location"
@@ -174,7 +174,7 @@ const PersonalInformationContainer = () => {
                   ></Input>
                 </Form.Item>
 
-                <Form.Item<FieldType> label="Website Link" name="website_link" rules={[{ required: user?.role == "SHELTER", message: "Website link is required" }]}>
+                <Form.Item<FieldType> label="Website Link" name="website_link" rules={[{ required: user?.role == "shelter", message: "Website link is required" }]}>
                   <Input
                     size="large"
                     placeholder="Enter website link"

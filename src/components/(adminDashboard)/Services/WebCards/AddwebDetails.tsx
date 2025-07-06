@@ -1,6 +1,8 @@
+import { useAddSubServiceMutation } from "@/redux/api/service.api";
 import { Button, DatePicker, Divider, Form, FormProps, Input, InputNumber, Modal, Select, Upload } from "antd";
 import { CloudDownload } from "lucide-react";
 import Image from "next/image";
+import { ImSpinner3 } from "react-icons/im";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { toast } from "sonner";
 
@@ -21,9 +23,29 @@ type FieldType = {
 
 const AddwebDetails = ({ open, setOpen, isEdit }: TPropsType) => {
 
-    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Success:', values);
-        toast.success("Website details submitted successfully")
+    const [handleSubServicePostApi, { isLoading }] = useAddSubServiceMutation();
+    const [form] = Form.useForm();
+
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        try {
+            const formdata = new FormData();
+            formdata.append("data", JSON.stringify({
+                "web_name": values?.name,
+                "web_link": values?.web_link,
+                "pet_type": values?.pet_type,
+                "description": values?.description,
+                "location": values?.location,
+                // "pet_category": values?.,
+                "service": "686a4b1737a2ba2ccc0b4528"
+            }))
+            formdata.append("web_img", values?.image);
+            await handleSubServicePostApi({ formData: formdata, service: "686a4b1737a2ba2ccc0b4528" }).unwrap();
+            toast.success("Website details submitted successfully")
+            form.resetFields();
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Something went wrong, try again")
+        }
+
     };
 
     return (
@@ -55,6 +77,7 @@ const AddwebDetails = ({ open, setOpen, isEdit }: TPropsType) => {
                     onFinish={onFinish}
                     autoComplete="off"
                     layout="vertical"
+                    form={form}
                 >
 
                     <Form.Item<FieldType> name="name" label={"Website Name"} rules={[{ required: true, message: "Website name is required" }]}>
@@ -116,7 +139,9 @@ const AddwebDetails = ({ open, setOpen, isEdit }: TPropsType) => {
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" size='large' htmlType="submit" block>Save</Button>
+                        <Button htmlType="submit" type="primary" size="large" block disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
+                            Save
+                        </Button>
                     </Form.Item>
 
                 </Form>

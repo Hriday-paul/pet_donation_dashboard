@@ -1,9 +1,14 @@
 "use client";
+import { useCreateAccountMutation } from "@/redux/api/auth.api";
+import { config } from "@/utils/config";
 import type { FormProps } from "antd";
 import { Button, Form, Input, Flex, Radio, InputNumber } from "antd";
 import { IdCard, LockKeyhole, Mail, PhoneCall } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useCookies } from "react-cookie";
+import { ImSpinner3 } from "react-icons/im";
+import { toast } from "sonner";
 
 type FieldType = {
     name: string
@@ -19,11 +24,25 @@ const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
 };
 
 const SignUpForm = () => {
+    const [submitApi, { isLoading }] = useCreateAccountMutation();
+    const [_, setCookie] = useCookies(['accessToken', 'refreshToken', "token"]);
     const route = useRouter();
 
-    const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-        console.log("Success:", values);
-        route.push("/verify-email");
+    const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+        try {
+            const res = await submitApi({ first_name: values?.name, email: values?.email, password: values?.password, role: "shelter" }).unwrap();
+            setCookie('accessToken', res?.data?.otpToken?.token, {
+                httpOnly: false,
+                maxAge: 14 * 24 * 60 * 60, // 14 days
+                path: '/',
+                sameSite: 'lax',
+                secure: config.hasSSL,
+            });
+            toast.success("Signup successfully")
+            route.push("/verify-email");
+        } catch (err: any) {
+            toast.error(err?.data?.message || 'Something went wrong, try again');
+        }
     };
 
     return (
@@ -90,13 +109,13 @@ const SignUpForm = () => {
                 <Input.Password size="large" placeholder="Password" prefix={<LockKeyhole size={16} />} />
             </Form.Item>
 
-            <Button htmlType="submit" type="primary" size="large" block style={{ border: "none " }}>
+            <Button htmlType="submit" type="primary" size="large" block disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> :<></>} iconPosition="end">
                 Sign Up
             </Button>
 
 
 
-            <div  className="my-4 flex flex-row gap-x-2 items-center">
+            <div className="my-4 flex flex-row gap-x-2 items-center">
                 <p className="text-base text-text-color">Already have an account?</p>
                 <Link className="text-base text-main-color" href={"/login"}>
                     <p className="font-medium">Login</p>

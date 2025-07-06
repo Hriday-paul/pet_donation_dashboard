@@ -18,7 +18,8 @@ const antTheme = {
       headerSplitColor: "var(--color-main)",
       colorText: "var(--color-text-color)",
       borderColor: "var(--color-section-bg)",
-      rowHoverBg: "var(--color-main-bg)"
+      rowHoverBg: "var(--color-main-bg)",
+      footerBg : "var(--color-main-bg)"
     },
     Modal: {
       colorIcon: "rgba(255,255,255,0.45)",

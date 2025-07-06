@@ -1,17 +1,22 @@
 "use client";
+import { useLoginUserMutation } from "@/redux/api/auth.api";
 import { addUserDetails } from "@/redux/slices/userSlice";
+import { config } from "@/utils/config";
 import type { FormProps } from "antd";
 import { Button, Checkbox, Form, Input, Flex, Radio } from "antd";
 import { LockKeyhole, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useCookies } from "react-cookie";
+import { ImSpinner3 } from "react-icons/im";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 type FieldType = {
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
   // remember?: string;
-  role: "SHELTER" | "ADMIN",
+  role: "shelter" | "admin",
 };
 
 const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
@@ -19,14 +24,43 @@ const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
 };
 
 const LoginForm = () => {
+  const [postLogin, { isLoading }] = useLoginUserMutation();
+  const [_, setCookie] = useCookies(['accessToken', 'refreshToken']);
+
   const route = useRouter();
   const dispatch = useDispatch();
 
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
-    dispatch(addUserDetails({ name: 'Hriday Paul', role: values?.role }))
-    route.push(values?.role == 'ADMIN' ? "/admin/dashboard" : "/shelter/dashboard");
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    try {
+      const res = await postLogin(values).unwrap();
+
+      setCookie('accessToken', res?.data?.accessToken, {
+        httpOnly: false,
+        maxAge: 14 * 24 * 60 * 60, // 14 days
+        path: '/',
+        sameSite: 'lax',
+        secure: config.hasSSL,
+      });
+
+      setCookie('refreshToken', res?.data?.refreshToken, {
+        httpOnly: false,
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        path: '/',
+        sameSite: 'lax',
+        secure: config.hasSSL,
+      });
+
+      dispatch(addUserDetails({ name: 'Hriday Paul', role: res?.data?.role }));
+
+      toast.success('Signin successfully');
+
+      route.push(res?.data?.role == 'admin' ? "/admin/dashboard" : "/shelter/dashboard");
+
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Something went wrong, try again');
+    }
   };
+
 
   return (
     <Form
@@ -36,8 +70,7 @@ const LoginForm = () => {
       onFinishFailed={onFinishFailed}
       autoComplete="off"
       layout="vertical"
-      style={{ width: "354px" }}
-    >
+      style={{ width: "354px" }}>
 
       <Form.Item<FieldType>
         name="role"
@@ -56,7 +89,7 @@ const LoginForm = () => {
       </Form.Item>
 
       <h1 className="text-2xl text-text-color font-semibold text-center mb-1">Log In</h1>
-      <p className="text-sm text-text-color text-center mb-8">Access the Taste Point using your email and password.</p>
+      <p className="text-sm text-text-color text-center mb-8">Access the control panel using your email and password.</p>
 
       <Form.Item<FieldType>
         name="email"
@@ -86,7 +119,7 @@ const LoginForm = () => {
         </Link>
       </Flex>
 
-      <Button htmlType="submit" type="primary" size="large" block style={{ border: "none " }}>
+      <Button disabled={isLoading} type="primary" htmlType="submit" size="large" block icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
         Sign In
       </Button>
 

@@ -1,7 +1,10 @@
+import { useAddServiceMutation } from "@/redux/api/service.api";
 import { Button, DatePicker, Divider, Form, FormProps, Input, InputNumber, Modal, Upload } from "antd";
 import { CloudDownload } from "lucide-react";
 import Image from "next/image";
+import { ImSpinner3 } from "react-icons/im";
 import { RiCloseLargeLine } from "react-icons/ri";
+import { toast } from "sonner";
 
 type TPropsType = {
     open: boolean;
@@ -16,8 +19,21 @@ type FieldType = {
 
 const AddService = ({ open, setOpen, isEdit }: TPropsType) => {
 
-    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+    const [handleApi, { isLoading }] = useAddServiceMutation();
+    const [form] = Form.useForm();
+
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         console.log('Success:', values);
+        try {
+            const formdata = new FormData();
+            formdata.append("data", JSON.stringify({ name: values?.name }))
+            formdata.append("icon", values?.icon)
+            const res = await handleApi(formdata).unwrap();
+            toast.success("New service added successfully");
+            form.resetFields();
+        } catch (err: any) {
+            toast.error(err?.data?.message || "something went wrong, try again")
+        }
     };
 
     return (
@@ -48,6 +64,7 @@ const AddService = ({ open, setOpen, isEdit }: TPropsType) => {
                     initialValues={{}}
                     onFinish={onFinish}
                     autoComplete="off"
+                    form={form}
                     layout="vertical"
                 >
 
@@ -83,7 +100,10 @@ const AddService = ({ open, setOpen, isEdit }: TPropsType) => {
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" size='large' htmlType="submit" block>Save</Button>
+
+                        <Button htmlType="submit" type="primary" size="large" block disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
+                            Save
+                        </Button>
                     </Form.Item>
 
                 </Form>
