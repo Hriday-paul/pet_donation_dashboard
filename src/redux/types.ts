@@ -3,12 +3,14 @@ export type IUser = {
     "last_name": string,
     "gender": string,
     "email": string,
-    "role": string,
+    "role":  "shelter" | "admin",
     "location": string,
     "isDeleted": boolean,
     "isVerified": boolean,
     "isActive": boolean,
+    "contact_number" ?: string
     "_id": string,
+    profile_image ?: string,
     "createdAt": "2025-07-06T06:40:09.654Z",
     "updatedAt": "2025-07-06T06:40:09.654Z",
     "__v": 0
@@ -26,10 +28,9 @@ export type TSubService = {
     "web_name": string,
     "web_link": string,
     "web_img": string,
-    "pet_type": string,
+    "pet_type": "cat" | "dog" | "both",
     "description": string,
     "location": string,
-    "pet_category": string,
     "service": string,
     "serviceName": string,
 }

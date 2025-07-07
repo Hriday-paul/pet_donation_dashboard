@@ -1,13 +1,16 @@
+import { IUser } from "@/redux/types";
 import { Divider, Modal } from "antd";
+import moment from "moment";
 import Image from "next/image";
 import { RiCloseLargeLine } from "react-icons/ri";
 
 type TPropsType = {
   open: boolean;
   setOpen: (collapsed: boolean) => void;
+  userDetails : IUser
 };
 
-const UserDetails = ({ open, setOpen }: TPropsType) => {
+const UserDetails = ({ open, setOpen, userDetails }: TPropsType) => {
   return (
     <Modal
       open={open}
@@ -15,7 +18,6 @@ const UserDetails = ({ open, setOpen }: TPropsType) => {
       centered={true}
       onCancel={() => setOpen(false)}
       closeIcon={false}
-
     >
       <div className="pb-5">
         <div className="flex justify-between items-center">
@@ -29,7 +31,7 @@ const UserDetails = ({ open, setOpen }: TPropsType) => {
         </div>
 
         <Image
-          src={"/user-profile.png"}
+          src={userDetails?.profile_image || "/empty-user.png"}
           alt="profile-picture"
           width={1000}
           height={1000}
@@ -39,28 +41,28 @@ const UserDetails = ({ open, setOpen }: TPropsType) => {
         <div className="space-y-4">
           <div className="flex justify-between">
             <h4>Full name :</h4>
-            <p className="font-medium">James Tracy</p>
+            <p className="font-medium">{userDetails?.first_name + " " + userDetails?.last_name}</p>
           </div>
           <hr />
           <div className="flex justify-between">
             <h4>Email :</h4>
-            <p className="font-medium">james1234@gmail.com</p>
+            <p className="font-medium">{userDetails?.email}</p>
           </div>
           <hr />
           <div className="flex justify-between">
             <h4>Joined date :</h4>
-            <p className="font-medium">11 April 2025, 10:22 AM</p>
+            <p className="font-medium">{moment(userDetails?.createdAt).format("MMMM Do YYYY, h:mm a")}</p>
           </div>
 
           <hr />
           <div className="flex justify-between">
             <h4>Gender :</h4>
-            <p className="font-medium">Male</p>
+            <p className="font-medium">{userDetails?.gender}</p>
           </div>
           <hr />
           <div className="flex justify-between">
             <h4>Address :</h4>
-            <p className="font-medium">Dhaka, Bangladesh</p>
+            <p className="font-medium">{userDetails?.location}</p>
           </div>
           <hr />
         </div>

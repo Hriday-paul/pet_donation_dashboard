@@ -2,23 +2,22 @@
 import {
   Image,
   Input,
-  message,
   Pagination,
   Popconfirm,
-  PopconfirmProps,
   Table,
   TableColumnsType,
-  TableProps,
+  Tooltip,
 } from "antd";
+
 import UserDetails from "./UserDetails";
 import { useState } from "react";
-import DataTable from "@/utils/DataTable";
 import { CgUnblock } from "react-icons/cg";
 import { Eye, Search } from "lucide-react";
-import { useAllusersQuery, useBlock_unblock_userMutation } from "@/redux/api/users.api";
+import { useAllusersQuery, useBlock_userMutation, useUnblock_userMutation } from "@/redux/api/users.api";
 import { IUser } from "@/redux/types";
 import moment from "moment";
 import { toast } from "sonner";
+import { MdBlockFlipped } from "react-icons/md";
 
 type TDataType = {
   key?: number;
@@ -29,29 +28,17 @@ type TDataType = {
   date: string;
   type: string;
 };
-const data: TDataType[] = Array.from({ length: 18 }).map((data, inx) => ({
-  key: inx,
-  serial: inx + 1,
-  name: "James Tracy",
-  email: "james1234@gmail.comm",
-  phone: "12345678",
-  date: "11 Oct, 2024",
-  type: "User",
-}));
-
-const confirmBlock: PopconfirmProps["onConfirm"] = (e) => {
-  console.log(e);
-  message.success("Blocked the user");
-};
 
 const UsersTable = () => {
-  const [handleUpdate] = useBlock_unblock_userMutation();
+  const [handleUnblockUpdate] = useUnblock_userMutation();
+  const [handleBlockUpdate] = useBlock_userMutation();
   const [page, setPage] = useState(1);
   const limit = 10
   const [searchText, setSearchText] = useState("");
   const query: { page: number, limit: number, searchTerm: string } = { page, limit, searchTerm: searchText };
   const { data, isLoading, isFetching } = useAllusersQuery(query)
   const [open, setOpen] = useState(false);
+  const [userDetails, setUserDetails] = useState<IUser | null>(null)
 
   const columns: TableColumnsType<IUser> = [
     {
@@ -64,13 +51,13 @@ const UsersTable = () => {
       dataIndex: "first_name",
       render: (text, record) => (
         <div className="flex items-center gap-x-1">
-          {/* <Image
-            src={record?."/user-profile.png"}
+          <Image
+            src={record?.profile_image || "/empty-user.png"}
             alt="profile-picture"
             width={40}
             height={40}
-            className="size-10"
-          ></Image> */}
+            className="size-10 rounded-full"
+          ></Image>
           <p>{text + " " + record?.last_name}</p>
         </div>
       ),
@@ -82,7 +69,10 @@ const UsersTable = () => {
 
     {
       title: "Phone number",
-      dataIndex: "phone",
+      dataIndex: "contact_number",
+      render(value) {
+        return value ?? "N/A"
+      },
     },
     {
       title: "Gender",
@@ -99,7 +89,10 @@ const UsersTable = () => {
       dataIndex: "action",
       render: (_, record) => (
         <div className="flex gap-2 ">
-          <button onClick={() => setOpen(!open)}>
+          <button onClick={() => {
+            setUserDetails(record)
+            setOpen(prev => !prev)
+          }}>
             <Eye
               size={22}
               color="var(--color-text-color)"
@@ -108,14 +101,16 @@ const UsersTable = () => {
 
           <Popconfirm
             title="Block the user"
-            description="Are you sure to block this user?"
+            description={`Are you sure to ${record?.isActive ? "block" : "unblock"} this user?`}
             onConfirm={() => handleBlockUser(record?._id, !record?.isActive)}
             okText="Yes"
             cancelText="No"
           >
-            <button>
-              <CgUnblock size={22} color="#CD0335" />
-            </button>
+            <Tooltip title={record?.isActive ? "Block" : "Unblock"}>
+              <button>
+                {record?.isActive ? <MdBlockFlipped size={22} color="green" /> : <CgUnblock size={22} color="#CD0335" />}
+              </button>
+            </Tooltip>
           </Popconfirm>
         </div>
       ),
@@ -124,16 +119,17 @@ const UsersTable = () => {
 
   // Block user handler
   const handleBlockUser = async (id: string, status: boolean) => {
-    const loadingToast = toast.loading("loading...")
     try {
-      const res = await handleUpdate({ id: id, updatedData: { isActive: status } }).unwrap();
+      if (status) {
+        await handleUnblockUpdate({ id: id }).unwrap();
+      } else {
+        await handleBlockUpdate({ id: id }).unwrap();
+      }
 
-      toast.success(`User ${status ? "block" : "unblock"} successfully`)
+      toast.success(`User ${status ? "unblock" : "block"} successfully`)
 
     } catch (err: any) {
       toast.error(err?.data?.message || "something went wrong, try again")
-    } finally {
-      toast.dismiss(loadingToast)
     }
   };
 
@@ -145,6 +141,7 @@ const UsersTable = () => {
           className="!w-[250px] lg:!w-[350px] !py-2 !bg-white  placeholder:text-white"
           placeholder="Search Users..."
           prefix={<Search size={20} color="#000"></Search>}
+          onChange={(e) => setSearchText(e.target.value)}
         ></Input>
       </div>
       <Table<IUser>
@@ -157,7 +154,9 @@ const UsersTable = () => {
         }
         scroll={{ x: "max-content" }}
       ></Table>
-      <UserDetails open={open} setOpen={setOpen}></UserDetails>
+      {
+        userDetails && <UserDetails open={open} setOpen={setOpen} userDetails={userDetails} />
+      }
     </div>
   );
 };

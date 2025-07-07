@@ -5,20 +5,18 @@ import { closestCorners, DndContext } from "@dnd-kit/core"
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useAllSubServicesQuery } from '@/redux/api/service.api';
 import { Loader } from 'lucide-react';
+import { TSubService } from '@/redux/types';
+import Image from 'next/image';
 
-const WebCards = () => {
+const WebCards = ({serviceId}:{serviceId : string}) => {
 
-    const { isLoading, data } = useAllSubServicesQuery({ id: "1" })
+    const { isLoading, data, isSuccess } = useAllSubServicesQuery({ id: serviceId });
 
-    const [webCards, setWebCards] = useState([
-        { id: 1, title: "Pet24.lt", details: "Food, toys, grooming, litter, and care products for dogs and cats." },
-        { id: 2, title: "Keturkojams.lt", details: "Offers food, accessories, toys, and care products for dogs and cats." },
-        { id: 3, title: "Baltukas.lt", details: "Food, toys, grooming, litter, and care products for dogs. " },
-    ]);
+    const [webCards, setWebCards] = useState<TSubService[]>([]);
 
-    const getTaskPosition = (id: number) => {
+    const getTaskPosition = (id: string) => {
         return webCards.findIndex(i => {
-            return i.id == id
+            return i._id == id
         })
     }
 
@@ -38,7 +36,7 @@ const WebCards = () => {
 
     useEffect(()=>{
         if(data){
-            // setWebCards(data)
+            setWebCards(data?.data)
         }
     },[data])
 
@@ -50,17 +48,20 @@ const WebCards = () => {
                     <Loader size={30} className='text-main-color animate-spin' />
                 </div>
                     :
-                    <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
+                    isSuccess ? (webCards?.length > 0 ? <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
                         <div className='bg-[#F9F9FA] p-5 border border-stroke rounded-2xl space-y-5'>
-                            <SortableContext items={webCards} strategy={verticalListSortingStrategy}>
+                            <SortableContext items={webCards.map(item => item._id)} strategy={verticalListSortingStrategy}>
                                 {
                                     webCards?.map(item => {
-                                        return <WebCard key={item?.id} carddata={item} />
+                                        return <WebCard key={item?._id} carddata={item} />
                                     })
                                 }
                             </SortableContext>
                         </div>
-                    </DndContext>
+                    </DndContext> :<div className='min-h-40 min-w-40 flex flex-col justify-center items-center'>
+                        <Image src={"/empty-data.png"} className='h-24 w-24 mx-auto' height={1000} width={1000} alt='empty image'/>
+                        <p>Empty data</p>
+                    </div>) : <></>
             }
 
         </div>

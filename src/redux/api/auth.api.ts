@@ -52,7 +52,7 @@ const AuthApi = baseApi.injectEndpoints({
         data: {
           accessToken: string;
           refreshToken: string;
-          role : "shelter" | "admin"
+          user : IUser
         };
       },
       { email: string; password: string }
@@ -105,21 +105,22 @@ const AuthApi = baseApi.injectEndpoints({
     changePassword: builder.mutation<
       { message: string },
       {
-        oldPassword: string;
-        newPassword: string;
+        current_password: string;
+        new_password: string;
+        confirm_password: string;
       }
     >({
       query: (data) => ({
-        url: "/auth/change-password",
+        url: "/user/change-password",
         method: "PATCH",
         body: data,
       }),
     }),
 
-    updateProfile: builder.mutation<{ message: string }, { data: any }>({
-      query: ({ data }) => ({
-        url: "/user/profile",
-        method: "PATCH",
+    updateProfile: builder.mutation<{ message: string }, { data: any, id : string }>({
+      query: ({ data, id }) => ({
+        url: `/user/${id}`,
+        method: "PUT",
         body: data,
       }),
       invalidatesTags: ["user"],

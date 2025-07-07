@@ -1,21 +1,35 @@
 "use client"
+import { useUpdateBannerMutation } from '@/redux/api/service.api';
 import { Button, Form, FormProps, Input, Upload } from 'antd';
 import { CloudDownload } from 'lucide-react';
 import React from 'react';
+import { ImSpinner3 } from 'react-icons/im';
 import { toast } from 'sonner';
+import type { UploadFile } from 'antd';
 
 type FieldType = {
     title: string,
     description: number,
     web_link: string,
-    image : File
+    image: UploadFile[]
 }
 
 const AddBanner = () => {
 
-    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Success:', values);
-        toast.success("Banner Submited successfully.")
+    const [updateBanner, { isLoading }] = useUpdateBannerMutation();
+    const [form] = Form.useForm();
+
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        try {
+            const formData = new FormData();
+            formData.append('data', JSON.stringify({ title: values?.title, description: values?.description, websiteLink: values?.web_link }))
+            formData.append("image", values?.image?.[0]?.originFileObj as File)
+            await updateBanner(formData).unwrap()
+            toast.success("Banner Submited successfully.")
+            form.resetFields();
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Something went wrong, try again")
+        }
     };
 
     return (
@@ -27,6 +41,7 @@ const AddBanner = () => {
                 onFinish={onFinish}
                 autoComplete="off"
                 layout="vertical"
+                form={form}
             >
 
                 <Form.Item
@@ -70,7 +85,9 @@ const AddBanner = () => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" size='large' htmlType="submit" block>Save</Button>
+                    <Button htmlType="submit" type="primary" size="large" block disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
+                        Save
+                    </Button>
                 </Form.Item>
 
             </Form>

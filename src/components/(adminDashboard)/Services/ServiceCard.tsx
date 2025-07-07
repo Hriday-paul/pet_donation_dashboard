@@ -24,7 +24,7 @@ const ServiceCard = ({ service }: { service: TService }) => {
 
     return (
         <div className='bg-white px-10 py-8 border border-stroke rounded-xl shadow-sm'>
-            <Link href={"/admin/services/1"}>
+            <Link href={`/admin/services/${service?._id}`}>
                 <div className='h-28 w-28 p-8 rounded-full border border-main-color mx-auto flex justify-center items-center'>
                     <Image src={service?.icon} placeholder='blur' blurDataURL={placeHolderBlurImg} height={1000} width={1000} alt='service icon' className='h-full w-full object-cover mx-auto' />
                 </div>

@@ -15,6 +15,16 @@ const ServicesApi = baseApi.injectEndpoints({
       }),
       providesTags: ["services"],
     }),
+
+    serviceDetails: builder.query<
+      { message: string; data: TService },
+      {id : string}
+    >({
+      query: ({id}) => ({
+        url: `/admin/service-detail/${id}`,
+      }),
+      providesTags: ["services"],
+    }),
     addService: builder.mutation<
       { message: string },
       any
@@ -39,33 +49,49 @@ const ServicesApi = baseApi.injectEndpoints({
 
 
 
+
     allSubServices: builder.query<
       { message: string; data: TSubService[] },
-      {id : string}
+      { id: string }
     //   { page: number; limit: number, searchTerm: string }
     >({
-      query: ({id}) => ({
-        url: `/sub-services/${id}`,
+      query: ({ id }) => ({
+        url: `/admin/service-base-webs/${id}`,
       }),
-      providesTags: (result, error, {id})=>[{type : "sub_survice", id}],
+      providesTags: (result, error, { id }) => [{ type: "sub_survice", id }],
     }),
 
     addSubService: builder.mutation<
       { message: string },
-      {formData : any, service : string}
+      { formData: any, service: string }
     >({
-      query: ({formData}) => ({
+      query: ({ formData }) => ({
         url: `/admin/add-website`,
         method: "POST",
         body: formData,
       }),
-      invalidatesTags: (result, error, {service})=>[{type : "sub_survice", id : service}],
+      invalidatesTags: (result, error, { service }) => [{ type: "sub_survice", id: service }],
+    }),
+
+
+
+
+    updateBanner: builder.mutation<
+      { message: string },
+      any
+    >({
+      query: (formData) => ({
+        url: `/admin/update-banner/banner`,
+        method: "PATCH",
+        body: formData,
+      }),
     }),
 
 
   }),
 });
 
-export const { useAllServicesQuery, useAddServiceMutation, useDeleteServiceMutation,
-    useAllSubServicesQuery, useAddSubServiceMutation
- } = ServicesApi;
+export const { useAllServicesQuery, useAddServiceMutation, useDeleteServiceMutation, useServiceDetailsQuery,
+  useAllSubServicesQuery, useAddSubServiceMutation,
+  useUpdateBannerMutation
+} = ServicesApi;

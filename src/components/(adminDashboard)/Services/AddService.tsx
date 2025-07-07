@@ -1,7 +1,7 @@
 import { useAddServiceMutation } from "@/redux/api/service.api";
 import { Button, DatePicker, Divider, Form, FormProps, Input, InputNumber, Modal, Upload } from "antd";
 import { CloudDownload } from "lucide-react";
-import Image from "next/image";
+import type { UploadFile } from 'antd';
 import { ImSpinner3 } from "react-icons/im";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { toast } from "sonner";
@@ -14,7 +14,7 @@ type TPropsType = {
 
 type FieldType = {
     name: string,
-    icon: File
+    icon: UploadFile[]
 }
 
 const AddService = ({ open, setOpen, isEdit }: TPropsType) => {
@@ -23,11 +23,10 @@ const AddService = ({ open, setOpen, isEdit }: TPropsType) => {
     const [form] = Form.useForm();
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        console.log('Success:', values);
         try {
             const formdata = new FormData();
             formdata.append("data", JSON.stringify({ name: values?.name }))
-            formdata.append("icon", values?.icon)
+            formdata.append("icon", values?.icon?.[0]?.originFileObj as File)
             const res = await handleApi(formdata).unwrap();
             toast.success("New service added successfully");
             form.resetFields();

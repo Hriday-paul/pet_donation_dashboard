@@ -50,11 +50,11 @@ const LoginForm = () => {
         secure: config.hasSSL,
       });
 
-      dispatch(addUserDetails({ name: 'Hriday Paul', role: res?.data?.role }));
+      dispatch(addUserDetails({ name: res?.data?.user?.first_name, role: res?.data?.user?.role, profilePicture : res?.data?.user?.profile_image || "/empty-user.png" }));
 
       toast.success('Signin successfully');
 
-      route.push(res?.data?.role == 'admin' ? "/admin/dashboard" : "/shelter/dashboard");
+      route.push(res?.data?.user?.role == 'admin' ? "/admin/dashboard" : "/shelter/dashboard");
 
     } catch (err: any) {
       toast.error(err?.data?.message || 'Something went wrong, try again');

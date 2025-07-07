@@ -66,7 +66,7 @@ const LatestUser = () => {
   return (
     <div className="bg-section-bg rounded-md">
       <DataTable columns={columns} data={data}></DataTable>
-      <UserDetails open={open} setOpen={setOpen}></UserDetails>
+      {/* <UserDetails open={open} setOpen={setOpen}></UserDetails> */}
     </div>
   );
 };

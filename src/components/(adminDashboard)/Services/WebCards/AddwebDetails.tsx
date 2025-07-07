@@ -1,7 +1,7 @@
 import { useAddSubServiceMutation } from "@/redux/api/service.api";
-import { Button, DatePicker, Divider, Form, FormProps, Input, InputNumber, Modal, Select, Upload } from "antd";
+import { Button, Form, FormProps, Input, Modal, Select, Upload } from "antd";
 import { CloudDownload } from "lucide-react";
-import Image from "next/image";
+import type { UploadFile } from 'antd';
 import { ImSpinner3 } from "react-icons/im";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { toast } from "sonner";
@@ -9,19 +9,20 @@ import { toast } from "sonner";
 type TPropsType = {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    isEdit?: boolean
+    isEdit?: boolean,
+    serviceId : string
 };
 
 type FieldType = {
     name: string,
     pet_type: string,
     description: string,
-    image: File,
+    image: UploadFile[],
     location: string,
     web_link: string
 }
 
-const AddwebDetails = ({ open, setOpen, isEdit }: TPropsType) => {
+const AddwebDetails = ({ open, setOpen, isEdit, serviceId }: TPropsType) => {
 
     const [handleSubServicePostApi, { isLoading }] = useAddSubServiceMutation();
     const [form] = Form.useForm();
@@ -35,17 +36,15 @@ const AddwebDetails = ({ open, setOpen, isEdit }: TPropsType) => {
                 "pet_type": values?.pet_type,
                 "description": values?.description,
                 "location": values?.location,
-                // "pet_category": values?.,
-                "service": "686a4b1737a2ba2ccc0b4528"
+                "service": serviceId
             }))
-            formdata.append("web_img", values?.image);
-            await handleSubServicePostApi({ formData: formdata, service: "686a4b1737a2ba2ccc0b4528" }).unwrap();
+            formdata.append("web_img", values?.image?.[0]?.originFileObj as File);
+            await handleSubServicePostApi({ formData: formdata, service: serviceId }).unwrap();
             toast.success("Website details submitted successfully")
             form.resetFields();
         } catch (err: any) {
             toast.error(err?.data?.message || "Something went wrong, try again")
         }
-
     };
 
     return (
@@ -91,9 +90,9 @@ const AddwebDetails = ({ open, setOpen, isEdit }: TPropsType) => {
                             size="large"
                             placeholder="Select a Pet Type"
                             options={[
-                                { value: 'Cat', label: 'Cat' },
+                                { value: 'cat', label: 'Cat' },
                                 { value: 'dog', label: 'Dog' },
-                                { value: 'Both', label: 'Both' },
+                                { value: 'both', label: 'Both' },
                             ]}
                             className="!w-full"
                         />
@@ -112,7 +111,7 @@ const AddwebDetails = ({ open, setOpen, isEdit }: TPropsType) => {
                     </Form.Item>
 
                     <Form.Item
-                        name="icon"
+                        name="image"
                         label="Website Image"
                         valuePropName="fileList"
                         getValueFromEvent={(e) => {

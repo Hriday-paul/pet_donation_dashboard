@@ -7,9 +7,11 @@ import { FiEdit } from "react-icons/fi";
 import profile from "@/assets/image/adminProfile.png";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Camera, Trash2, X } from "lucide-react";
+import { Camera, LoaderCircle, Trash2, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useGetUserProfileQuery, useUpdateProfileMutation } from "@/redux/api/auth.api";
+import { ImSpinner3 } from "react-icons/im";
 
 type FieldType = {
   name: string,
@@ -20,16 +22,31 @@ type FieldType = {
 }
 
 const PersonalInformationContainer = () => {
+  const { data, isSuccess, isLoading } = useGetUserProfileQuery();
+  const [updateProfile, { isLoading: updateLoading }] = useUpdateProfileMutation();
   const route = useRouter();
   const { user } = useSelector((root: RootState) => root?.userSlice)
   const [edit, setEdit] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
-  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    toast.success("Successfully Change personal information", {
-      duration: 1000,
-    });
-    setEdit(false);
+  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+    try {
+      const form = new FormData();
+      form.append('data', JSON.stringify({ first_name : values?.name, last_name : " ", email : values?.email, contact_number : values?.contact }))
+
+      if (file) {
+        form.append("profile_image", file)
+      }
+
+      await updateProfile({ data: form, id: data?.data?._id || "" }).unwrap();
+
+      toast.success("Profile update successfully.")
+      setFile(null);
+      setEdit(false)
+
+    } catch (error) {
+      toast.error("Profile update failed, try again")
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,136 +86,144 @@ const PersonalInformationContainer = () => {
       </div>
       <hr className="my-4" />
 
+
       {/* personal information */}
-      <div className="mt-10 flex justify-center flex-col xl:flex-row items-start  gap-10">
 
-        <div className="bg-white h-[365px] md:w-[350px] rounded-xl shadow-sm flex justify-center items-center text-text-color">
-          <div className="space-y-2 relative">
-            <div className="relative group">
-              <Image
-                src={file ? URL.createObjectURL(file) : "https://soleswap-dashboard.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FadminProfile.c5ca04cd.png&w=1200&q=75"}
-                alt="adminProfile"
-
-                width={1200}
-                height={1200}
-                className="size-36 rounded-full flex justify-center items-center object-cover"
-              ></Image>
-
-              {/* cancel button */}
-              {file && (
-                <div
-                  className="absolute left-4 top-2 cursor-pointer rounded-md bg-primary-pink opacity-0 duration-1000 group-hover:opacity-100"
-                  onClick={() => {
-                    setFile(null)
-                  }}
-                >
-                  <Trash2 size={20} color="red" />
-                </div>
-              )}
-
-              {/* upload image */}
-              <input
-                type="file"
-                id="fileInput"
-                className="hidden"
-                onChange={handleFileChange}
-                accept="image/*"
-              />
-              {/* upload button */}
-              <label
-                htmlFor="fileInput"
-                className="flex cursor-pointer flex-col items-center"
-              >
-                <div className="bg-white text-black text-lg p-1 rounded-full  absolute bottom-0 right-3">
-                  <Camera size={20} />
-                </div>
-              </label>
-            </div>
-            <h3 className="text-xl text-center">{user?.role}</h3>
-          </div>
-        </div>
-
-        {/* form */}
-        <div className="w-2/4">
-          <Form
-
-            onFinish={onFinish}
-            layout="vertical"
-            style={{
-              marginTop: "25px",
-            }}
-            initialValues={{
-              name: "James Tracy",
-              email: "enrique@gmail.com",
-              contact: "3000597212",
-              location: "Dhaka, Bangladesh",
-              website_link: "https://google.com"
-            }}
-          >
-            {/*  input  name */}
-            <Form.Item<FieldType> label="Name" name="name" rules={[{ required: true, message: "Name is required" }]}>
-              <Input
-                size="large"
-                placeholder="Enter full name "
-                readOnly={!edit}
-              ></Input>
-            </Form.Item>
-
-            {/*  input  email */}
-            <Form.Item<FieldType> label="Email" name="email" rules={[{ required: true, message: "Email name is required" }]}>
-              <Input
-                size="large"
-                placeholder="Enter email"
-                readOnly={!edit}
-              ></Input>
-            </Form.Item>
-
-            {/* input  phone number  */}
-            <Form.Item<FieldType> label="Phone Number" name="contact" rules={[{ required: true, message: "Contact is required" }]}>
-              <Input
-                size="large"
-                placeholder="Enter Phone number"
-                readOnly={!edit}
-              ></Input>
-            </Form.Item>
-
-
-            {/* --------------------shelter extra fields--------------- */}
-            {
-              user?.role == "shelter" && <>
-                <Form.Item<FieldType> label="Location" name="location" rules={[{ required: user?.role == "shelter", message: "Location is required" }]}>
-                  <Input
-                    size="large"
-                    placeholder="Enter Location"
-                    readOnly={!edit}
-                  ></Input>
-                </Form.Item>
-
-                <Form.Item<FieldType> label="Website Link" name="website_link" rules={[{ required: user?.role == "shelter", message: "Website link is required" }]}>
-                  <Input
-                    size="large"
-                    placeholder="Enter website link"
-                    readOnly={!edit}
-                  ></Input>
-                </Form.Item>
-              </>
-            }
-
-
-            <div className={edit ? "" : "hidden"}>
-              <Button
-                htmlType="submit"
-                size="large"
-                type="primary"
-                block
-                style={{ border: "none" }}
-              >
-                Save Change
-              </Button>
-            </div>
-          </Form>
-        </div>
+      {isLoading ? <div className='min-h-40 flex items-center justify-center'>
+        <LoaderCircle size={50} className="text-4xl text-main-color animate-spin" />
       </div>
+
+        : isSuccess ?
+
+          <div className="mt-10 flex justify-center flex-col xl:flex-row items-start  gap-10">
+
+            <div className="bg-white h-[365px] md:w-[350px] rounded-xl shadow-sm flex justify-center items-center text-text-color">
+              <div className="space-y-2 relative">
+                <div className="relative group">
+                  <Image
+                    src={file ? URL.createObjectURL(file) : data?.data?.profile_image || "/empty-user.png"}
+                    alt="adminProfile"
+                    width={1200}
+                    height={1200}
+                    className="size-36 rounded-full flex justify-center items-center object-cover"
+                  ></Image>
+
+                  {/* cancel button */}
+                  {file && (
+                    <div
+                      className="absolute left-4 top-2 cursor-pointer rounded-md bg-primary-pink opacity-0 duration-1000 group-hover:opacity-100"
+                      onClick={() => {
+                        setFile(null)
+                      }}
+                    >
+                      <Trash2 size={20} color="red" />
+                    </div>
+                  )}
+
+                  {/* upload image */}
+                  <input
+                    type="file"
+                    id="fileInput"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                  />
+                  {/* upload button */}
+                  <label
+                    htmlFor="fileInput"
+                    className="flex cursor-pointer flex-col items-center"
+                  >
+                    <div className="bg-white text-black text-lg p-1 rounded-full  absolute bottom-0 right-3">
+                      <Camera size={20} />
+                    </div>
+                  </label>
+                </div>
+                <h3 className="text-xl text-center">{user?.role}</h3>
+              </div>
+            </div>
+
+            {/* form */}
+            <div className="w-2/4">
+              <Form
+                onFinish={onFinish}
+                layout="vertical"
+                style={{
+                  marginTop: "25px",
+                }}
+                initialValues={{
+                  name: data?.data?.first_name,
+                  email: data?.data?.email,
+                  contact: data?.data?.contact_number,
+                  location: data?.data?.location,
+                  website_link: "https://google.com"
+                }}
+              >
+                {/*  input  name */}
+                <Form.Item<FieldType> label="Name" name="name" rules={[{ required: true, message: "Name is required" }]}>
+                  <Input
+                    size="large"
+                    placeholder="Enter full name "
+                    readOnly={!edit}
+                  ></Input>
+                </Form.Item>
+
+                {/*  input  email */}
+                <Form.Item<FieldType> label="Email" name="email" rules={[{ required: true, message: "Email name is required" }]}>
+                  <Input
+                    size="large"
+                    placeholder="Enter email"
+                    readOnly
+                    disabled
+                  ></Input>
+                </Form.Item>
+
+                {/* input  phone number  */}
+                <Form.Item<FieldType> label="Phone Number" name="contact" rules={[{ required: true, message: "Contact is required" }]}>
+                  <Input
+                    size="large"
+                    placeholder="Enter Phone number"
+                    readOnly={!edit}
+                  ></Input>
+                </Form.Item>
+
+
+                {/* --------------------shelter extra fields--------------- */}
+                {
+                  user?.role == "shelter" && <>
+                    <Form.Item<FieldType> label="Location" name="location" rules={[{ required: user?.role == "shelter", message: "Location is required" }]}>
+                      <Input
+                        size="large"
+                        placeholder="Enter Location"
+                        readOnly={!edit}
+                      ></Input>
+                    </Form.Item>
+
+                    <Form.Item<FieldType> label="Website Link" name="website_link" rules={[{ required: user?.role == "shelter", message: "Website link is required" }]}>
+                      <Input
+                        size="large"
+                        placeholder="Enter website link"
+                        readOnly={!edit}
+                      ></Input>
+                    </Form.Item>
+                  </>
+                }
+
+
+                <div className={edit ? "" : "hidden"}>
+                  <Button
+                    htmlType="submit"
+                    size="large"
+                    type="primary"
+                    block
+                    disabled={updateLoading} icon={updateLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
+                    Save Change
+                  </Button>
+                </div>
+              </Form>
+            </div>
+          </div> : <></>}
+
+
     </div>
   );
 };

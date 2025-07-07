@@ -1,22 +1,44 @@
-import { Button, ConfigProvider, Form, Input, Modal } from "antd";
+import { Button, ConfigProvider, Form, FormProps, Input, Modal } from "antd";
 import { RiCloseLargeLine } from "react-icons/ri";
 import ForgetPasswordModal from "./ForgetPasswordModal";
 import { useState } from "react";
+import { toast } from "sonner";
+import { useChangePasswordMutation } from "@/redux/api/auth.api";
+import { ImSpinner3 } from "react-icons/im";
 
 type TPropsType = {
   open: boolean;
   setOpen: (collapsed: boolean) => void;
 };
 
+type FieldType = {
+  current_password: string,
+  confirm_password: string,
+  new_password: string,
+}
+
 const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
+
+  const [postChangePass, { isLoading }] = useChangePasswordMutation();
+
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
 
-  // @ts-expect-error: Ignoring TypeScript error due to inferred 'any' type for 'values' which is handled in the form submit logic
-  const handleSubmit = (values) => {
-    console.log("Success:", values);
-    setOpen(false);
+
+  const handleSubmit: FormProps<FieldType>['onFinish'] = async (data) => {
+    if (data?.new_password !== data?.confirm_password) {
+      toast.error("Password not match");
+      return;
+    }
+    try {
+      await postChangePass(data).unwrap();
+      toast.success("Password Update Successfully")
+      form.resetFields();
+    } catch (error) {
+      toast.error("Password update failed, try again")
+    }
   };
+
   return (
     <>
       <Modal
@@ -76,9 +98,9 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
               }}
             >
               {/*  input old password */}
-              <Form.Item
+              <Form.Item<FieldType>
                 label="Old Password"
-                name="oldPassword"
+                name="current_password"
                 rules={[
                   { required: true, message: "Please Enter Old Password" },
                 ]}
@@ -90,9 +112,9 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
               </Form.Item>
 
               {/*  input  new Password*/}
-              <Form.Item
+              <Form.Item<FieldType>
                 label="New password"
-                name="newPassword"
+                name="new_password"
                 rules={[
                   { required: true, message: "Please Enter New  Password" },
                 ]}
@@ -101,9 +123,9 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
               </Form.Item>
 
               {/* input  confirm number  */}
-              <Form.Item
+              <Form.Item<FieldType>
                 label="Re-enter new password"
-                name="confirmPassword"
+                name="confirm_password"
                 rules={[
                   { required: true, message: "Please Re-enter new password" },
                 ]}
@@ -129,8 +151,7 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
                 size="large"
                 type="primary"
                 block
-                className="!border-none !py-6"
-              >
+                disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
                 Update Password
               </Button>
             </Form>

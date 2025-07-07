@@ -92,7 +92,7 @@ const baseQueryWithReauth: typeof baseQuery = async (
 
 const baseApi = createApi({
     reducerPath: 'api',
-    tagTypes: ['user', "users", 'services', "sub_survice"],
+    tagTypes: ['user', "users", "shelters", 'services', "sub_survice", "privacy", "terms", "about"],
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
         admin_support: builder.mutation<{ message: string }, {
