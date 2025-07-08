@@ -53,7 +53,7 @@ const WebCards = ({serviceId}:{serviceId : string}) => {
                             <SortableContext items={webCards.map(item => item._id)} strategy={verticalListSortingStrategy}>
                                 {
                                     webCards?.map(item => {
-                                        return <WebCard key={item?._id} carddata={item} />
+                                        return <WebCard key={item?._id} carddata={item} serviceId={serviceId} />
                                     })
                                 }
                             </SortableContext>

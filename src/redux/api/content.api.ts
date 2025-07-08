@@ -3,7 +3,7 @@ import baseApi from "./baseApi";
 const contentApi = baseApi.injectEndpoints({
 
   endpoints: (builder) => ({
-    getPrivacyContents: builder.query<{data : {title : string, description : string}}, void>({
+    getPrivacyContents: builder.query<{ data: { title: string, description: string } }, void>({
       query: () => ({
         url: `/admin/get-privacy-policy`,
         method: "GET"
@@ -11,20 +11,19 @@ const contentApi = baseApi.injectEndpoints({
       providesTags: ['privacy'],
     }),
 
-    updatePrivacyContent: builder.mutation({
+    updatePrivacyContent: builder.mutation<{ message: string }, string>({
       query: (data) => ({
-        url: `/settings/update`,
+        url: `/admin/update-privacy-policy`,
         method: "PATCH",
         body: {
-          "label": "privacy",// about, privacy, 
-          "content": data
+          "description": data
         },
       }),
       invalidatesTags: ["privacy"],
     }),
 
 
-    getAboutContents: builder.query<{data : {title : string, description : string}}, void>({
+    getAboutContents: builder.query<{ data: { title: string, description: string } }, void>({
       query: () => ({
         url: `/admin/get-about`,
         method: "GET"
@@ -32,19 +31,18 @@ const contentApi = baseApi.injectEndpoints({
       providesTags: ["about"],
     }),
 
-    updateAboutContent: builder.mutation({
+    updateAboutContent: builder.mutation<{ message: string }, string>({
       query: (data) => ({
-        url: `/settings/update`,
+        url: `/admin/update-about`,
         method: "PATCH",
         body: {
-          "label": "about",// about, privacy, 
-          "content": data
+          "description": data
         },
       }),
       invalidatesTags: ["about"],
     }),
 
-    getTermsContents: builder.query<{data : {title : string, description : string}}, void>({
+    getTermsContents: builder.query<{ data: { title: string, description: string } }, void>({
       query: () => ({
         url: `/admin/get-terms-of-condition`,
         method: "GET"
@@ -52,13 +50,12 @@ const contentApi = baseApi.injectEndpoints({
       providesTags: ["terms"],
     }),
 
-    updateTermsContent: builder.mutation({
+    updateTermsContent: builder.mutation<{ message: string }, string>({
       query: (data) => ({
-        url: `/settings/update`,
+        url: `/admin/update-terms-of-condition`,
         method: "PATCH",
         body: {
-          "label": "terms",// about, privacy, 
-          "content": data
+          "description": data
         },
       }),
       invalidatesTags: ['terms'],

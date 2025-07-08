@@ -18,9 +18,9 @@ const ServicesApi = baseApi.injectEndpoints({
 
     serviceDetails: builder.query<
       { message: string; data: TService },
-      {id : string}
+      { id: string }
     >({
-      query: ({id}) => ({
+      query: ({ id }) => ({
         url: `/admin/service-detail/${id}`,
       }),
       providesTags: ["services"],
@@ -33,6 +33,17 @@ const ServicesApi = baseApi.injectEndpoints({
         url: `/admin/create-service`,
         method: "POST",
         body: formData,
+      }),
+      invalidatesTags: ["services"],
+    }),
+    updateService: builder.mutation<
+      { message: string },
+      { body: any, id: string }
+    >({
+      query: ({ body, id }) => ({
+        url: `/admin/update-service/${id}`,
+        method: "PATCH",
+        body: body,
       }),
       invalidatesTags: ["services"],
     }),
@@ -73,6 +84,17 @@ const ServicesApi = baseApi.injectEndpoints({
       invalidatesTags: (result, error, { service }) => [{ type: "sub_survice", id: service }],
     }),
 
+    deleteSubservice: builder.mutation<
+      { message: string },
+      { webId: string, serviceId: string }
+    >({
+      query: ({ webId }) => ({
+        url: `/admin/delete-website/${webId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, { serviceId }) => [{ type: "sub_survice", id: serviceId }],
+    }),
+
 
 
 
@@ -91,7 +113,7 @@ const ServicesApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useAllServicesQuery, useAddServiceMutation, useDeleteServiceMutation, useServiceDetailsQuery,
-  useAllSubServicesQuery, useAddSubServiceMutation,
+export const { useAllServicesQuery, useAddServiceMutation, useDeleteServiceMutation, useServiceDetailsQuery, useUpdateServiceMutation,
+  useAllSubServicesQuery, useAddSubServiceMutation, useDeleteSubserviceMutation,
   useUpdateBannerMutation
 } = ServicesApi;

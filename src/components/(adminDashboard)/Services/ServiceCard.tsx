@@ -47,7 +47,7 @@ const ServiceCard = ({ service }: { service: TService }) => {
 
             </section>
 
-            <AddService open={open} setOpen={setOpen} isEdit={true} />
+            <AddService open={open} setOpen={setOpen} isEdit={true} defaultdata={service} />
 
         </div>
     );

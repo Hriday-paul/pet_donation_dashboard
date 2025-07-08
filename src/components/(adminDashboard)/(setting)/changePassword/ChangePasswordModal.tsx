@@ -22,7 +22,6 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
   const [postChangePass, { isLoading }] = useChangePasswordMutation();
 
   const [form] = Form.useForm();
-  const [openModal, setOpenModal] = useState(false);
 
 
   const handleSubmit: FormProps<FieldType>['onFinish'] = async (data) => {
@@ -158,11 +157,7 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
           </ConfigProvider>
         </div>
       </Modal>
-      {/* forget password Modal */}
-      <ForgetPasswordModal
-        open={openModal}
-        setOpen={setOpenModal}
-      ></ForgetPasswordModal>
+      
     </>
   );
 };

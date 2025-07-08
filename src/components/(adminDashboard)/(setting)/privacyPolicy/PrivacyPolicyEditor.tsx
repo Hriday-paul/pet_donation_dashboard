@@ -77,6 +77,7 @@ const PrivacyPolicyEditor = () => {
             }}
           />
           <Button
+          onClick={onSubmit}
             size="large"
             block
             style={{
