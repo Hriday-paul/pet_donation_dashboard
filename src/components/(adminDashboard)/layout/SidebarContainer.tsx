@@ -5,21 +5,23 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/logo.png";
 import { navLinks as adminNavlinks, ShelterNavLinks } from "@/utils/navLinks";
-import { usePathname } from "next/navigation";
-import { useSelector } from "react-redux";
+import { usePathname, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { removeUser } from "@/redux/slices/userSlice";
 
 const SidebarContainer = ({ collapsed }: { collapsed: boolean }) => {
 
   const { user } = useSelector((state: RootState) => state.userSlice);
 
-  const onClick: MenuProps["onClick"] = (e) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
 
+  const onClick: MenuProps["onClick"] = (e) => {
     if (e.key === "logout") {
-      localStorage.removeItem("activeNav");
-      return;
+      dispatch(removeUser())
+      router.push("/login")
     }
-    localStorage.setItem("activeNav", e.key);
   };
 
   const currentPathname = usePathname()?.replace(user?.role == "admin" ? "/admin/" : "/shelter/", "")?.split(" ")[0];

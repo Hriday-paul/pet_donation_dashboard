@@ -1,10 +1,13 @@
 "use client";
-import { Image, TableProps } from "antd";
+import { Image, Table, TableColumnsType, TableProps } from "antd";
 
 import { useState } from "react";
 import DataTable from "@/utils/DataTable";
 import UserDetails from "../user/UserDetails";
 import { Eye } from "lucide-react";
+import { useAllusersQuery } from "@/redux/api/users.api";
+import { IUser } from "@/redux/types";
+import moment from "moment";
 
 type TDataType = {
   key?: number;
@@ -24,26 +27,27 @@ const data: TDataType[] = Array.from({ length: 5 }).map((data, inx) => ({
 }));
 
 const LatestUser = () => {
-  const [open, setOpen] = useState(false);
+  const { isLoading, isFetching, data } = useAllusersQuery({ limit: 10 })
 
-  const columns: TableProps<TDataType>["columns"] = [
+  const columns: TableColumnsType<IUser> = [
     {
-      title: "Serial",
+      title: "#SL",
       dataIndex: "serial",
-      render: (_, __, indx) => `#${indx + 1}`
+      render: (_, __, indx) => indx + 1
     },
     {
-      title: "Full Name",
-      dataIndex: "name",
-      render: (text) => (
+      title: "User Name",
+      dataIndex: "first_name",
+      render: (text, record) => (
         <div className="flex items-center gap-x-1">
           <Image
-            src={"/user-profile.png"}
+            src={record?.profile_image || "/empty-user.png"}
             alt="profile-picture"
             width={40}
             height={40}
+            className="size-10 rounded-full"
           ></Image>
-          <p>{text}</p>
+          <p>{text + " " + record?.last_name}</p>
         </div>
       ),
     },
@@ -53,20 +57,36 @@ const LatestUser = () => {
     },
 
     {
-      title: "Join Date",
-      dataIndex: "date",
+      title: "Phone number",
+      dataIndex: "contact_number",
+      render(value) {
+        return value ?? "N/A"
+      },
     },
     {
-      title: "Action",
-      dataIndex: "action",
-      render: () => <button onClick={()=>setOpen(true)}><Eye /></button>
+      title: "Gender",
+      dataIndex: "gender",
     },
+    {
+      title: "Join Date",
+      dataIndex: "createdAt",
+      render: (value) => moment(value).format("MMMM Do YYYY, h:mm a"),
+    }
   ];
 
   return (
-    <div className="bg-section-bg rounded-md">
-      <DataTable columns={columns} data={data}></DataTable>
-      {/* <UserDetails open={open} setOpen={setOpen}></UserDetails> */}
+    <div>
+      <h2 className="text-text-color text-xl pb-4">Recent Joined User</h2>
+      <div className="bg-section-bg rounded-md">
+        <Table<IUser>
+          columns={columns}
+          dataSource={data?.data?.data}
+          loading={isLoading || isFetching}
+          pagination={false}
+          rowKey={(record) => record?._id}
+          scroll={{ x: "max-content" }}
+        ></Table>
+      </div>
     </div>
   );
 };

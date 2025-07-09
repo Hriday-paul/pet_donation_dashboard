@@ -17,15 +17,15 @@ const AddPet = () => {
 export default AddPet;
 
 import { RiCloseLargeLine } from "react-icons/ri";
-import Image from 'next/image';
-import { useCallback } from 'react';
-import { MdDeleteOutline } from 'react-icons/md';
-import { GoPlus } from 'react-icons/go';
+import { useAddPetMutation } from '@/redux/api/pet.api';
+import { CloudDownload } from 'lucide-react';
+import type { UploadFile } from 'antd';
+import { toast } from 'sonner';
+import { ImSpinner3 } from 'react-icons/im';
 
 type TPropsType = {
     open: boolean;
     setOpen: (collapsed: boolean) => void;
-    isEdit?: boolean
 };
 
 type FieldType = {
@@ -38,31 +38,35 @@ type FieldType = {
     chipped: string,
     vaccinated: string,
     weight: number,
-    age: number
+    age: number,
+    pet_image: UploadFile[],
+    pet_category: string
 }
 
-export const AddPetForm = ({ open, setOpen, isEdit }: TPropsType) => {
+export const AddPetForm = ({ open, setOpen }: TPropsType) => {
 
-    const [images, setImages] = useState<File[]>([]);
+    const [handleAddPetApi, { isLoading }] = useAddPetMutation();
+    const [form] = Form.useForm();
 
-    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Success:', values);
-    };
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        try {
 
-    const fileonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const fileList = e.target.files as File[] | null;
-        if (!fileList) {
-            return;
+            const formdata = new FormData();
+
+            formdata.append("data", JSON.stringify({ full_name: values?.name, location: values?.location, description: values?.description, neutered: values?.neutered, vaccinated: values?.vaccinated, weight: values?.weight + " kg", chip_number: values?.chipped, breed: values?.breed, gender: values?.gender, age: values?.age + " year", pet_category: values?.pet_category }));
+
+            values?.pet_image.forEach(element => {
+                formdata.append("pet_image", element?.originFileObj as File)
+            });
+
+            await handleAddPetApi(formdata).unwrap();
+            toast.success("New Pet added successfully");
+            form.resetFields();
+
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Something went wrong, try again")
         }
-        setImages(prev => [...prev, ...fileList])
     };
-
-    const removeImg = useCallback((indxParam: number) => {
-        const finalImgs = images?.filter((i, indx) => {
-            return indx !== indxParam
-        })
-        setImages(finalImgs)
-    }, [images])
 
     return (
 
@@ -84,7 +88,7 @@ export const AddPetForm = ({ open, setOpen, isEdit }: TPropsType) => {
                     </div>
                 </div>
 
-                <h4 className="text-center text-xl font-medium">{isEdit ? "Edit Pet Details" : "Add New Pet"}</h4>
+                <h4 className="text-center text-xl font-medium">{"Add New Pet"}</h4>
 
                 <Form
                     name="basic"
@@ -93,31 +97,39 @@ export const AddPetForm = ({ open, setOpen, isEdit }: TPropsType) => {
                     onFinish={onFinish}
                     autoComplete="off"
                     layout="vertical"
-                >
+                    form={form}>
 
-                    <section className='mb-3'>
-                        <p className="mb-1.5 block text-black font-poppins text-base text-left">Upload Image</p>
-                        <div className='flex flex-row gap-2 items-center flex-wrap'>
-                            {
-                                images?.map((img, indx) => {
-                                    return <div key={indx} >
-                                        <div className='relative w-20 h-20 group'>
-                                            <Image src={URL.createObjectURL(img)} fill className='h-full w-full object-cover rounded-md' alt='uploaded car' />
-
-                                            <button type='button' onClick={() => removeImg(indx)} className='hidden group-hover:block transition-all duration-200 absolute top-1 right-1 bg-slate-100 rounded-full p-1'>
-                                                <MdDeleteOutline className='text-base text-red-500' />
-                                            </button>
-                                        </div>
-                                    </div>
-                                })
+                    <Form.Item<FieldType>
+                        name="pet_image"
+                        label="Pet Images"
+                        valuePropName="fileList"
+                        getValueFromEvent={(e) => {
+                            if (Array.isArray(e)) {
+                                return e;
                             }
-                            <label htmlFor='addImage' className='h-20 w-20 rounded-md border-2 border-dotted border-strokeinput hover:border-main-color duration-200 flex flex-col justify-center items-center cursor-pointer'>
-                                <GoPlus className='text-main-color text-base' />
-                                <p className="mb-1.5 block text-main-color font-poppins text-xs text-center">{"Upload"}</p>
-                            </label>
-                            <input onChange={fileonChange} type="file" name="addImage" id="addImage" className='!hidden' accept="image/*" multiple />
-                        </div>
-                    </section>
+                            return e?.fileList;
+                        }}
+                        rules={[{ required: true, message: "Minimum 1 image is required" }]}
+                    >
+                        <Upload
+                            name="files"
+                            // maxCount={1}
+                            beforeUpload={() => false} // prevents automatic upload
+                            accept="image/*"
+                            listType="picture-card"
+                            multiple
+                            onPreview={() => { }}
+                            showUploadList={{
+                                showPreviewIcon: false,
+                                showRemoveIcon: true,
+                            }}
+                        >
+                            <p className="ant-upload-drag-icon mx-auto flex justify-center">
+                                <CloudDownload size={30} />
+                            </p>
+                        </Upload>
+                    </Form.Item>
+
 
                     <Form.Item<FieldType> name="name" label={"Pet Name"} rules={[{ required: true, message: "Pet name is required" }]}>
                         <Input size="large" placeholder="Enter Pet Name" />
@@ -146,8 +158,8 @@ export const AddPetForm = ({ open, setOpen, isEdit }: TPropsType) => {
                                 placeholder="Select Gender"
                                 className='!w-full'
                                 options={[
-                                    { value: 'male', label: 'Male' },
-                                    { value: 'female', label: 'Female' },
+                                    { value: 'Male', label: 'Male' },
+                                    { value: 'Female', label: 'Female' },
                                 ]}
                             />
 
@@ -163,28 +175,16 @@ export const AddPetForm = ({ open, setOpen, isEdit }: TPropsType) => {
                                 placeholder="Select Neutered"
                                 className='!w-full'
                                 options={[
-                                    { value: 'yes', label: 'YES' },
-                                    { value: 'no', label: 'NO' },
+                                    { value: true, label: 'YES' },
+                                    { value: false, label: 'NO' },
                                 ]}
                             />
-
                         </Form.Item>
                     </div>
 
                     <div className='grid grid-cols-2 gap-x-5 items-center'>
-                        <Form.Item<FieldType> name="chipped" label={"Chipped"} rules={[{ required: true, message: "Pet Chipped is required" }]}>
-                            <Select
-                                // defaultValue="lucy"
-                                // style={{ width: 120 }}
-                                // onChange={handleChange}
-                                placeholder="Select Chipped"
-                                size="large"
-                                className='!w-full'
-                                options={[
-                                    { value: 'yes', label: 'YES' },
-                                    { value: 'no', label: 'NO' },
-                                ]}
-                            />
+                        <Form.Item<FieldType> name="chipped" label={"Chipp Number"} rules={[{ required: true, message: "Chipp number is required" }]}>
+                            <Input size="large" placeholder="Enter Chip Number" />
                         </Form.Item>
 
                         <Form.Item<FieldType> name="vaccinated" label={"Vaccinated"} rules={[{ required: true, message: "Pet Vaccinated is required" }]}>
@@ -197,23 +197,41 @@ export const AddPetForm = ({ open, setOpen, isEdit }: TPropsType) => {
                                 size="large"
                                 className='!w-full'
                                 options={[
-                                    { value: 'yes', label: 'YES' },
-                                    { value: 'no', label: 'NO' },
+                                    { value: true, label: 'YES' },
+                                    { value: false, label: 'NO' },
                                 ]}
                             />
                         </Form.Item>
                     </div>
 
+                    <Form.Item<FieldType> name="pet_category" label={"Category"} rules={[{ required: true, message: "Pet category is required" }]}>
+                        <Select
+                            // defaultValue="lucy"
+                            // style={{ width: 120 }}
+                            // onChange={handleChange}
+                            placeholder="Select category"
+                            size="large"
+                            className='!w-full'
+                            options={[
+                                { value: 'cat', label: 'Cat' },
+                                { value: 'dog', label: 'Dog' },
+                                { value: 'both', label: 'Both' },
+                            ]}
+                        />
+                    </Form.Item>
+
                     <Form.Item<FieldType> name="weight" label={"Weight"} rules={[{ required: true, message: "Weight is required" }]}>
-                        <InputNumber min={0} className='!w-full' size="large" placeholder="Enter Pet Weight" />
+                        <InputNumber min={0} className='!w-full' size="large" placeholder="Enter Pet Weight" addonAfter="kg" />
                     </Form.Item>
 
                     <Form.Item<FieldType> name="age" label={"Age"} rules={[{ required: true, message: "Age is required" }]}>
-                        <InputNumber min={0} className='!w-full' size="large" placeholder="Enter Pet Age" />
+                        <InputNumber min={0} className='!w-full' size="large" placeholder="Enter Pet Age" addonAfter="year" />
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" size='large' htmlType="submit" block>Save</Button>
+                        <Button htmlType="submit" type="primary" size="large" block disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
+                            Save
+                        </Button>
                     </Form.Item>
 
                 </Form>

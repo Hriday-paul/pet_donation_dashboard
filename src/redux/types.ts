@@ -3,17 +3,18 @@ export type IUser = {
     "last_name": string,
     "gender": string,
     "email": string,
-    "role":  "shelter" | "admin",
+    "role": "shelter" | "admin",
     "location": string,
     "isDeleted": boolean,
     "isVerified": boolean,
     "isActive": boolean,
-    "contact_number" ?: string
+    "contact_number"?: string
     "_id": string,
-    profile_image ?: string,
+    profile_image?: string,
     "createdAt": "2025-07-06T06:40:09.654Z",
     "updatedAt": "2025-07-06T06:40:09.654Z",
-    "__v": 0
+    "__v": 0,
+    webLink?: string
 }
 
 export type TService = {
@@ -40,4 +41,71 @@ export interface IMeta {
     "limit": number,
     "total": number,
     "totalPage": number
+}
+
+export interface IEarning {
+    "_id": string,
+    "clientName": string,
+    "amount": number,
+    "transactionDate": string,
+    "createdAt": string,
+}
+
+interface IMonth {
+    "January": 0,
+    "February": 0,
+    "March": 0,
+    "April": 0,
+    "May": 0,
+    "June": 0,
+    "July": 16,
+    "August": 0,
+    "September": 0,
+    "October": 0,
+    "November": 0,
+    "December": 0
+}
+
+export interface IAdminStats {
+    "totalUser": number,
+    "totalShelter": number,
+    "totalPet": number,
+    "monthlyJoinedUser": IMonth,
+    "monthlyJoinedShelter": IMonth
+}
+
+
+export interface IPet {
+    "_id": string,
+    "full_name": string,
+    "pet_image": string[],
+    "location": string,
+    "description": string,
+    "neutered": boolean,
+    "vaccinated": boolean,
+    "weight": string,
+    "chip_number": string,
+    "breed": string,
+    "gender": string,
+    "age": string,
+    "owner": string,
+    "pet_category": string,
+    "service": string,
+    "serviceName": string,
+    "createdAt": string,
+    "updatedAt": string,
+}
+
+export interface ISurvey {
+    "_id": string,
+    "shelter_owner": string,
+    "question": string,
+    "priority": string
+}
+
+export interface ISurveyAnswers{
+    _id : string,
+    adopted_pet : IPet,
+    adopter : IUser,
+    answers : {question : string, answer : string, _id : string}[]
 }

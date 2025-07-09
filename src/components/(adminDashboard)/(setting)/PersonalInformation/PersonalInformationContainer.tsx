@@ -18,7 +18,7 @@ type FieldType = {
   email: string,
   contact: string,
   location?: string,
-  website_link?: string,
+  webLink?: string,
 }
 
 const PersonalInformationContainer = () => {
@@ -32,7 +32,7 @@ const PersonalInformationContainer = () => {
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     try {
       const form = new FormData();
-      form.append('data', JSON.stringify({ first_name : values?.name, last_name : " ", email : values?.email, contact_number : values?.contact }))
+      form.append('data', JSON.stringify({ first_name : values?.name, last_name : " ", email : values?.email, contact_number : values?.contact, webLink : values?.webLink }))
 
       if (file) {
         form.append("profile_image", file)
@@ -155,7 +155,7 @@ const PersonalInformationContainer = () => {
                   email: data?.data?.email,
                   contact: data?.data?.contact_number,
                   location: data?.data?.location,
-                  website_link: "https://google.com"
+                  webLink: data?.data?.webLink
                 }}
               >
                 {/*  input  name */}
@@ -198,7 +198,7 @@ const PersonalInformationContainer = () => {
                       ></Input>
                     </Form.Item>
 
-                    <Form.Item<FieldType> label="Website Link" name="website_link" rules={[{ required: user?.role == "shelter", message: "Website link is required" }]}>
+                    <Form.Item<FieldType> label="Website Link" name="webLink" rules={[{ required: user?.role == "shelter", message: "Website link is required" }]}>
                       <Input
                         size="large"
                         placeholder="Enter website link"

@@ -1,5 +1,4 @@
-import { error } from "console";
-import { IUser, TService, TSubService } from "../types";
+import { TService, TSubService } from "../types";
 import baseApi from "./baseApi";
 
 const ServicesApi = baseApi.injectEndpoints({

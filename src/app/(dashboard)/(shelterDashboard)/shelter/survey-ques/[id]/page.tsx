@@ -1,10 +1,11 @@
 import SurveyDetailscontainer from '@/components/(shelterdashboard)/SurveyList/SurveyDetails/SurveyDetailscontainer';
 import React from 'react';
 
-const SurverQuesDetailsPage = () => {
+const SurverQuesDetailsPage = async({params}:{params : Promise<{id : string}>}) => {
+    const {id} = await params;
     return (
         <div>
-            <SurveyDetailscontainer />
+            <SurveyDetailscontainer id={id}/>
         </div>
     );
 };

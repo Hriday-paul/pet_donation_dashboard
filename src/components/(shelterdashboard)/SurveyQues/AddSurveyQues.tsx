@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
 import { RiCloseLargeLine } from "react-icons/ri";
 import { toast } from 'sonner';
+import { ISurvey } from '@/redux/types';
+import { useAddSurveyQuesMutation, useUpdateSurveyQuesMutation } from '@/redux/api/survey.api';
+import { ImSpinner3 } from 'react-icons/im';
 
 const AddSurveyQues = () => {
     const [open, setOpen] = useState(false)
@@ -21,7 +24,8 @@ export default AddSurveyQues;
 type TPropsType = {
     open: boolean;
     setOpen: (collapsed: boolean) => void;
-    isEdit?: boolean
+    isEdit?: boolean,
+    defaultData?: ISurvey
 };
 
 type FieldType = {
@@ -29,11 +33,24 @@ type FieldType = {
     priority: boolean
 }
 
-export const AddQuesForm = ({ open, setOpen, isEdit }: TPropsType) => {
+export const AddQuesForm = ({ open, setOpen, isEdit, defaultData }: TPropsType) => {
 
-    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Success:', values);
-        toast.success("Survey Question added")
+    const [handleAddapi, { isLoading }] = useAddSurveyQuesMutation()
+    const [handleUpdateapi, { isLoading: updateLoading }] = useUpdateSurveyQuesMutation()
+
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+
+        try {
+            if (isEdit && defaultData) {
+                await handleUpdateapi({ formData: { priority: values?.priority, question: values?.question }, id: defaultData?._id }).unwrap();
+                toast.success("Survey Question updated successfully")
+            } else {
+                await handleAddapi({ priority: values?.priority, question: values?.question }).unwrap();
+                toast.success("Survey Question added successfully")
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Something went wrong, try again")
+        }
     };
 
 
@@ -45,7 +62,7 @@ export const AddQuesForm = ({ open, setOpen, isEdit }: TPropsType) => {
             centered={true}
             onCancel={() => setOpen(false)}
             closeIcon={false}>
-            
+
             <div className="">
 
                 <div className="flex justify-end items-center">
@@ -62,7 +79,7 @@ export const AddQuesForm = ({ open, setOpen, isEdit }: TPropsType) => {
                 <Form
                     name="basic"
                     style={{ width: '100%' }}
-                    initialValues={{priority : true}}
+                    initialValues={defaultData ? { priority: defaultData?.priority, question: defaultData?.question } : { priority: "required" }}
                     onFinish={onFinish}
                     autoComplete="off"
                     layout="vertical"
@@ -75,16 +92,16 @@ export const AddQuesForm = ({ open, setOpen, isEdit }: TPropsType) => {
                     <Form.Item<FieldType> name="priority" label={"Priority"} rules={[{ required: true, message: "Priority is required" }]}>
                         <Radio.Group
                             options={[
-                                { value: true, label: 'Required' },
-                                { value: false, label: 'Optional' },
+                                { value: "required", label: 'Required' },
+                                { value: "optional", label: 'Optional' },
                             ]}
                         />
                     </Form.Item>
 
-
-
                     <Form.Item>
-                        <Button type="primary" size='large' htmlType="submit" block>Save</Button>
+                        <Button htmlType="submit" type="primary" size="large" block disabled={isLoading ||updateLoading} icon={(isLoading || updateLoading) ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
+                            Save
+                        </Button>
                     </Form.Item>
 
                 </Form>

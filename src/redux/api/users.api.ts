@@ -5,7 +5,7 @@ const UsersApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         allusers: builder.query<
             { message: string; data: { meta: IMeta, data: IUser[] } },
-            { page: number; limit: number, searchTerm: string }
+            { }
         >({
             query: (query) => ({
                 url: "/admin/get-users",

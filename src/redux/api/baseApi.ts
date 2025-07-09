@@ -2,6 +2,7 @@
 import { config } from '@/utils/config';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Cookies } from "react-cookie";
+import { IAdminStats } from '../types';
 
 const cookies = new Cookies();
 
@@ -92,25 +93,18 @@ const baseQueryWithReauth: typeof baseQuery = async (
 
 const baseApi = createApi({
     reducerPath: 'api',
-    tagTypes: ['user', "users", "shelters", 'services', "sub_survice", "privacy", "terms", "about"],
+    tagTypes: ['user', "users", "shelters", 'services', "sub_survice", "privacy", "terms", "about", "earning", "pet", "survey", "survey_answers"],
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
-        admin_support: builder.mutation<{ message: string }, {
-            "firstName": string,
-            "lastName"?: string,
-            "email": string,
-            "message": string,
-            subject?: string
-        }>({
-            query: (data) => ({
-                url: '/settings/send-email',
-                method: 'POST',
-                body: data,
+        adminStats: builder.query<{ data: IAdminStats }, {}>({
+            query: (query) => ({
+                url: '/dashboards/db-status',
+                params: query
             }),
         }),
 
     })
 });
 
-export const { useAdmin_supportMutation } = baseApi;
+export const { useAdminStatsQuery } = baseApi;
 export default baseApi;

@@ -1,9 +1,12 @@
-import { Popconfirm, Table, TableColumnsType } from 'antd';
+import { Pagination, Popconfirm, Table, TableColumnsType } from 'antd';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import TransactionDetails from './TransactionDetails';
 import { Eye, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useDeleteEarningMutation, useEarningListQuery } from '@/redux/api/earning.api';
+import { IEarning } from '@/redux/types';
+import moment from 'moment';
 
 type TDataType = {
     key?: number;
@@ -25,32 +28,34 @@ const data: TDataType[] = Array.from({ length: 20 }).map((data, inx) => ({
 
 const TransactionTable = () => {
 
+    const [handleDeletApi] = useDeleteEarningMutation()
+    const [page, setPage] = useState(1);
+    const limit = 10
+    const [searchText, setSearchText] = useState("");
+    const query: { page: number, limit: number, searchTerm: string } = { page, limit, searchTerm: searchText };
+
+    const { isLoading, isFetching, data } = useEarningListQuery(query)
+
     const [open, setOpen] = useState(false);
 
-    const handleDeleteTransation = () => {
-        toast.success("Transaction deleted successfully.")
+    const handleDeleteTransation = async (id: string) => {
+        try {
+            await handleDeletApi(id).unwrap();
+            toast.success("Transaction deleted successfully.")
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Something went wrong, try again")
+        }
     }
 
-    const columns: TableColumnsType<TDataType> = [
+    const columns: TableColumnsType<IEarning> = [
         {
-            title: "#Tr.ID",
+            title: "Serial",
             dataIndex: "serial",
-            render: (_, __, indx) => `#${indx + 1}`
+            render: (_, __, indx) => indx + 1 + (page - 1) * limit
         },
         {
-            title: "Full Name",
-            dataIndex: "name",
-            render: (text, record) => (
-                <div className="flex items-center gap-x-1">
-                    <Image
-                        src={"/user-profile.png"}
-                        alt="profile-picture"
-                        width={40}
-                        height={40}
-                    ></Image>
-                    <p>{text}</p>
-                </div>
-            ),
+            title: "Client Name",
+            dataIndex: "clientName",
         },
         {
             title: "Amount",
@@ -59,18 +64,19 @@ const TransactionTable = () => {
         },
 
         {
-            title: "Date",
-            dataIndex: "date",
+            title: "Transaction Date",
+            dataIndex: "transactionDate",
+            render: (value) => moment(value).format("MMMM Do YYYY, h:mm a"),
         },
         {
             title: "Action",
             dataIndex: "action",
-            render: () => <div className='flex flex-row gap-5 items-center'>
+            render: (_, record) => <div className='flex flex-row gap-5 items-center'>
                 <button onClick={() => setOpen(true)}><Eye /></button>
                 <Popconfirm
                     title="Delete the transaction"
                     description="Are you sure to delete this transaction?"
-                    onConfirm={handleDeleteTransation}
+                    onConfirm={() => handleDeleteTransation(record?._id)}
                     okText="Yes"
                     cancelText="No"
                 >
@@ -85,8 +91,13 @@ const TransactionTable = () => {
         <div>
             <Table
                 columns={columns}
-                dataSource={data}
-                pagination={{ pageSize: 8 }}
+                dataSource={data?.data?.data}
+                loading={isLoading || isFetching}
+                pagination={false}
+                rowKey={(record) => record?._id}
+                footer={() =>
+                    <Pagination defaultCurrent={page} total={data?.data?.meta?.total} pageSize={limit} align="end" showSizeChanger={false} onChange={(page) => setPage(page)} />
+                }
                 scroll={{ x: "max-content" }}
             />
             <TransactionDetails open={open} setOpen={setOpen} />

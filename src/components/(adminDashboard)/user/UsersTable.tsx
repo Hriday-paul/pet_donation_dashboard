@@ -149,6 +149,7 @@ const UsersTable = () => {
         dataSource={data?.data?.data}
         loading={isLoading || isFetching}
         pagination={false}
+        rowKey={(record) => record?._id}
         footer={() =>
           <Pagination defaultCurrent={page} total={data?.data?.meta?.total} pageSize={limit} align="end" showSizeChanger={false} onChange={(page) => setPage(page)} />
         }

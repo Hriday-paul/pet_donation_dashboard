@@ -106,9 +106,9 @@ const ShelterTable = () => {
             cancelText="No"
           >
             <Tooltip title={record?.isActive ? "Block" : "Unblock"}>
-            <button>
-              {record?.isActive ? <MdBlockFlipped  size={22} color="green" /> : <CgUnblock size={22} color="#CD0335" />}
-            </button>
+              <button>
+                {record?.isActive ? <MdBlockFlipped size={22} color="green" /> : <CgUnblock size={22} color="#CD0335" />}
+              </button>
             </Tooltip>
           </Popconfirm>
         </div>
@@ -146,6 +146,7 @@ const ShelterTable = () => {
         columns={columns}
         dataSource={data?.data?.data}
         loading={isLoading || isFetching}
+        rowKey={(record) => record?._id}
         pagination={false}
         footer={() =>
           <Pagination defaultCurrent={page} total={data?.data?.meta?.total} pageSize={limit} align="end" showSizeChanger={false} onChange={(page) => setPage(page)} />
