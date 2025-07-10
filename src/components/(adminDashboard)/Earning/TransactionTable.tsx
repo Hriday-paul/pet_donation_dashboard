@@ -31,12 +31,12 @@ const TransactionTable = () => {
     const [handleDeletApi] = useDeleteEarningMutation()
     const [page, setPage] = useState(1);
     const limit = 10
-    const [searchText, setSearchText] = useState("");
-    const query: { page: number, limit: number, searchTerm: string } = { page, limit, searchTerm: searchText };
+    const query: { page: number, limit: number } = { page, limit };
 
     const { isLoading, isFetching, data } = useEarningListQuery(query)
 
     const [open, setOpen] = useState(false);
+    const [earningDetails, setearningdetials] = useState<null | IEarning>(null)
 
     const handleDeleteTransation = async (id: string) => {
         try {
@@ -72,7 +72,10 @@ const TransactionTable = () => {
             title: "Action",
             dataIndex: "action",
             render: (_, record) => <div className='flex flex-row gap-5 items-center'>
-                <button onClick={() => setOpen(true)}><Eye /></button>
+                <button onClick={() => {
+                    setearningdetials(record)
+                    setOpen(true)
+                }}><Eye /></button>
                 <Popconfirm
                     title="Delete the transaction"
                     description="Are you sure to delete this transaction?"
@@ -100,7 +103,7 @@ const TransactionTable = () => {
                 }
                 scroll={{ x: "max-content" }}
             />
-            <TransactionDetails open={open} setOpen={setOpen} />
+            {earningDetails && <TransactionDetails open={open} setOpen={setOpen} details={earningDetails} />}
         </div>
     );
 };

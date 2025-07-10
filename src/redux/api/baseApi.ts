@@ -2,7 +2,7 @@
 import { config } from '@/utils/config';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Cookies } from "react-cookie";
-import { IAdminStats } from '../types';
+import { IAdminStats, INotification } from '../types';
 
 const cookies = new Cookies();
 
@@ -96,9 +96,10 @@ const baseApi = createApi({
     tagTypes: ['user', "users", "shelters", 'services', "sub_survice", "privacy", "terms", "about", "earning", "pet", "survey", "survey_answers"],
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
-        adminStats: builder.query<{ data: IAdminStats }, {}>({
+
+        notifications: builder.query<{ data: {data : INotification[]} }, {}>({
             query: (query) => ({
-                url: '/dashboards/db-status',
+                url: '/notifications/all-notifications',
                 params: query
             }),
         }),
@@ -106,5 +107,5 @@ const baseApi = createApi({
     })
 });
 
-export const { useAdminStatsQuery } = baseApi;
+export const {useNotificationsQuery } = baseApi;
 export default baseApi;

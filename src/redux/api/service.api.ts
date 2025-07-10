@@ -62,11 +62,12 @@ const ServicesApi = baseApi.injectEndpoints({
 
     allSubServices: builder.query<
       { message: string; data: TSubService[] },
-      { id: string }
+      { id: string, sort: string }
     //   { page: number; limit: number, searchTerm: string }
     >({
-      query: ({ id }) => ({
+      query: ({ id, sort }) => ({
         url: `/admin/service-base-webs/${id}`,
+        params: { sort }
       }),
       providesTags: (result, error, { id }) => [{ type: "sub_survice", id }],
     }),
@@ -94,6 +95,18 @@ const ServicesApi = baseApi.injectEndpoints({
       invalidatesTags: (result, error, { serviceId }) => [{ type: "sub_survice", id: serviceId }],
     }),
 
+    swapWebservice: builder.mutation<
+      { message: string },
+      { pos2: string, pos1: string, serviceId: string }
+    >({
+      query: ({ pos1, pos2 }) => ({
+        url: `/admin/swap-website`,
+        method: "PATCH",
+        body: { pos1, pos2 }
+      }),
+      // invalidatesTags: (result, error, { serviceId }) => [{ type: "sub_survice", id: serviceId }],
+    }),
+
 
 
 
@@ -112,7 +125,7 @@ const ServicesApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useAllServicesQuery, useAddServiceMutation, useDeleteServiceMutation, useServiceDetailsQuery, useUpdateServiceMutation,
+export const { useAllServicesQuery, useAddServiceMutation, useDeleteServiceMutation, useServiceDetailsQuery, useUpdateServiceMutation, useSwapWebserviceMutation,
   useAllSubServicesQuery, useAddSubServiceMutation, useDeleteSubserviceMutation,
   useUpdateBannerMutation
 } = ServicesApi;

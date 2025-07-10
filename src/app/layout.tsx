@@ -33,7 +33,7 @@ export default function RootLayout({
         <ReduxProvider>
           <AntdRegistry>
             <ConfigProvider theme={antTheme}>
-              <Toaster position="top-center" />
+              <Toaster position="top-center" richColors />
               <NextJsTopLoader />
               {children}
             </ConfigProvider>

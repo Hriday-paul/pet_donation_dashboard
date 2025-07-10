@@ -1,13 +1,16 @@
+import { IEarning } from "@/redux/types";
 import { Divider, Modal } from "antd";
+import moment from "moment";
 import Image from "next/image";
 import { RiCloseLargeLine } from "react-icons/ri";
 
 type TPropsType = {
   open: boolean;
   setOpen: (collapsed: boolean) => void;
+  details : IEarning
 };
 
-const TransactionDetails = ({ open, setOpen }: TPropsType) => {
+const TransactionDetails = ({ open, setOpen, details }: TPropsType) => {
   return (
     <Modal
       open={open}
@@ -27,35 +30,35 @@ const TransactionDetails = ({ open, setOpen }: TPropsType) => {
             <RiCloseLargeLine size={18} color="#fff" className="" />
           </div>
         </div>
-
+{/* 
         <Image
           src={"/user-profile.png"}
           alt="profile-picture"
           width={1000}
           height={1000}
           className="h-24 w-auto object-cover mx-auto my-5"
-        ></Image>
+        ></Image> */}
 
-        <div className="space-y-4">
+        <div className="space-y-4 mt-5">
           <div className="flex justify-between">
             <h4>Name :</h4>
-            <p className="font-medium">James Tracy</p>
+            <p className="font-medium">{details?.clientName}</p>
           </div>
           <hr />
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <h4>Transaction ID :</h4>
             <p className="font-medium">#123456</p>
-          </div>
+          </div> */}
           <hr />
           <div className="flex justify-between">
             <h4>Transacton Date :</h4>
-            <p className="font-medium">11 April 2025, 10:22 AM</p>
+            <p className="font-medium">{moment(details?.transactionDate).format("MMMM Do YYYY, h:mm a")}</p>
           </div>
 
           <hr />
           <div className="flex justify-between">
             <h4>Transaction amount :</h4>
-            <p className="font-medium">$100</p>
+            <p className="font-medium">${details?.amount}</p>
           </div>
           <hr />
           

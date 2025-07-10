@@ -10,32 +10,35 @@ import {
   CartesianGrid,
 } from "recharts";
 import { useState } from "react";
+import { useShelterTotalPetChartQuery } from "@/redux/api/dashboard.api";
+import ErrorComponent from "@/utils/ErrorComponent";
+import { IMonth } from "@/redux/types";
 
-const data = [
-  { name: "Jan", users: 200 },
-  { name: "Feb", users: 1502 },
-  { name: "Mar", users: 1525 },
-  { name: "Apr", users: 822 },
-  { name: "May", users: 1553 },
-  { name: "Jun", users: 1634 },
-  { name: "Jul", users: 1923 },
-  { name: "Aug", users: 1324 },
-  { name: "Sep", users: 834 },
-  { name: "Oct", users: 1256 },
-  { name: "Nov", users: 1634 },
-  { name: "Dec", users: 2105 },
-];
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: 10 }, (_, i) => {
+  const year = currentYear - i;
+  return { value: year.toString(), label: year.toString() };
+});
 
 const PetsOverviewChart = () => {
-  const [selectedYear, setSelectedYear] = useState("2025");
-  const [selectedUserType, setSelectedUserType] = useState("user");
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  const handleChange = (value: string) => {
+  const { isError, data } = useShelterTotalPetChartQuery({ "year": selectedYear }, { refetchOnMountOrArgChange: true });
+
+  const handleChange = (value: number) => {
     setSelectedYear(value);
   };
-  const handleUserChange = (value: string) => {
-    setSelectedUserType(value);
-  };
+
+  if (isError) return <ErrorComponent />
+
+  const realdata: { name: string, pets: number }[] = [];
+
+  const monthlyData = data?.data?.monthlyPostPet;
+
+  for (let i in monthlyData) {
+    const month = i as keyof IMonth;
+    realdata.push({ name: month.substring(0, 3), pets: monthlyData[month] })
+  }
 
   return (
     <div className="bg-secondary-color border border-stroke rounded-3xl p-8 ">
@@ -46,19 +49,12 @@ const PetsOverviewChart = () => {
           value={selectedYear}
           style={{ width: 120 }}
           onChange={handleChange}
-          options={[
-            { value: "2025", label: "2025" },
-            { value: "2026", label: "2026" },
-            { value: "2027", label: "2027" },
-            { value: "2028", label: "2028" },
-            { value: "2029", label: "2029" },
-            { value: "2030", label: "2030" },
-          ]}
+          options={years}
         />
       </div>
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart
-          data={data}
+          data={realdata}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
           <defs>
@@ -93,7 +89,7 @@ const PetsOverviewChart = () => {
           <Area
             activeDot={false}
             type="monotone"
-            dataKey="users"
+            dataKey="pets"
             strokeWidth={0}
             stroke="#080E0E"
             fill="url(#color)"

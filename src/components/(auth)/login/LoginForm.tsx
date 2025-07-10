@@ -34,6 +34,11 @@ const LoginForm = () => {
     try {
       const res = await postLogin(values).unwrap();
 
+      if (res?.data?.user?.role !== values?.role) {
+        toast.error('Account not found');
+        return;
+      }
+
       setCookie('accessToken', res?.data?.accessToken, {
         httpOnly: false,
         maxAge: 14 * 24 * 60 * 60, // 14 days
@@ -50,11 +55,12 @@ const LoginForm = () => {
         secure: config.hasSSL,
       });
 
-      dispatch(addUserDetails({ name: res?.data?.user?.first_name, role: res?.data?.user?.role, profilePicture : res?.data?.user?.profile_image || "/empty-user.png" }));
+      dispatch(addUserDetails({ name: res?.data?.user?.first_name, role: res?.data?.user?.role, profilePicture: res?.data?.user?.profile_image || "/empty-user.png" }));
 
       toast.success('Signin successfully');
 
       route.push(res?.data?.user?.role == 'admin' ? "/admin/dashboard" : "/shelter/dashboard");
+
 
     } catch (err: any) {
       toast.error(err?.data?.message || 'Something went wrong, try again');
@@ -65,7 +71,7 @@ const LoginForm = () => {
   return (
     <Form
       name="basic"
-      initialValues={{ role: "SHELTER" }}
+      initialValues={{ role: "shelter" }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete="off"
@@ -82,8 +88,8 @@ const LoginForm = () => {
         <Radio.Group
           // defaultValue={1}
           options={[
-            { value: "ADMIN", label: 'Admin' },
-            { value: "SHELTER", label: 'Shelter' },
+            { value: "admin", label: 'Admin' },
+            { value: "shelter", label: 'Shelter' },
           ]}
         />
       </Form.Item>
@@ -127,7 +133,7 @@ const LoginForm = () => {
         {({ getFieldValue }) => {
           const repeat = getFieldValue('role');
 
-          return repeat === "SHELTER" && <div className="my-4 flex flex-row gap-x-2 items-center">
+          return repeat === "shelter" && <div className="my-4 flex flex-row gap-x-2 items-center">
             <p className="text-base text-text-color">Don't have account ?</p>
             <Link className="text-base text-main-color" href={"/signup"}>
               <p className="font-medium">Create Account</p>

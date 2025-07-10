@@ -34,6 +34,11 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
 
   const { user } = useSelector((state: RootState) => state.userSlice);
 
+  const handleLogout = () => {
+    dispatch(removeUser())
+    router.push("/login")
+  };
+
   return (
     <div className="flex items-center justify-between w-[97%] font-poppins pl-5">
       {/* Header left side */}
@@ -61,7 +66,7 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
             <Bell size={24} color="#3A3C3B" />
 
             <Badge
-              count={1}
+              count={0}
               style={{
                 border: "none",
                 boxShadow: "none",
@@ -84,12 +89,12 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
             </span>
           </Link>
 
-          <Link href={'/login'} className="w-full flex items-center px-3 py-2 mt-1 text-sm font-medium hover:bg-slate-50 duration-200" >
+          <button onClick={handleLogout} className="w-full flex items-center px-3 py-2 mt-1 text-sm font-medium hover:bg-slate-50 duration-200" >
             <LogOut size={20} />
             <span className={`ml-3 transition-opacity duration-200 text-red-500`}>
               Logout
             </span>
-          </Link>
+          </button>
 
         </div>} trigger={"click"}>
 

@@ -33,8 +33,8 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
       await postChangePass(data).unwrap();
       toast.success("Password Update Successfully")
       form.resetFields();
-    } catch (error) {
-      toast.error("Password update failed, try again")
+    } catch (error : any) {
+      toast.error(error?.data?.message || "Password update failed, try again")
     }
   };
 

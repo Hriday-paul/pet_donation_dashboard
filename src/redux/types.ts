@@ -34,6 +34,7 @@ export type TSubService = {
     "location": string,
     "service": string,
     "serviceName": string,
+    position: number
 }
 
 export interface IMeta {
@@ -51,7 +52,7 @@ export interface IEarning {
     "createdAt": string,
 }
 
-interface IMonth {
+export interface IMonth {
     "January": 0,
     "February": 0,
     "March": 0,
@@ -70,8 +71,6 @@ export interface IAdminStats {
     "totalUser": number,
     "totalShelter": number,
     "totalPet": number,
-    "monthlyJoinedUser": IMonth,
-    "monthlyJoinedShelter": IMonth
 }
 
 
@@ -103,9 +102,25 @@ export interface ISurvey {
     "priority": string
 }
 
-export interface ISurveyAnswers{
-    _id : string,
-    adopted_pet : IPet,
-    adopter : IUser,
-    answers : {question : string, answer : string, _id : string}[]
+export interface ISurveyAnswers {
+    _id: string,
+    adopted_pet: IPet,
+    adopter: IUser,
+    answers: { question: string, answer: string, _id: string }[]
+}
+
+export interface INotification {
+    ownerId : IUser,
+    "key": string,
+    "data": {
+        "message": string
+    },
+    "receiverId": [
+        string
+    ],
+    "notifyAdmin": boolean,
+    "isRead": boolean,
+    "createdAt": string,
+    "updatedAt": string,
+    "__v": 0
 }
