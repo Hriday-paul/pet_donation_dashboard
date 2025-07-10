@@ -117,9 +117,9 @@ const AuthApi = baseApi.injectEndpoints({
       }),
     }),
 
-    updateProfile: builder.mutation<{ message: string }, { data: any, id : string }>({
-      query: ({ data, id }) => ({
-        url: `/user/${id}`,
+    updateProfile: builder.mutation<{ message: string }, { data: any }>({
+      query: ({ data }) => ({
+        url: `/user/update-profile`,
         method: "PUT",
         body: data,
       }),

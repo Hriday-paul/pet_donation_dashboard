@@ -38,7 +38,7 @@ const PersonalInformationContainer = () => {
         form.append("profile_image", file)
       }
 
-      await updateProfile({ data: form, id: data?.data?._id || "" }).unwrap();
+      await updateProfile({ data: form }).unwrap();
 
       toast.success("Profile update successfully.")
       setFile(null);
