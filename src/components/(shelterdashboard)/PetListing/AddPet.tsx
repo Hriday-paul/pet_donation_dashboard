@@ -215,7 +215,7 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                             options={[
                                 { value: 'cat', label: 'Cat' },
                                 { value: 'dog', label: 'Dog' },
-                                { value: 'both', label: 'Both' },
+                                // { value: 'both', label: 'Both' },
                             ]}
                         />
                     </Form.Item>
