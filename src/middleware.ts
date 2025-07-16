@@ -13,12 +13,25 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL(`/login?next=${current_req}`, request.url));
     }
 
+    console.log("-----------------current request----------------",current_req)
+
+    if (current_req == '/') {
+        try {
+            // Decode and validate the access token
+            const { role } = jwtDecode<{ role: 'admin' | 'shelter' }>(accessToken);
+
+            if (role !== 'shelter') {
+                return NextResponse.redirect(new URL(`/admin/dashboard`, request.url));
+            }else{
+                 return NextResponse.redirect(new URL(`/shelter/dashboard`, request.url));
+            }
+        } catch (error) {
+            return NextResponse.redirect(new URL(`/login?next=${current_req}`, request.url));
+        }
+    }
+
     //check shelter
     if (current_req.startsWith('/shelter')) {
-        if (!accessToken) {
-            return NextResponse.redirect(new URL(`/signin?next=${current_req}`, request.url));
-        }
-
         try {
             // Decode and validate the access token
             const { role } = jwtDecode<{ role: 'admin' | 'shelter' }>(accessToken);
@@ -33,7 +46,6 @@ export default async function middleware(request: NextRequest) {
 
     //check admin
     if (current_req.startsWith('/admin')) {
-
         try {
             // Decode and validate the access token
             const { role } = jwtDecode<{ role: 'admin' | 'shelter' }>(accessToken);
@@ -50,6 +62,7 @@ export default async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
+        "/",
         '/shelter/:path*',
         '/admin/:path*',
     ],
