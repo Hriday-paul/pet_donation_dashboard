@@ -1,23 +1,22 @@
 "use client"
 import React from 'react';
-import surverUser from '@/assets/image/surveyUser.png'
 import Image from 'next/image';
 import { Button } from 'antd';
-import { useSurveyAnswerDetailsQuery } from '@/redux/api/survey.api';
+import { useSurveyAnswerDetailsQuery, useSurveyQuesStausUpdateMutation } from '@/redux/api/survey.api';
 import { Loader } from 'lucide-react';
 import ErrorComponent from '@/utils/ErrorComponent';
 import { placeHolderBlurImg } from '@/utils/config';
+import { toast } from 'sonner';
 
-type quesType = {
-    id: number,
-    name: string,
-    required: boolean,
-    answer: string,
-}
 
 const SurveyDetailscontainer = ({ id }: { id: string }) => {
 
     const { isLoading, isError, data, isSuccess } = useSurveyAnswerDetailsQuery({ id });
+
+    const buttons: { status: "rejected" | "accepted", title: string }[] = [
+        { title: 'Approve', status: "accepted" },
+        { title: 'Reject', status: "rejected" }
+    ]
 
     if (isLoading) return <div className='min-h-40 flex items-center justify-center'>
         <Loader size={30} className='text-main-color animate-spin' />
@@ -120,10 +119,20 @@ const SurveyDetailscontainer = ({ id }: { id: string }) => {
                     }
                 </div>
 
-                <div className='flex flex-row gap-x-3 items-center mt-5'>
-                    <Button type='primary' size='large' className='capitalize' block>Approve</Button>
-                    <Button type='default' size='large' className='capitalize' block>Reject</Button>
-                </div>
+                {data?.data?.status == "pending" ? <div className='flex flex-row gap-x-3 items-center mt-5'>
+
+                    {/* <Button disabled={updateLoading} type='primary' onClick={() => handleUpdateStatus("accepted")} size='large' className='capitalize' block>{updateLoading ? <Loader size={25} className='text-main-color animate-spin' /> : "Approve"}</Button>
+
+                    <Button disabled={updateLoading} type='primary' onClick={() => handleUpdateStatus("rejected")} size='large' className='capitalize' block>{updateLoading ? <Loader size={25} className='text-main-color animate-spin' /> : "Reject"}</Button> */}
+
+                    {
+                        buttons?.map(i => {
+                            return <HandleStaus id={id} status={i?.status} title={i?.title} />
+                        })
+
+                    }
+
+                </div> : <p className='text-xl mt-3 text-center'>{data?.data?.status == "accepted" ? <span className='text-green-500'>Accepter</span> : <span className='text-red-500'>Rejected</span>}</p>}
 
             </div>
 
@@ -132,3 +141,20 @@ const SurveyDetailscontainer = ({ id }: { id: string }) => {
 };
 
 export default SurveyDetailscontainer;
+
+const HandleStaus = ({ title, status, id }: { title: string, status: "rejected" | "accepted", id: string }) => {
+
+    const [UpdateStatusApi, { isLoading: updateLoading }] = useSurveyQuesStausUpdateMutation();
+
+    const handleUpdateStatus = async (status: "accepted" | "rejected") => {
+        try {
+            await UpdateStatusApi({ id, status }).unwrap();
+            toast.success("Survey question " + status + " successfully")
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Something went wrong, try again")
+        }
+    }
+    return (
+        <Button disabled={updateLoading} type='primary' onClick={() => handleUpdateStatus(status)} size='large' className='capitalize' block>{updateLoading ? <Loader size={25} className='text-main-color animate-spin' /> : title}</Button>
+    )
+}

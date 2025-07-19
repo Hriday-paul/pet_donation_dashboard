@@ -53,7 +53,7 @@ const WebCard = ({ carddata, serviceId }: { carddata: TSubService, serviceId : s
                     <p className='text-text-color text-base font-medium'>{carddata?.description}</p>
                 </div>
                 <div className='w-1/3'>
-                    <Image placeholder='blur' src={carddata?.web_img} width={1000} height={1000} blurDataURL={placeHolderBlurImg} className='h-28 w-auto ml-auto' alt='web image' />
+                    <Image placeholder='blur' src={carddata?.web_img} width={1000} height={1000} blurDataURL={placeHolderBlurImg} className='h-28 w-auto ml-auto object-cover' alt='web image' />
                 </div>
                 <div className='absolute top-0 left-0 h-full w-full hover:bg-black/30 duration-200 rounded-md '>
                     <button onClick={() => handleDelete(carddata?._id)} className='bg-white p-3 rounded-full absolute top-5 right-5 opacity-0 group-hover:opacity-100 duration-200'>

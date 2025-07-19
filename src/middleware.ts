@@ -13,8 +13,6 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL(`/login?next=${current_req}`, request.url));
     }
 
-    console.log("-----------------current request----------------",current_req)
-
     if (current_req == '/') {
         try {
             // Decode and validate the access token

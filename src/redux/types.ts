@@ -106,7 +106,8 @@ export interface ISurveyAnswers {
     _id: string,
     adopted_pet: IPet,
     adopter: IUser,
-    answers: { question: string, answer: string, _id: string }[]
+    answers: { question: string, answer: string, _id: string }[],
+    status : "accepted" | "rejected" | "pending"
 }
 
 export interface INotification {

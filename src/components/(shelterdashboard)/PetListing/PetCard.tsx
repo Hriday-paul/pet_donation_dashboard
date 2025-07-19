@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Carousel, Popconfirm } from 'antd';
+import { Button, Carousel, Popconfirm, Tooltip } from 'antd';
 import { toast } from 'sonner';
 import { BsGenderAmbiguous } from 'react-icons/bs';
 import { PiPawPrint } from 'react-icons/pi';
@@ -27,9 +27,9 @@ const PetCard = ({ pet }: { pet: IPet }) => {
 
 
     return (
-        <div className='bg-white border border-stroke rounded-xl shadow-sm'>
+        <div className='bg-white border border-stroke rounded-xl shadow-sm w-72'>
 
-            <div className='h-40 w-72 rounded-t-lg'>
+            <div className='h-40  rounded-t-lg'>
                 <Carousel autoplay arrows infinite>
                     {pet?.pet_image?.map(img => {
                         return <Image key={img} src={img} placeholder='blur' blurDataURL={placeHolderBlurImg} alt='pet image' height={1000} width={1000} className='h-40 w-full object-cover mx-auto rounded-t-2xl' />
@@ -43,7 +43,9 @@ const PetCard = ({ pet }: { pet: IPet }) => {
                     <p className='text-sm text-zinc-700'>Adoption</p>
                 </div>
 
-                <h4 className='text-xl font-semibold my-3 text-zinc-700'>{pet?.full_name}</h4>
+                <Tooltip title={pet?.full_name}>
+                    <h4 className='text-xl font-semibold my-3 text-zinc-700 line-clamp-1'>{pet?.full_name}</h4>
+                </Tooltip>
 
                 <div className='flex flex-row gap-x-5 items-center my-3'>
                     <div className='flex flex-row gap-x-2 items-center'>
@@ -72,7 +74,7 @@ const PetCard = ({ pet }: { pet: IPet }) => {
                         <Button type='default'>Delete</Button>
                     </Popconfirm>
 
-                    <EditPet defaultdata={pet}/>
+                    <EditPet defaultdata={pet} />
 
                 </div>
 

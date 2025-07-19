@@ -70,7 +70,19 @@ const SurveyApi = baseApi.injectEndpoints({
             query: ({ id }) => ({
                 url: `/dashboards/details-recent-adopters/${id}`,
             }),
-            // providesTags: ["survey_answers"],
+            providesTags: (result, error, { id }) => [{ type: "survey_answers", id }],
+        }),
+
+        SurveyQuesStausUpdate: builder.mutation<
+            { message: string },
+            { status: "rejected" | "accepted", id: string }
+        >({
+            query: ({ id, status }) => ({
+                url: `/shelter/update-user-request/${id}`,
+                method: "PATCH",
+                body: { status }
+            }),
+            invalidatesTags: (result, error, { id }) => [{ type: "survey_answers", id }],
         }),
 
 
@@ -78,5 +90,5 @@ const SurveyApi = baseApi.injectEndpoints({
 });
 
 export const { useSurveyListQuery, useAddSurveyQuesMutation, useDeleteSurveyQuesMutation, useUpdateSurveyQuesMutation,
-    useSurveyAnswersQuery, useSurveyAnswerDetailsQuery
+    useSurveyAnswersQuery, useSurveyAnswerDetailsQuery, useSurveyQuesStausUpdateMutation
 } = SurveyApi;

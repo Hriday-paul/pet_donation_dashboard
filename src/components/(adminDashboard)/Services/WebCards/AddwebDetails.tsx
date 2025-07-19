@@ -92,7 +92,7 @@ const AddwebDetails = ({ open, setOpen, isEdit, serviceId }: TPropsType) => {
                             options={[
                                 { value: 'cat', label: 'Cat' },
                                 { value: 'dog', label: 'Dog' },
-                                // { value: 'both', label: 'Both' },
+                                { value: 'both', label: 'Both' },
                             ]}
                             className="!w-full"
                         />
