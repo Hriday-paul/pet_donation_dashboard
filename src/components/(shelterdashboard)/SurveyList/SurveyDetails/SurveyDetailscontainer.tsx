@@ -132,7 +132,7 @@ const SurveyDetailscontainer = ({ id }: { id: string }) => {
 
                     }
 
-                </div> : <p className='text-xl mt-3 text-center'>{data?.data?.status == "accepted" ? <span className='text-green-500'>Accepter</span> : <span className='text-red-500'>Rejected</span>}</p>}
+                </div> : <p className='text-xl mt-3 text-center'>{data?.data?.status == "accepted" ? <span className='text-green-500'>Accepted</span> : <span className='text-red-500'>Rejected</span>}</p>}
 
             </div>
 

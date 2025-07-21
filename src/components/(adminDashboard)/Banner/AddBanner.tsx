@@ -67,7 +67,7 @@ const AddBanner = () => {
                             <CloudDownload size={40} />
                         </p>
                         <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                        <p className="ant-upload-hint">Support for a single or bulk upload.</p>
+                        <p className="ant-upload-hint">(800w X 500h pixel will be perfect)</p>
                     </Upload.Dragger>
                 </Form.Item>
 

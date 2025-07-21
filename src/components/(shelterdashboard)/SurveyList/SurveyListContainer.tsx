@@ -1,5 +1,5 @@
 "use client";
-import { Image, Pagination, Table, TableColumnsType, TableProps } from "antd";
+import { Image, Pagination, Table, TableColumnsType, TableProps, Tag } from "antd";
 
 import { useState } from "react";
 import DataTable from "@/utils/DataTable";
@@ -60,31 +60,34 @@ const SurveyListContainer = () => {
       title: "Adopter Email",
       dataIndex: ["adopter", "email"],
     },
-    // {
-    //   title: "Status",
-    //   dataIndex: "status",
-    //   filters: [
-    //     {
-    //       text: "Pending",
-    //       value: "Pendng",
-    //     },
-    //     {
-    //       text: "Approved",
-    //       value: "Approved",
-    //     },
-    //     {
-    //       text: "Rejected",
-    //       value: "Rejected",
-    //     },
-    //   ],
-    //   filterIcon: () => (
-    //     <ArrowDownWideNarrowIcon
-    //       className="flex justify-start items-start"
-    //       color="#fff"
-    //     />
-    //   ),
-    //   onFilter: (value, record) => record.status == value,
-    // },
+    {
+      title: "Status",
+      dataIndex: "status",
+      filters: [
+        {
+          text: "Pending",
+          value: "pending",
+        },
+        {
+          text: "Approved",
+          value: "accepted",
+        },
+        {
+          text: "Rejected",
+          value: "rejected",
+        },
+      ],
+      render : (value)=>{
+        return <Tag color={value == "accepted" ? "green" : value == "rejected" ? "red" : "default"}>{value}</Tag>
+      },
+      filterIcon: () => (
+        <ArrowDownWideNarrowIcon
+          className="flex justify-start items-start"
+          color="#fff"
+        />
+      ),
+      onFilter: (value, record) => record.status == value,
+    },
 
     {
       title: "Requested Date",
