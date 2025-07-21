@@ -21,7 +21,7 @@ import { RiCloseLargeLine } from 'react-icons/ri';
 import { CloudDownload } from 'lucide-react';
 import { ImSpinner3 } from 'react-icons/im';
 import { toast } from 'sonner';
-import { useAddPetMutation, useUpdatePetMutation } from '@/redux/api/pet.api';
+import { useAddPetMutation, useDeletePetImageMutation, useUpdatePetMutation } from '@/redux/api/pet.api';
 import { IPet } from '@/redux/types';
 import { UploadFileStatus } from 'antd/es/upload/interface';
 
@@ -48,6 +48,8 @@ type FieldType = {
 
 export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
     const [handleUpdatePetApi, { isLoading }] = useUpdatePetMutation();
+    const [handleDltPetImageApi] = useDeletePetImageMutation();
+
     const [form] = Form.useForm();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -83,7 +85,14 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
             };
 
             formdata.append('data', JSON.stringify(payload));
-            values.pet_image.forEach((file) => {
+
+            const newUploadedImage = values.pet_image?.filter(i=>{
+                if(!i?.url){
+                    return i
+                }
+            })
+
+            newUploadedImage.forEach((file) => {
                 if (file.originFileObj) {
                     formdata.append('pet_image', file.originFileObj as File);
                 }
@@ -98,6 +107,21 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
             toast.error(err?.data?.message || 'Something went wrong, try again');
         }
     };
+
+    const handleImageDlt = async (file: UploadFile) => {
+        if (file?.url) {
+            const loader = toast.loading("Loading...")
+            try {
+                await handleDltPetImageApi({ id: defaultdata?._id, url: file?.url }).unwrap();
+                toast.success("Image deleted successfully")
+            } catch (err: any) {
+                toast.error(err?.data?.message || "Something went wrong, try again")
+            } finally {
+                toast.dismiss(loader)
+            }
+        }
+        setFileList((prev) => prev.filter((f) => f.uid !== file.uid));
+    }
 
     return (
         <Modal
@@ -156,6 +180,7 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                             onChange={({ fileList }) => setFileList(fileList)}
                             multiple
                             onPreview={() => { }}
+                            onRemove={handleImageDlt}
                             showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
                         >
                             <p className="ant-upload-drag-icon mx-auto flex justify-center">

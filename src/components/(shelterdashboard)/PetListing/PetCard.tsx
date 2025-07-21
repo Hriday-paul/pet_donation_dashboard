@@ -14,8 +14,6 @@ const PetCard = ({ pet }: { pet: IPet }) => {
 
     const [handleDeleteApi, { }] = useDeletePetMutation();
 
-    const [open, setOpen] = useState(false);
-
     const handleDelete = async (id: string) => {
         try {
             await handleDeleteApi(id).unwrap();

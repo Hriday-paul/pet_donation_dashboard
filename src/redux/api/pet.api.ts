@@ -52,8 +52,20 @@ const PetApi = baseApi.injectEndpoints({
             invalidatesTags: ["pet"],
         }),
 
+        deletePetImage: builder.mutation<
+            { message: string },
+            {id : string, url : string}
+        >({
+            query: ({id, url}) => ({
+                url: `/pets/petImg/${id}`,
+                method: "DELETE",
+                body : {img : url}
+            }),
+            invalidatesTags: ["pet"],
+        }),
+
 
     }),
 });
 
-export const { useAddPetMutation, useDeletePetMutation, usePetListQuery, useUpdatePetMutation } = PetApi;
+export const { useAddPetMutation, useDeletePetMutation, usePetListQuery, useUpdatePetMutation, useDeletePetImageMutation } = PetApi;
