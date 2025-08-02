@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import catImg from '@/assets/image/cat.png'
 import dogImg from '@/assets/image/dog.png'
 import Image from 'next/image';
-import { Menu, Trash, Trash2 } from 'lucide-react';
+import { Menu, PencilLine, Trash, Trash2 } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from "@dnd-kit/utilities"
 import { TSubService } from '@/redux/types';
 import { placeHolderBlurImg } from '@/utils/config';
 import { useDeleteSubserviceMutation } from '@/redux/api/service.api';
 import { toast } from 'sonner';
+import AddwebDetails from './AddwebDetails';
 
-const WebCard = ({ carddata, serviceId }: { carddata: TSubService, serviceId : string }) => {
+const WebCard = ({ carddata, serviceId }: { carddata: TSubService, serviceId: string }) => {
+
+    const [isEdit, setIsedit] = useState<boolean>(false);
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
         id: carddata?.position,
@@ -26,7 +29,7 @@ const WebCard = ({ carddata, serviceId }: { carddata: TSubService, serviceId : s
     const handleDelete = async (id: string) => {
         const loader = toast.loading("Loading...")
         try {
-            await handleDeleteApi({webId : id, serviceId}).unwrap();
+            await handleDeleteApi({ webId: id, serviceId }).unwrap();
             toast.success("Website deleted successfully")
         } catch (err: any) {
             toast.error(err?.data?.message || "Something went wrong, try again")
@@ -55,7 +58,12 @@ const WebCard = ({ carddata, serviceId }: { carddata: TSubService, serviceId : s
                 <div className='w-1/3'>
                     <Image placeholder='blur' src={carddata?.web_img} width={1000} height={1000} blurDataURL={placeHolderBlurImg} className='h-28 w-auto ml-auto object-cover' alt='web image' />
                 </div>
-                <div className='absolute top-0 left-0 h-full w-full hover:bg-black/30 duration-200 rounded-md '>
+                <div className='absolute top-0 left-0 h-full w-full hover:bg-black/30 duration-200 rounded-md'>
+
+                    <button onClick={() => setIsedit(true)} className='bg-white text-primary-green p-3 rounded-full absolute top-5 right-20 opacity-0 group-hover:opacity-100 duration-200'>
+                        <PencilLine size={20} />
+                    </button>
+
                     <button onClick={() => handleDelete(carddata?._id)} className='bg-white p-3 rounded-full absolute top-5 right-5 opacity-0 group-hover:opacity-100 duration-200'>
                         <Trash2 size={20} color='red' />
                     </button>
@@ -65,6 +73,7 @@ const WebCard = ({ carddata, serviceId }: { carddata: TSubService, serviceId : s
             <button {...listeners}>
                 <Menu size={30} className='text-main-color' />
             </button>
+            <AddwebDetails open={isEdit} setOpen={setIsedit} serviceId={serviceId} isEdit={true} defaultdata={carddata} />
         </div>
 
     )

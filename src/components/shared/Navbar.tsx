@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { addUserDetails, removeUser } from "@/redux/slices/userSlice";
 import { RootState } from "@/redux/store";
+import { LanguageSwitcher } from "@/utils/LanguageSwitcher";
 
 type TNavbarProps = {
   collapsed: boolean;
@@ -59,6 +60,9 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
 
       {/* Header right side */}
       <Flex align="center" gap={20}>
+
+        <LanguageSwitcher />
+
         {/* Notification */}
         <Link href={"/notifications"}>
           <div className="flex justify-center bg-[#eceef1] items-center size-12 rounded-full cursor-pointer relative">

@@ -7,6 +7,7 @@ import { Poppins } from "next/font/google";
 import { Toaster } from "sonner";
 import NextJsTopLoader from "@/components/shared/NextTopLoader";
 import ReduxProvider from "@/components/shared/ReduxProvider";
+import Script from "next/script";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -29,12 +30,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Script src="/assets/lang-config.js" strategy="beforeInteractive" />
+      <Script src="/assets/translation.js" strategy="beforeInteractive" />
+      <Script src="//translate.google.com/translate_a/element.js?cb=TranslateInit" strategy="afterInteractive" />
       <body className={poppins.className}>
         <ReduxProvider>
           <AntdRegistry>
             <ConfigProvider theme={antTheme}>
               <Toaster position="top-center" richColors />
               <NextJsTopLoader />
+              <div id="google_translate_element"></div>
               {children}
             </ConfigProvider>
           </AntdRegistry>
