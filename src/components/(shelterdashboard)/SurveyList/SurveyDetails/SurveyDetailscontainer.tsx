@@ -7,6 +7,7 @@ import { Loader } from 'lucide-react';
 import ErrorComponent from '@/utils/ErrorComponent';
 import { placeHolderBlurImg } from '@/utils/config';
 import { toast } from 'sonner';
+import moment from 'moment';
 
 
 const SurveyDetailscontainer = ({ id }: { id: string }) => {
@@ -88,7 +89,7 @@ const SurveyDetailscontainer = ({ id }: { id: string }) => {
 
                             <div className="flex justify-between items-center py-2">
                                 <span className="text-gray-500">Age:</span>
-                                <span className="text-gray-900 font-medium">{data?.data?.adopted_pet?.age}</span>
+                                <span className="text-gray-900 font-medium">{moment().diff(moment(data?.data?.adopted_pet?.date_of_birth), "years", true).toFixed(1)} year</span>
                             </div>
                             <div className="flex justify-between items-center py-2">
                                 <span className="text-gray-500">Weight:</span>

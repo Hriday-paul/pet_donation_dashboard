@@ -19,8 +19,6 @@ const SelectMap = ({
     defaultLocation?: { latitude: number; longitude: number }
 }) => {
 
-    console.log(defaultLocation)
-
     const mapRef = useRef<google.maps.Map | null>(null)
     const [googleMaps, setGoogleMaps] = useState<any>(null)
 
