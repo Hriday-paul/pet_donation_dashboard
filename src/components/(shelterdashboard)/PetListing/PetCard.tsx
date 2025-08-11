@@ -9,6 +9,7 @@ import { placeHolderBlurImg } from '@/utils/config';
 import Image from 'next/image';
 import { useDeletePetMutation } from '@/redux/api/pet.api';
 import EditPet from './EditPet';
+import moment from 'moment';
 
 const PetCard = ({ pet }: { pet: IPet }) => {
 
@@ -25,39 +26,39 @@ const PetCard = ({ pet }: { pet: IPet }) => {
 
 
     return (
-        <div className='bg-white border border-stroke rounded-xl shadow-sm w-72'>
+        <div className='bg-white border border-stroke rounded-xl shadow-sm w-60'>
 
-            <div className='h-40  rounded-t-lg'>
+            <div className='h-32 rounded-t-lg'>
                 <Carousel autoplay arrows infinite>
                     {pet?.pet_image?.map(img => {
-                        return <Image key={img} src={img} placeholder='blur' blurDataURL={placeHolderBlurImg} alt='pet image' height={1000} width={1000} className='h-40 w-full object-cover mx-auto rounded-t-2xl' />
+                        return <Image key={img} src={img} placeholder='blur' blurDataURL={placeHolderBlurImg} alt='pet image' height={1000} width={1000} className='h-32 w-full object-contain mx-auto rounded-t-2xl' />
                     })}
                 </Carousel>
             </div>
 
-            <section className='p-6'>
+            <section className='p-4 pt-1'>
 
-                <div className='bg-zinc-100 px-4 py-1.5 rounded-full inline-block'>
+                {/* <div className='bg-zinc-100 px-4 py-1.5 rounded-full inline-block'>
                     <p className='text-sm text-zinc-700'>Adoption</p>
-                </div>
+                </div> */}
 
                 <Tooltip title={pet?.full_name}>
-                    <h4 className='text-xl font-semibold my-3 text-zinc-700 line-clamp-1'>{pet?.full_name}</h4>
+                    <h4 className='text-lg font-semibold my-3 text-zinc-700 line-clamp-1'>{pet?.full_name}</h4>
                 </Tooltip>
 
                 <div className='flex flex-row gap-x-5 items-center my-3'>
                     <div className='flex flex-row gap-x-2 items-center'>
                         <div className='bg-[#FF90CC]/10 p-1.5 rounded-md'>
-                            <BsGenderAmbiguous className='text-pink-400' size={18} />
+                            <BsGenderAmbiguous className='text-pink-400' size={15} />
                         </div>
-                        <p className='text-base font-medium text-zinc-600'>{pet?.gender}</p>
+                        <p className='text-sm font-medium text-zinc-600'>{pet?.gender}</p>
                     </div>
 
                     <div className='flex flex-row gap-x-2 items-center'>
                         <div className='bg-[#FF9900]/10 p-1.5 rounded-md'>
-                            <PiPawPrint className='text-[#FF9900]' size={18} />
+                            <PiPawPrint className='text-[#FF9900]' size={15} />
                         </div>
-                        <p className='text-base font-medium text-zinc-600'>{pet?.age}</p>
+                        <p className='text-sm font-medium text-zinc-600'>{moment().diff(moment(pet?.date_of_birth), "years", true).toFixed(1)} year</p>
                     </div>
                 </div>
 
@@ -69,7 +70,7 @@ const PetCard = ({ pet }: { pet: IPet }) => {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button type='default'>Delete</Button>
+                        <Button type='default' size='small'>Delete</Button>
                     </Popconfirm>
 
                     <EditPet defaultdata={pet} />

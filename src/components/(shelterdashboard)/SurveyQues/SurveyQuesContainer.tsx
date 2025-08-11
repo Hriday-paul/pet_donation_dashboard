@@ -1,5 +1,5 @@
 "use client"
-import { Button, Popconfirm } from 'antd';
+import { Button, Empty, Popconfirm } from 'antd';
 import React from 'react';
 import { useState } from 'react';
 import { AiTwotoneDelete } from 'react-icons/ai';
@@ -49,10 +49,7 @@ const SurveyQuesContainer = () => {
                 </div>
 
                 {
-                    data?.data?.data?.length <= 0 && <div className='min-h-40 min-w-40 flex flex-col justify-center items-center'>
-                        <Image src={"/empty-data.png"} className='h-24 w-24 mx-auto' height={1000} width={1000} alt='empty image' />
-                        <p>Empty data</p>
-                    </div>
+                    data?.data?.data?.length <= 0 && <Empty />
                 }
             </>}
 

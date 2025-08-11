@@ -1,5 +1,5 @@
 "use client"
-import { Input, Pagination } from 'antd';
+import { Empty, Input, Pagination } from 'antd';
 import { Loader, Search } from 'lucide-react';
 import React, { useState } from 'react';
 import AddPet from './AddPet';
@@ -53,12 +53,11 @@ const AllPetLists = () => {
                         })
                     }
                 </div>
-                <Pagination defaultCurrent={page} total={data?.meta?.total} pageSize={10} hideOnSinglePage align="end" showSizeChanger={false} onChange={(page) => setpage(page)} />
+
+                <Pagination defaultCurrent={page} total={data?.meta?.total} pageSize={10} align="end" showSizeChanger={false} onChange={(page) => setpage(page)} />
+
                 {
-                    data?.data?.data?.length <= 0 && <div className='min-h-40 min-w-40 flex flex-col justify-center items-center'>
-                        <Image src={"/empty-data.png"} className='h-24 w-24 mx-auto' height={1000} width={1000} alt='empty image' />
-                        <p>Empty data</p>
-                    </div>
+                    data?.data?.data?.length <= 0 && <Empty />
                 }
             </>}
 

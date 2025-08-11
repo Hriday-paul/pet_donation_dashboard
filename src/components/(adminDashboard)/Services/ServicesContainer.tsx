@@ -1,13 +1,14 @@
 "use client"
-import { Button, Pagination } from 'antd';
+import { Button, Input, Pagination } from 'antd';
 import React, { useState } from 'react';
 import ServiceCard from './ServiceCard';
-import { CirclePlus, Loader } from 'lucide-react';
+import { CirclePlus, Loader, Search } from 'lucide-react';
 import AddService from './AddService';
 import { useAllServicesQuery } from '@/redux/api/service.api';
 
 const ServicesContainer = () => {
-    const { isLoading, data, isSuccess } = useAllServicesQuery({});
+    const [searchText, setSearchText] = useState("");
+    const { isLoading, data, isSuccess } = useAllServicesQuery({ searchTerm: searchText });
 
     const [open, setOpen] = useState(false);
 
@@ -15,6 +16,14 @@ const ServicesContainer = () => {
         <div>
             <div className='flex flex-col md:flex-row justify-between items-center my-5 gap-3'>
                 <h1 className="text-2xl text-text-color font-medium">Services</h1>
+
+                <Input
+                    className="!w-[250px] lg:!w-[350px] !py-2 !bg-white  placeholder:text-white"
+                    placeholder="Search Service..."
+                    prefix={<Search size={20} color="#000" />}
+                    onChange={(e) => setSearchText(e?.target?.value)}
+                ></Input>
+
                 <Button onClick={() => setOpen(true)} type='primary' size='large' icon={<CirclePlus />} iconPosition='start'>Add new Service</Button>
             </div>
 

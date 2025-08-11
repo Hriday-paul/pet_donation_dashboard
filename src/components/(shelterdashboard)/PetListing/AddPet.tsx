@@ -1,4 +1,4 @@
-import { Button, Form, FormProps, Input, InputNumber, Modal, Select, Upload } from 'antd';
+import { Button, DatePicker, Form, FormProps, Input, InputNumber, Modal, Select, Upload } from 'antd';
 import React from 'react';
 import { useState } from 'react';
 import { GoPlusCircle } from "react-icons/go";
@@ -22,6 +22,7 @@ import { CloudDownload } from 'lucide-react';
 import type { UploadFile } from 'antd';
 import { toast } from 'sonner';
 import { ImSpinner3 } from 'react-icons/im';
+import SelectMap from './SelectMap';
 
 type TPropsType = {
     open: boolean;
@@ -36,9 +37,10 @@ type FieldType = {
     gender: string,
     neutered: string,
     chipped: string,
+    chip_number: number;
     vaccinated: string,
     weight: number,
-    age: number,
+    date_of_birth: Date,
     pet_image: UploadFile[],
     pet_category: string
 }
@@ -48,12 +50,31 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
     const [handleAddPetApi, { isLoading }] = useAddPetMutation();
     const [form] = Form.useForm();
 
+    const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        if (!selectedLocation) {
+            toast.error("Choose your pet location")
+            return;
+        }
         try {
 
             const formdata = new FormData();
 
-            formdata.append("data", JSON.stringify({ full_name: values?.name, location: values?.location, description: values?.description, neutered: values?.neutered, vaccinated: values?.vaccinated, weight: values?.weight + " kg", chip_number: values?.chipped, breed: values?.breed, gender: values?.gender, age: values?.age + " year", pet_category: values?.pet_category }));
+            formdata.append("data", JSON.stringify({
+                full_name: values?.name,
+                location: { type: "Point", coordinates: [selectedLocation?.longitude, selectedLocation?.latitude] },
+                description: values?.description,
+                neutered: values?.neutered,
+                vaccinated: values?.vaccinated,
+                weight: values?.weight ? values?.weight + " kg" : "N/A",
+                chip_number: values?.chip_number ?? "N/A",
+                chipped: values?.chipped,
+                breed: values?.breed ?? "N/A",
+                gender: values?.gender,
+                date_of_birth: values?.date_of_birth,
+                pet_category: values?.pet_category
+            }));
 
             values?.pet_image.forEach(element => {
                 formdata.append("pet_image", element?.originFileObj as File)
@@ -93,7 +114,7 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                 <Form
                     name="basic"
                     style={{ width: '100%' }}
-                    initialValues={{}}
+                    initialValues={{ weight: 0 }}
                     onFinish={onFinish}
                     autoComplete="off"
                     layout="vertical"
@@ -135,15 +156,17 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                         <Input size="large" placeholder="Enter Pet Name" />
                     </Form.Item>
 
-                    <Form.Item<FieldType> name="location" label={"Location"} rules={[{ required: true, message: "Location is required" }]}>
+                    {/* <Form.Item<FieldType> name="location" label={"Location"} rules={[{ required: true, message: "Location is required" }]}>
                         <Input size="large" placeholder="Enter Location" />
-                    </Form.Item>
+                    </Form.Item> */}
 
                     <Form.Item<FieldType> name="description" label={"Description"} rules={[{ required: true, message: "Description is required" }]}>
                         <Input.TextArea rows={4} size="large" placeholder="Write pet Description" />
                     </Form.Item>
 
-                    <Form.Item<FieldType> name="breed" label={"Pet Breed"} rules={[{ required: true, message: "Pet Breed is required" }]}>
+                    <Form.Item<FieldType> name="breed" label={"Pet Breed"}
+                    // rules={[{ required: true, message: "Pet Breed is required" }]}
+                    >
                         <Input size="large" placeholder="Enter Your Pet Breed" />
                     </Form.Item>
 
@@ -183,18 +206,14 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                     </div>
 
                     <div className='grid grid-cols-2 gap-x-5 items-center'>
-                        <Form.Item<FieldType> name="chipped" label={"Chipp Number"} rules={[{ required: true, message: "Chipp number is required" }]}>
-                            <Input size="large" placeholder="Enter Chip Number" />
-                        </Form.Item>
 
-                        <Form.Item<FieldType> name="vaccinated" label={"Vaccinated"} rules={[{ required: true, message: "Pet Vaccinated is required" }]}>
-
+                        <Form.Item<FieldType> name="chipped" label={"Chipped"} rules={[{ required: true, message: "Chipped is required" }]}>
                             <Select
                                 // defaultValue="lucy"
                                 // style={{ width: 120 }}
                                 // onChange={handleChange}
-                                placeholder="Select Vaccinated"
                                 size="large"
+                                placeholder="Select a option"
                                 className='!w-full'
                                 options={[
                                     { value: true, label: 'YES' },
@@ -202,7 +221,38 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                                 ]}
                             />
                         </Form.Item>
+
+                        <Form.Item shouldUpdate noStyle>
+                            {({ getFieldValue }) => {
+                                const chipped = getFieldValue('chipped');
+
+                                return <Form.Item<FieldType> name="chip_number" label={"Chipp Number"}
+                                // rules={[{ required: true, message: "Chipp number is required" }]}
+                                >
+                                    <Input size="large" disabled={!chipped} placeholder="Enter Chip Number" />
+                                </Form.Item>
+
+                            }}
+                        </Form.Item>
+
+
                     </div>
+
+                    <Form.Item<FieldType> name="vaccinated" label={"Vaccinated"} rules={[{ required: true, message: "Pet Vaccinated is required" }]}>
+
+                        <Select
+                            // defaultValue="lucy"
+                            // style={{ width: 120 }}
+                            // onChange={handleChange}
+                            placeholder="Select Vaccinated"
+                            size="large"
+                            className='!w-full'
+                            options={[
+                                { value: true, label: 'YES' },
+                                { value: false, label: 'NO' },
+                            ]}
+                        />
+                    </Form.Item>
 
                     <Form.Item<FieldType> name="pet_category" label={"Category"} rules={[{ required: true, message: "Pet category is required" }]}>
                         <Select
@@ -220,16 +270,21 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                         />
                     </Form.Item>
 
-                    <Form.Item<FieldType> name="weight" label={"Weight"} rules={[{ required: true, message: "Weight is required" }]}>
+                    <Form.Item<FieldType> name="weight" label={"Weight"}
+                    // rules={[{ required: true, message: "Weight is required" }]}
+                    >
                         <InputNumber min={0} className='!w-full' size="large" placeholder="Enter Pet Weight" addonAfter="kg" />
                     </Form.Item>
 
-                    <Form.Item<FieldType> name="age" label={"Age"} rules={[{ required: true, message: "Age is required" }]}>
-                        <InputNumber min={0} className='!w-full' size="large" placeholder="Enter Pet Age" addonAfter="year" />
+
+                    <Form.Item<FieldType> name="date_of_birth" label={"Birth Date"} rules={[{ required: true, message: "Date of Birth is required" }]}>
+                        <DatePicker className='!w-full' size="large" placeholder="Select Pet Birth date" />
                     </Form.Item>
 
+                    <SelectMap selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} />
+
                     <Form.Item>
-                        <Button htmlType="submit" type="primary" size="large" block disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
+                        <Button htmlType="submit" className='!mt-4' type="primary" size="large" block disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
                             Save
                         </Button>
                     </Form.Item>

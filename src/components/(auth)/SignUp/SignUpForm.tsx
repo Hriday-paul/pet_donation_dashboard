@@ -31,7 +31,7 @@ const SignUpForm = () => {
     const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
         try {
             const res = await submitApi({ first_name: values?.name, email: values?.email, password: values?.password, role: "shelter" }).unwrap();
-            setCookie('accessToken', res?.data?.otpToken?.token, {
+            setCookie('token', res?.data?.otpToken?.token, {
                 httpOnly: false,
                 maxAge: 14 * 24 * 60 * 60, // 14 days
                 path: '/',

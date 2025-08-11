@@ -78,15 +78,16 @@ export interface IPet {
     "_id": string,
     "full_name": string,
     "pet_image": string[],
-    "location": string,
+    "location": { type: "Point", coordinates: [number, number] },
     "description": string,
     "neutered": boolean,
     "vaccinated": boolean,
     "weight": string,
-    "chip_number": string,
+    chipped: string,
+    chip_number: string;
     "breed": string,
     "gender": string,
-    "age": string,
+    date_of_birth: Date,
     "owner": string,
     "pet_category": string,
     "service": string,
@@ -107,11 +108,11 @@ export interface ISurveyAnswers {
     adopted_pet: IPet,
     adopter: IUser,
     answers: { question: string, answer: string, _id: string }[],
-    status : "accepted" | "rejected" | "pending"
+    status: "accepted" | "rejected" | "pending"
 }
 
 export interface INotification {
-    ownerId : IUser,
+    ownerId: IUser,
     "key": string,
     "data": {
         "message": string
