@@ -113,6 +113,7 @@ export interface ISurveyAnswers {
 
 export interface INotification {
     ownerId: IUser,
+    _id : string
     "key": string,
     "data": {
         "message": string

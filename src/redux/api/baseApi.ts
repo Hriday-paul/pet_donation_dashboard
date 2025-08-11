@@ -93,7 +93,7 @@ const baseQueryWithReauth: typeof baseQuery = async (
 
 const baseApi = createApi({
     reducerPath: 'api',
-    tagTypes: ['user', "users", "shelters", 'services', "sub_survice", "privacy", "terms", "about", "earning", "pet", "survey", "survey_answers", "banner"],
+    tagTypes: ['user', "users", "shelters", 'services', "sub_survice", "privacy", "terms", "about", "earning", "pet", "survey", "survey_answers", "banner", "notification"],
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
 
@@ -102,10 +102,25 @@ const baseApi = createApi({
                 url: '/notifications/all-notifications',
                 params: query
             }),
+            providesTags : ["notification"]
+        }),
+        deleteNotifications: builder.mutation<{ data: {data : INotification[]} }, {id : string}>({
+            query: ({id}) => ({
+                url: `/notifications/delete-notification/${id}`,
+                method : "DELETE"
+            }),
+            invalidatesTags : ["notification"]
+        }),
+        deleteAllNotifications: builder.mutation<{ data: {data : INotification[]} }, void>({
+            query: () => ({
+                url: `/notifications/delete-all-notifications`,
+                method : "DELETE"
+            }),
+            invalidatesTags : ["notification"]
         }),
 
     })
 });
 
-export const {useNotificationsQuery } = baseApi;
+export const {useNotificationsQuery, useDeleteNotificationsMutation, useDeleteAllNotificationsMutation } = baseApi;
 export default baseApi;
