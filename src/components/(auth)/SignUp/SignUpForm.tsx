@@ -39,7 +39,7 @@ const SignUpForm = () => {
                 secure: config.hasSSL,
             });
             toast.success("Signup successfully")
-            route.push("/verify-email");
+            route.push("/verify-email?next=/login");
         } catch (err: any) {
             toast.error(err?.data?.message || 'Something went wrong, try again');
         }

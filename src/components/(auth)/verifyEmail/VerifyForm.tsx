@@ -3,7 +3,7 @@ import { useVerifyOtpMutation } from "@/redux/api/auth.api";
 import { config } from "@/utils/config";
 import type { FormProps } from "antd";
 import { Button, Form, Input } from "antd";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCookies } from "react-cookie";
 import { ImSpinner3 } from "react-icons/im";
 import { toast } from "sonner";
@@ -20,6 +20,7 @@ const VerifyEmailForm = () => {
   const [postVerify, { isLoading }] = useVerifyOtpMutation();
   const route = useRouter();
   const [_, setCookie] = useCookies(['accessToken', 'refreshToken', "token"]);
+  const nextRout = useSearchParams().get('next') || '/login'
 
   //handle password change
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
@@ -37,7 +38,7 @@ const VerifyEmailForm = () => {
 
       toast.success('Email Verified Successfully');
 
-      route.push("/reset-password");
+      route.push(nextRout);
 
     } catch (err: any) {
       toast.error(err?.data?.message || 'Something went wrong, try again');

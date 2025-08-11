@@ -37,7 +37,7 @@ const ForgetPassForm = () => {
 
       toast.success('Otp send to your email');
 
-      route.push("/verify-email");
+      route.push("/verify-email?next=/reset-password");
 
     } catch (err: any) {
       toast.error(err?.data?.message || 'Something went wrong, try again');
