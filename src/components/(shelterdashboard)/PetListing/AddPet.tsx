@@ -198,8 +198,9 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                                 placeholder="Select Neutered"
                                 className='!w-full'
                                 options={[
-                                    { value: true, label: 'YES' },
-                                    { value: false, label: 'NO' },
+                                    { value: "Yes", label: 'YES' },
+                                    { value: "No", label: 'NO' },
+                                    { value: "N/A", label: 'N/A' },
                                 ]}
                             />
                         </Form.Item>
@@ -216,15 +217,16 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                                 placeholder="Select a option"
                                 className='!w-full'
                                 options={[
-                                    { value: true, label: 'YES' },
-                                    { value: false, label: 'NO' },
+                                    { value: "Yes", label: 'YES' },
+                                    { value: "No", label: 'NO' },
+                                    { value: "N/A", label: 'N/A' },
                                 ]}
                             />
                         </Form.Item>
 
                         <Form.Item shouldUpdate noStyle>
                             {({ getFieldValue }) => {
-                                const chipped = getFieldValue('chipped');
+                                const chipped = getFieldValue('chipped') == "Yes";
 
                                 return <Form.Item<FieldType> name="chip_number" label={"Chipp Number"}
                                 // rules={[{ required: true, message: "Chipp number is required" }]}
@@ -248,8 +250,9 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                             size="large"
                             className='!w-full'
                             options={[
-                                { value: true, label: 'YES' },
-                                { value: false, label: 'NO' },
+                                { value: "Yes", label: 'YES' },
+                                { value: "No", label: 'NO' },
+                                { value: "N/A", label: 'N/A' },
                             ]}
                         />
                     </Form.Item>

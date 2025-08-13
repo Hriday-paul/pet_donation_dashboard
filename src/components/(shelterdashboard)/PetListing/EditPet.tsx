@@ -41,7 +41,7 @@ type FieldType = {
     description: string;
     gender: string;
     neutered: string;
-    chipped: boolean;
+    chipped: string;
     chip_number: string
     vaccinated: string;
     weight: number;
@@ -76,8 +76,8 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
         try {
             const formdata = new FormData();
 
-            const location = selectedLocation ? selectedLocation : 
-            { latitude: defaultdata?.location?.coordinates[1], longitude: defaultdata?.location?.coordinates[0] };
+            const location = selectedLocation ? selectedLocation :
+                { latitude: defaultdata?.location?.coordinates[1], longitude: defaultdata?.location?.coordinates[0] };
 
             const payload = {
                 full_name: values.name,
@@ -234,8 +234,9 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                                 size="large"
                                 placeholder="Select Neutered"
                                 options={[
-                                    { value: true, label: 'YES' },
-                                    { value: false, label: 'NO' },
+                                    { value: "Yes", label: 'YES' },
+                                    { value: "No", label: 'NO' },
+                                    { value: "N/A", label: 'N/A' },
                                 ]}
                             />
                         </Form.Item>
@@ -252,15 +253,16 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                                 placeholder="Select a option"
                                 className='!w-full'
                                 options={[
-                                    { value: true, label: 'YES' },
-                                    { value: false, label: 'NO' },
+                                    { value: "Yes", label: 'YES' },
+                                    { value: "No", label: 'NO' },
+                                    { value: "N/A", label: 'N/A' },
                                 ]}
                             />
                         </Form.Item>
 
                         <Form.Item shouldUpdate noStyle>
                             {({ getFieldValue }) => {
-                                const chipped = getFieldValue('chipped');
+                                const chipped = getFieldValue('chipped') == "Yes";
 
                                 return <Form.Item<FieldType> name="chip_number" label={"Chipp Number"}
                                 // rules={[{ required: true, message: "Chipp number is required" }]}
@@ -284,8 +286,9 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                             size="large"
                             className='!w-full'
                             options={[
-                                { value: true, label: 'YES' },
-                                { value: false, label: 'NO' },
+                                { value: "Yes", label: 'YES' },
+                                { value: "No", label: 'NO' },
+                                { value: "N/A", label: 'N/A' },
                             ]}
                         />
                     </Form.Item>

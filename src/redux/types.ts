@@ -80,8 +80,8 @@ export interface IPet {
     "pet_image": string[],
     "location": { type: "Point", coordinates: [number, number] },
     "description": string,
-    "neutered": boolean,
-    "vaccinated": boolean,
+    "neutered": string,
+    "vaccinated": string,
     "weight": string,
     chipped: string,
     chip_number: string;
