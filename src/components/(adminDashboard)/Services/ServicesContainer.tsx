@@ -8,7 +8,7 @@ import { useAllServicesQuery } from '@/redux/api/service.api';
 
 const ServicesContainer = () => {
     const [searchText, setSearchText] = useState("");
-    const { isLoading, data, isSuccess } = useAllServicesQuery({ searchTerm: searchText });
+    const { isLoading, data } = useAllServicesQuery({ searchTerm: searchText });
 
     const [open, setOpen] = useState(false);
 

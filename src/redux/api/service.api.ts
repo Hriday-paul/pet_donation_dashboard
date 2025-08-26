@@ -58,16 +58,14 @@ const ServicesApi = baseApi.injectEndpoints({
     }),
 
 
-
-
     allSubServices: builder.query<
       { message: string; data: TSubService[] },
-      { id: string, sort: string }
+      { id: string, sort: string, searchTerm: string }
     //   { page: number; limit: number, searchTerm: string }
     >({
-      query: ({ id, sort }) => ({
+      query: ({ id, searchTerm, sort }) => ({
         url: `/admin/service-base-webs/${id}`,
-        params: { sort }
+        params: { sort, searchTerm }
       }),
       providesTags: (result, error, { id }) => [{ type: "sub_survice", id }],
     }),
@@ -86,7 +84,7 @@ const ServicesApi = baseApi.injectEndpoints({
 
     editSubService: builder.mutation<
       { message: string },
-      { formData: any, service: string, subServiceId : string }
+      { formData: any, service: string, subServiceId: string }
     >({
       query: ({ formData, subServiceId }) => ({
         url: `/admin/update-website/${subServiceId}`,
@@ -124,21 +122,53 @@ const ServicesApi = baseApi.injectEndpoints({
 
     updateBanner: builder.mutation<
       { message: string },
+      { id: string, body: any }
+    >({
+      query: ({ body, id }) => ({
+        url: `/admin/update-banner/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["banner"]
+    }),
+
+    addBanner: builder.mutation<
+      { message: string },
       any
     >({
       query: (formData) => ({
-        url: `/admin/update-banner/banner`,
-        method: "PATCH",
+        url: `/admin/create-banner`,
+        method: "POST",
         body: formData,
       }),
       invalidatesTags: ["banner"]
     }),
+
+    deleteBanner: builder.mutation<
+      { message: string },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/admin/delete-banner-info/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["banner"]
+    }),
+
     getBanner: builder.query<
       {
         message: string,
         data: {
-          "image": string,
-          "websiteLink": string,
+          "_id": string,
+          "bannerInfo": {
+            "image": string,
+            "websiteLink": string,
+            "_id": string
+          }[],
+          "banner": "banner",
+          "createdAt": string,
+          "updatedAt": string,
+          "__v": 0
         }
       },
       void
@@ -155,5 +185,5 @@ const ServicesApi = baseApi.injectEndpoints({
 
 export const { useAllServicesQuery, useAddServiceMutation, useDeleteServiceMutation, useServiceDetailsQuery, useUpdateServiceMutation, useSwapWebserviceMutation,
   useAllSubServicesQuery, useAddSubServiceMutation, useDeleteSubserviceMutation, useEditSubServiceMutation,
-  useUpdateBannerMutation, useGetBannerQuery
+  useUpdateBannerMutation, useGetBannerQuery, useAddBannerMutation, useDeleteBannerMutation,
 } = ServicesApi;

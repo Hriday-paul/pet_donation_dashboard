@@ -9,10 +9,10 @@ import { TSubService } from '@/redux/types';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
-const WebCards = ({ serviceId }: { serviceId: string }) => {
+const WebCards = ({ serviceId, searchText }: { serviceId: string, searchText: string }) => {
 
     const [handleSwapApi] = useSwapWebserviceMutation();
-    const { isLoading, data, isSuccess } = useAllSubServicesQuery({ id: serviceId, sort: "-position" });
+    const { isLoading, data, isSuccess } = useAllSubServicesQuery({ id: serviceId, sort: "-position", searchTerm: searchText });
 
     const [webCards, setWebCards] = useState<TSubService[]>([]);
 

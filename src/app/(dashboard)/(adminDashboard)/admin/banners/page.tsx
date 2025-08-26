@@ -1,10 +1,12 @@
-import AddBanner from '@/components/(adminDashboard)/Banner/AddBanner';
+import Banners from '@/components/(adminDashboard)/Banner/Banners';
 import React from 'react';
 
 const BannerPage = () => {
+
     return (
         <div>
-            <AddBanner />
+            {/* <AddBanner /> */}
+            <Banners />
         </div>
     );
 };

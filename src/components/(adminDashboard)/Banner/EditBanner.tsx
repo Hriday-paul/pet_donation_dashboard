@@ -1,5 +1,5 @@
 "use client"
-import { useAddBannerMutation, useGetBannerQuery, useUpdateBannerMutation } from '@/redux/api/service.api';
+import { useGetBannerQuery, useUpdateBannerMutation } from '@/redux/api/service.api';
 import { Button, Form, FormProps, Input, Modal, Spin, Upload } from 'antd';
 import { CirclePlus, CloudDownload } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -13,11 +13,9 @@ type FieldType = {
     image: UploadFile[]
 }
 
-const AddBanner = () => {
+const EditBanner = ({ defaultData, open, setOpen }: { defaultData: { image: string, websiteLink: string, _id: string }, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
-    const [open, setOpen] = useState(false);
-
-    const [updateBanner, { isLoading }] = useAddBannerMutation();
+    const [updateBanner, { isLoading }] = useUpdateBannerMutation();
     const [form] = Form.useForm();
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
@@ -36,17 +34,31 @@ const AddBanner = () => {
                 formData.append("image", values?.image?.[0]?.originFileObj as File)
             }
 
-            await updateBanner(formData).unwrap()
-            toast.success("Banner Submited successfully.")
+            await updateBanner({ id: defaultData?._id, body: formData }).unwrap()
+            toast.success("Banner updated successfully.")
             form.resetFields();
         } catch (err: any) {
             toast.error(err?.data?.message || "Something went wrong, try again")
         }
     };
 
+    useEffect(() => {
+        if (defaultData) {
+            form?.setFieldsValue({
+                websiteLink: defaultData?.websiteLink,
+                image: [{
+                    uid: `1`,
+                    name: `image.png`,
+                    status: 'done',
+                    url: defaultData?.image,
+                    thumbUrl: defaultData?.image
+                }]
+            })
+        }
+    }, [defaultData])
+
     return (
         <>
-            <Button onClick={() => setOpen(true)} type='primary' size='large' icon={<CirclePlus />} iconPosition='start'>Add New Banner</Button>
 
             <Modal
                 open={open}
@@ -66,13 +78,13 @@ const AddBanner = () => {
                         </div>
                     </div>
 
-                    <h4 className="text-center text-xl font-medium">{"Add New Banner"}</h4>
+                    <h4 className="text-center text-xl font-medium">{"Update Banner"}</h4>
 
 
                     <Form
                         name="basic"
                         style={{ width: '100%' }}
-                        initialValues={{}}
+                        // initialValues={{}}
                         onFinish={onFinish}
                         autoComplete="off"
                         layout="vertical"
@@ -123,4 +135,4 @@ const AddBanner = () => {
     );
 };
 
-export default AddBanner;
+export default EditBanner;

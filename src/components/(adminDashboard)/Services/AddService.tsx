@@ -29,7 +29,6 @@ const AddService = ({ open, setOpen, isEdit, defaultdata }: TPropsType) => {
     const [hideDefaultImage, setHideDefaultImage] = useState(false);
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        console.log(values)
         try {
             if (isEdit && defaultdata) {
                 const formdata = new FormData();
