@@ -96,7 +96,12 @@ const SignUpForm = () => {
             <Form.Item<FieldType>
                 label="Password"
                 name="password"
-                rules={[{ required: true, message: "Please input your password!" }]}
+                rules={[{
+                    required: true,
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                        "Password must include uppercase, lowercase, number, special character, and be at least 8 characters long.",
+                }]}
             >
                 <Input.Password size="large" placeholder="Password" prefix={<LockKeyhole size={16} />} />
             </Form.Item>
@@ -109,7 +114,7 @@ const SignUpForm = () => {
                 <Input.Password size="large" placeholder="Password" prefix={<LockKeyhole size={16} />} />
             </Form.Item>
 
-            <Button htmlType="submit" type="primary" size="large" block disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> :<></>} iconPosition="end">
+            <Button htmlType="submit" type="primary" size="large" block disabled={isLoading} icon={isLoading ? <ImSpinner3 className="animate-spin size-5 text-main-color" /> : <></>} iconPosition="end">
                 Sign Up
             </Button>
 
@@ -123,7 +128,7 @@ const SignUpForm = () => {
             </div>
 
 
-        </Form>
+        </Form >
     );
 };
 

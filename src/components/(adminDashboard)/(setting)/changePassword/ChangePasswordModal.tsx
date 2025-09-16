@@ -33,7 +33,7 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
       await postChangePass(data).unwrap();
       toast.success("Password Update Successfully")
       form.resetFields();
-    } catch (error : any) {
+    } catch (error: any) {
       toast.error(error?.data?.message || "Password update failed, try again")
     }
   };
@@ -115,7 +115,12 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
                 label="New password"
                 name="new_password"
                 rules={[
-                  { required: true, message: "Please Enter New  Password" },
+                  {
+                    required: true,
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must include uppercase, lowercase, number, special character, and be at least 8 characters long.",
+                  },
                 ]}
               >
                 <Input.Password size="large" placeholder="Set new password" />
@@ -157,7 +162,7 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
           </ConfigProvider>
         </div>
       </Modal>
-      
+
     </>
   );
 };
