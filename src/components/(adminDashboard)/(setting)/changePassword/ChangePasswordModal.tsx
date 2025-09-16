@@ -117,9 +117,9 @@ const ChangePasswordModal = ({ open, setOpen }: TPropsType) => {
                 rules={[
                   {
                     required: true,
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
                     message:
-                      "Password must include uppercase, lowercase, number, special character, and be at least 8 characters long.",
+                      "Password must include uppercase, lowercase, number, special character, and be at least 6 characters long.",
                   },
                 ]}
               >

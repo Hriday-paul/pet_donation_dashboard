@@ -29,6 +29,10 @@ const SignUpForm = () => {
     const route = useRouter();
 
     const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+        if (values?.password !== values?.confirm_password) {
+            toast.error("new password & confirm password not matched");
+            return;
+        }
         try {
             const res = await submitApi({ first_name: values?.name, email: values?.email, password: values?.password, role: "shelter" }).unwrap();
             setCookie('token', res?.data?.otpToken?.token, {
@@ -98,9 +102,9 @@ const SignUpForm = () => {
                 name="password"
                 rules={[{
                     required: true,
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
                     message:
-                        "Password must include uppercase, lowercase, number, special character, and be at least 8 characters long.",
+                        "Password must include uppercase, lowercase, number, special character, and be at least 6 characters long.",
                 }]}
             >
                 <Input.Password size="large" placeholder="Password" prefix={<LockKeyhole size={16} />} />
