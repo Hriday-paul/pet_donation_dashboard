@@ -1,7 +1,5 @@
 import { Button, ConfigProvider, Form, FormProps, Input, Modal } from "antd";
 import { RiCloseLargeLine } from "react-icons/ri";
-import ForgetPasswordModal from "./ForgetPasswordModal";
-import { useState } from "react";
 import { toast } from "sonner";
 import { useChangePasswordMutation } from "@/redux/api/auth.api";
 import { ImSpinner3 } from "react-icons/im";

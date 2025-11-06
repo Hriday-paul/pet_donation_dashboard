@@ -27,6 +27,7 @@ import { UploadFileStatus } from 'antd/es/upload/interface';
 import SelectMap from './SelectMap';
 import moment from 'moment';
 import dayjs from 'dayjs';
+import Dragger from 'antd/es/upload/Dragger';
 
 type TPropsType = {
     open: boolean;
@@ -48,11 +49,26 @@ type FieldType = {
     date_of_birth: Date,
     pet_image: UploadFile[];
     pet_category: string;
+
+    city: string,
+    address: string,
+
+    pet_status?: 'adopted' | 'deceased' | 'in quarantine' | 'reserved' | "available";
+    medical_notes?: string;
+    pet_reports?: UploadFile[];
+    internal_notes?: string;
 };
 
 export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
     const [handleUpdatePetApi, { isLoading }] = useUpdatePetMutation();
     const [handleDltPetImageApi] = useDeletePetImageMutation();
+
+    const [cities, setCities] = useState<{
+        "id": number,
+        "name": string,
+        "latitude": number,
+        "longitude": number
+    }[]>([]);
 
     const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(null);
     const [form] = Form.useForm();
@@ -70,7 +86,29 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
             setFileList(formattedImages);
             form.setFieldsValue({ pet_image: formattedImages }); // sync with form field
         }
+
+        if (defaultdata?.pet_reports) {
+            const formattedImages: UploadFile[] = defaultdata.pet_reports.map((url, index) => ({
+                uid: `${Date.now()}-${index}`,
+                name: `image-${index}.png`,
+                status: 'done' as UploadFileStatus,
+                url,
+            }));
+
+            setFileList(formattedImages);
+            form.setFieldsValue({ pet_reports: formattedImages }); // sync with form field
+        }
+
     }, [defaultdata, form]);
+
+    useEffect(() => {
+        fetch("/data/cities.json")
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data)
+                setCities(data);
+            });
+    }, []);
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         try {
@@ -171,6 +209,14 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                         gender: defaultdata.gender,
                         date_of_birth: defaultdata?.date_of_birth ? dayjs(defaultdata.date_of_birth) : null,
                         pet_category: defaultdata.pet_category,
+
+                        city: defaultdata.city,
+                        address: defaultdata.address,
+
+                        pet_status: defaultdata.pet_status,
+                        medical_notes: defaultdata.medical_notes,
+                        internal_notes: defaultdata.internal_notes
+
                     }}
                     onFinish={onFinish}
                 >
@@ -209,6 +255,26 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
 
                     <Form.Item<FieldType> name="description" label="Description" rules={[{ required: true, message: 'Description is required' }]}>
                         <Input.TextArea rows={4} size="large" placeholder="Write pet Description" />
+                    </Form.Item>
+
+                    <Form.Item<FieldType> name="city" label={"City"} rules={[{ required: true, message: "City is required" }]}>
+                        <Select
+                            // defaultValue="lucy"
+                            // style={{ width: 120 }}
+                            // onChange={handleChange}
+                            size="large"
+                            placeholder="Select city"
+                            className='!w-full'
+                            options={cities?.map(i => {
+                                return { label: i?.name, value: i?.name }
+                            })}
+                        />
+                    </Form.Item>
+
+                    <Form.Item<FieldType> name="address" label={"Address"}
+                    // rules={[{ required: true, message: "City is required" }]}
+                    >
+                        <Input size="large" placeholder="eg: Dublin, Ireland" />
                     </Form.Item>
 
                     <Form.Item<FieldType> name="breed" label="Pet Breed"
@@ -313,6 +379,72 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
 
                     <Form.Item<FieldType> name="date_of_birth" label={"Birth Date"} rules={[{ required: true, message: "Date of Birth is required" }]}>
                         <DatePicker className='!w-full' size="large" placeholder="Select Pet Birth date" />
+                    </Form.Item>
+
+                    <Form.Item<FieldType> name="pet_status" label={"Status"} rules={[{ required: true, message: "Pet Status is required" }]}>
+                        <Select
+                            // defaultValue="lucy"
+                            // style={{ width: 120 }}
+                            // onChange={handleChange}
+                            size="large"
+                            placeholder="Select Status"
+                            className='!w-full'
+                            options={[
+                                { value: 'available', label: 'Available' },
+                                { value: 'adopted', label: 'Adopted' },
+                                { value: 'deceased', label: 'Deceased' },
+                                { value: 'in quarantine', label: 'In Quarantine' },
+                                { value: 'reserved', label: 'Reserved' },
+                            ]}
+                        />
+                    </Form.Item>
+
+                    <Form.Item<FieldType> name="medical_notes" label={"Medical Notes"}
+                    // rules={[{ required: true, message: "Description is required" }]}
+                    >
+                        <Input.TextArea rows={4} size="large" placeholder="Write medical notes..." />
+                    </Form.Item>
+                    <Form.Item<FieldType> name="internal_notes" label={"Internal Notes"}
+                    // rules={[{ required: true, message: "Description is required" }]}
+                    >
+                        <Input.TextArea rows={4} size="large" placeholder="Write internal notes..." />
+                    </Form.Item>
+
+                    <Form.Item<FieldType>
+                        name="pet_reports"
+                        label="Attach reports"
+                        valuePropName="fileList"
+                        getValueFromEvent={(e) => {
+                            if (Array.isArray(e)) {
+                                return e;
+                            }
+                            return e?.fileList;
+                        }}
+                    // rules={[{ required: true, message: "Minimum 1 image is required" }]}
+                    >
+                        <Dragger
+                            name="files"
+                            // maxCount={1}
+                            beforeUpload={() => false} // prevents automatic upload
+                            // accept="image/*"
+                            listType="text"
+                            multiple
+                            onPreview={() => { }}
+                            showUploadList={{
+                                showPreviewIcon: false,
+                                showRemoveIcon: true,
+                            }}
+                        >
+                            <div className='flex flex-col justify-center'>
+                                <p className="ant-upload-drag-icon flex justify-center">
+                                    <CloudDownload size={30} />
+                                </p>
+                                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                                <p className="ant-upload-hint">
+                                    Can upload some report files for your personal cases.
+                                </p>
+                            </div>
+                        </Dragger>
                     </Form.Item>
 
                     <SelectMap selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation} defaultLocation={{ latitude: defaultdata?.location?.coordinates[1], longitude: defaultdata?.location?.coordinates[0] }} />

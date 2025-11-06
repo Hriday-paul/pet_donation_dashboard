@@ -94,6 +94,14 @@ export interface IPet {
     "serviceName": string,
     "createdAt": string,
     "updatedAt": string,
+
+    pet_status?: 'adopted' | 'deceased' | 'in quarantine' | 'reserved' | "available";
+    medical_notes?: string;
+    pet_reports?: string[];
+    internal_notes?: string;
+
+    city: string,
+    address: string,
 }
 
 export interface ISurvey {
@@ -113,7 +121,7 @@ export interface ISurveyAnswers {
 
 export interface INotification {
     ownerId: IUser,
-    _id : string
+    _id: string
     "key": string,
     "data": {
         "message": string

@@ -1,30 +1,9 @@
 "use client";
 import { Image, Table, TableColumnsType, TableProps } from "antd";
-
-import { useState } from "react";
-import DataTable from "@/utils/DataTable";
-import UserDetails from "../user/UserDetails";
-import { Eye } from "lucide-react";
 import { useAllusersQuery } from "@/redux/api/users.api";
 import { IUser } from "@/redux/types";
 import moment from "moment";
 
-type TDataType = {
-  key?: number;
-  serial: number;
-  name: string;
-  email: string;
-  date: string;
-  type: string;
-};
-const data: TDataType[] = Array.from({ length: 5 }).map((data, inx) => ({
-  key: inx,
-  serial: inx + 1,
-  name: "James Tracy",
-  email: "james1234@gmail.comm",
-  type: "User",
-  date: "11 April 2025, 10:22 AM",
-}));
 
 const LatestUser = () => {
   const { isLoading, isFetching, data } = useAllusersQuery({ limit: 10 })

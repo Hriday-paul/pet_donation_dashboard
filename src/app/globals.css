@@ -42,7 +42,7 @@ body {
   padding-left: 10px;
 }
 
-.ant-menu-item > svg {
+.ant-menu-item>svg {
   color: #959595 !important;
 }
 
@@ -89,16 +89,16 @@ body {
   @apply !bg-gradient-to-tr from-[#8AD8C0] to-[#19A2A5] !text-[to-[var(--color-menu-item)]] !rounded-full
 }
 
-.ant-menu-item-active{
+.ant-menu-item-active {
   @apply !rounded-full
 }
 
-.ant-menu-item-selected > span > a {
+.ant-menu-item-selected>span>a {
   color: var(--color-menu-item) !important;
   font-size: 18px;
 }
 
-.ant-menu-item-selected > svg {
+.ant-menu-item-selected>svg {
   color: var(--color-menu-item) !important;
 }
 
@@ -108,7 +108,8 @@ body {
   color: #ffffff !important;
   max-width: 200px !important;
 }
-.anticon-delete > svg {
+
+.anticon-delete>svg {
   fill: red !important;
 }
 

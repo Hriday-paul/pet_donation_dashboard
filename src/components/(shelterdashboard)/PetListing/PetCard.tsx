@@ -28,12 +28,15 @@ const PetCard = ({ pet }: { pet: IPet }) => {
     return (
         <div className='bg-white border border-stroke rounded-xl shadow-sm w-60'>
 
-            <div className='h-32 rounded-t-lg'>
+            <div className='h-32 rounded-t-lg relative'>
                 <Carousel autoplay arrows infinite>
                     {pet?.pet_image?.map(img => {
                         return <Image key={img} src={img} placeholder='blur' blurDataURL={placeHolderBlurImg} alt='pet image' height={1000} width={1000} className='h-32 w-full object-contain mx-auto rounded-t-2xl' />
                     })}
                 </Carousel>
+                <span className='absolute top-3 right-3 rounded px-1 py-0.5 text-xs bg-main-color text-white font-medium'>
+                    {pet?.pet_status}
+                </span>
             </div>
 
             <section className='p-4 pt-1'>

@@ -58,7 +58,7 @@ const AboutUsEditor = () => {
         >
           <FaArrowLeft size={20} color="#fff" />
         </span>
-        <h4 className="text-2xl font-medium text-text-color">Terms & Condition</h4>
+        <h4 className="text-2xl font-medium text-text-color">About us</h4>
       </div>
       {getLoading ? <div className='min-h-40 flex items-center justify-center'>
         <LoaderCircle size={50} className="text-4xl text-main-color animate-spin" />
