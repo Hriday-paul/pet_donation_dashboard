@@ -2,21 +2,17 @@
 import {
   Image,
   Input,
-  message,
   Pagination,
   Popconfirm,
-  PopconfirmProps,
   Table,
   TableColumnsType,
-  TableProps,
   Tooltip,
 } from "antd";
 import { useState } from "react";
-import DataTable from "@/utils/DataTable";
 import { CgUnblock } from "react-icons/cg";
-import { Eye, Search } from "lucide-react";
+import { Eye, Search, Trash2 } from "lucide-react";
 import ShelterDetails from "./ShelterDetails";
-import { useAllsheltersQuery, useBlock_userMutation, useUnblock_userMutation } from "@/redux/api/users.api";
+import { useAllsheltersQuery, useBlock_userMutation, useDeleteShelterMutation, useUnblock_userMutation } from "@/redux/api/users.api";
 import { IUser } from "@/redux/types";
 import { toast } from "sonner";
 import moment from "moment";
@@ -33,6 +29,7 @@ const ShelterTable = () => {
 
   const [handleUnblockUpdate] = useUnblock_userMutation();
   const [handleBlockUpdate] = useBlock_userMutation();
+  const [handleDeleteShalter] = useDeleteShelterMutation();
 
 
   const [open, setOpen] = useState(false);
@@ -99,8 +96,8 @@ const ShelterTable = () => {
           </button>
 
           <Popconfirm
-            title="Block the user"
-            description={`Are you sure to ${record?.isActive ? "block" : "unblock"} this user?`}
+            title="Block the shelter"
+            description={`Are you sure to ${record?.isActive ? "block" : "unblock"} this shelter?`}
             onConfirm={() => handleBlockUser(record?._id, !record?.isActive)}
             okText="Yes"
             cancelText="No"
@@ -111,6 +108,20 @@ const ShelterTable = () => {
               </button>
             </Tooltip>
           </Popconfirm>
+          <Popconfirm
+            title="Delete the shelter"
+            description={`After delete you can not restore the shelter`}
+            onConfirm={() => handleDeleteShelter(record?._id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Tooltip title={"Delete"}>
+              <button>
+                {<Trash2 size={22} color="#CD0335" />}
+              </button>
+            </Tooltip>
+          </Popconfirm>
+
         </div>
       ),
     },
@@ -124,7 +135,18 @@ const ShelterTable = () => {
         await handleBlockUpdate({ id: id }).unwrap();
       }
 
-      toast.success(`User ${status ? "unblock" : "block"} successfully`)
+      toast.success(`Shelter ${status ? "unblock" : "block"} successfully`)
+
+    } catch (err: any) {
+      toast.error(err?.data?.message || "something went wrong, try again")
+    }
+  };
+  const handleDeleteShelter = async (id: string) => {
+    try {
+
+      await handleDeleteShalter({ id: id }).unwrap();
+
+      toast.success(`Shelter deleted successfully`)
 
     } catch (err: any) {
       toast.error(err?.data?.message || "something went wrong, try again")

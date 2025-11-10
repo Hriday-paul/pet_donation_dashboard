@@ -90,7 +90,7 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
         if (defaultdata?.pet_reports) {
             const formattedImages: UploadFile[] = defaultdata.pet_reports.map((url, index) => ({
                 uid: `${Date.now()}-${index}`,
-                name: `image-${index}.png`,
+                name: url,
                 status: 'done' as UploadFileStatus,
                 url,
             }));
@@ -98,7 +98,6 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
             setFileList(formattedImages);
             form.setFieldsValue({ pet_reports: formattedImages }); // sync with form field
         }
-
     }, [defaultdata, form]);
 
     useEffect(() => {

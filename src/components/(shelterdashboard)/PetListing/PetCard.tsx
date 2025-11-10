@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Carousel, Popconfirm, Tooltip } from 'antd';
 import { toast } from 'sonner';
 import { BsGenderAmbiguous } from 'react-icons/bs';
 import { PiPawPrint } from 'react-icons/pi';
-import { AddPetForm } from './AddPet';
 import { IPet } from '@/redux/types';
 import { placeHolderBlurImg } from '@/utils/config';
 import Image from 'next/image';

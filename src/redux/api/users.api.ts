@@ -15,7 +15,7 @@ const UsersApi = baseApi.injectEndpoints({
         }),
 
         block_user: builder.mutation<
-            { message: string; data: { token: string } },
+            { message: string },
             { id: string }
         >({
             query: ({ id }) => ({
@@ -25,7 +25,7 @@ const UsersApi = baseApi.injectEndpoints({
             invalidatesTags: ["users", "shelters"],
         }),
         unblock_user: builder.mutation<
-            { message: string; data: { token: string } },
+            { message: string },
             { id: string }
         >({
             query: ({ id }) => ({
@@ -33,6 +33,17 @@ const UsersApi = baseApi.injectEndpoints({
                 method: "PATCH",
             }),
             invalidatesTags: ["users", "shelters"],
+        }),
+
+        deleteShelter: builder.mutation<
+            { message: string },
+            { id: string }
+        >({
+            query: ({ id }) => ({
+                url: `/admin/delete-shelter/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["shelters"],
         }),
 
         allshelters: builder.query<
@@ -55,4 +66,4 @@ const UsersApi = baseApi.injectEndpoints({
     }),
 });
 
-export const { useAllusersQuery, useBlock_userMutation, useUnblock_userMutation, useAllsheltersQuery } = UsersApi;
+export const { useAllusersQuery, useBlock_userMutation, useUnblock_userMutation, useAllsheltersQuery, useDeleteShelterMutation } = UsersApi;
