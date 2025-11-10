@@ -2,6 +2,9 @@ import { Button, DatePicker, Form, FormProps, Input, InputNumber, Modal, Select,
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { GoPlusCircle } from "react-icons/go";
+import { LoadScriptNext } from "@react-google-maps/api"
+
+const GOOGLE_MAPS_API_KEY = config.MAP_KEY!
 
 const AddPet = () => {
     const [open, setOpen] = useState(false)
@@ -9,7 +12,17 @@ const AddPet = () => {
         <div>
             <Button onClick={() => setOpen(true)} type='primary' size='large' block icon={<GoPlusCircle />} iconPosition='start'>Add New Pet</Button>
 
-            <AddPetForm setOpen={setOpen} open={open} />
+
+            <Modal
+                open={open}
+                footer={null}
+                centered={true}
+                onCancel={() => setOpen(false)}
+                closeIcon={false}>
+
+                <AddPetForm setOpen={setOpen} />
+
+            </Modal>
         </div>
     );
 };
@@ -24,9 +37,10 @@ import { toast } from 'sonner';
 import { ImSpinner3 } from 'react-icons/im';
 import SelectMap from './SelectMap';
 import Dragger from 'antd/es/upload/Dragger';
+import SelectAddress from './SelectAddress';
+import { config } from '@/utils/config';
 
 type TPropsType = {
-    open: boolean;
     setOpen: (collapsed: boolean) => void;
 };
 
@@ -54,10 +68,11 @@ type FieldType = {
     internal_notes?: string;
 }
 
-export const AddPetForm = ({ open, setOpen }: TPropsType) => {
+export const AddPetForm = ({ setOpen }: TPropsType) => {
 
     const [handleAddPetApi, { isLoading }] = useAddPetMutation();
     const [form] = Form.useForm();
+    const [pickupInputValue, setPickupInputValue] = useState<string>("");
 
     const [cities, setCities] = useState<{
         "id": number,
@@ -72,7 +87,6 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
         fetch("/data/cities.json")
             .then((res) => res.json())
             .then((data) => {
-                console.log(data)
                 setCities(data);
             });
     }, []);
@@ -82,6 +96,7 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
             toast.error("Choose your pet location")
             return;
         }
+       
         try {
 
             const formdata = new FormData();
@@ -125,27 +140,28 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
         }
     };
 
+    useEffect(() => {
+        if (pickupInputValue) {
+            form.setFieldsValue({ address: pickupInputValue }); // sync with form field
+        }
+    }, [pickupInputValue, form]);
+
     return (
 
-        <Modal
-            open={open}
-            footer={null}
-            centered={true}
-            onCancel={() => setOpen(false)}
-            closeIcon={false}>
+        <div className="">
 
-            <div className="">
-
-                <div className="flex justify-end items-center">
-                    <div
-                        className="w-10 h-10 bg-main-color  rounded-full flex justify-center items-center cursor-pointer"
-                        onClick={() => setOpen(false)}
-                    >
-                        <RiCloseLargeLine size={18} color="#fff" className="" />
-                    </div>
+            <div className="flex justify-end items-center">
+                <div
+                    className="w-10 h-10 bg-main-color  rounded-full flex justify-center items-center cursor-pointer"
+                    onClick={() => setOpen(false)}
+                >
+                    <RiCloseLargeLine size={18} color="#fff" className="" />
                 </div>
+            </div>
 
-                <h4 className="text-center text-xl font-medium">{"Add New Pet"}</h4>
+            <h4 className="text-center text-xl font-medium">{"Add New Pet"}</h4>
+
+            <LoadScriptNext googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
 
                 <Form
                     name="basic"
@@ -187,7 +203,6 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                         </Upload>
                     </Form.Item>
 
-
                     <Form.Item<FieldType> name="name" label={"Pet Name"} rules={[{ required: true, message: "Pet name is required" }]}>
                         <Input size="large" placeholder="Enter Pet Name" />
                     </Form.Item>
@@ -195,6 +210,8 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                     {/* <Form.Item<FieldType> name="location" label={"Location"} rules={[{ required: true, message: "Location is required" }]}>
                         <Input size="large" placeholder="Enter Location" />
                     </Form.Item> */}
+
+                    <SelectAddress pickupInputValue={pickupInputValue} selectedLocation={selectedLocation} setPickupInputValue={setPickupInputValue} setSelectedLocation={setSelectedLocation} />
 
                     <Form.Item<FieldType> name="description" label={"Description"} rules={[{ required: true, message: "Description is required" }]}>
                         <Input.TextArea rows={4} size="large" placeholder="Write pet Description" />
@@ -208,17 +225,17 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
                             size="large"
                             placeholder="Select city"
                             className='!w-full'
-                            options={cities?.map(i=>{
-                                return {label : i?.name, value : i?.name}
+                            options={cities?.map(i => {
+                                return { label: i?.name, value: i?.name }
                             })}
                         />
                     </Form.Item>
 
-                    <Form.Item<FieldType> name="address" label={"Address"}
+                    {/* <Form.Item<FieldType> name="address" label={"Address"}
                     // rules={[{ required: true, message: "City is required" }]}
                     >
                         <Input size="large" placeholder="eg: Dublin, Ireland" />
-                    </Form.Item>
+                    </Form.Item> */}
 
                     <Form.Item<FieldType> name="breed" label={"Pet Breed"}
                     // rules={[{ required: true, message: "Pet Breed is required" }]}
@@ -416,7 +433,9 @@ export const AddPetForm = ({ open, setOpen }: TPropsType) => {
 
                 </Form>
 
-            </div>
-        </Modal>
+            </LoadScriptNext>
+
+        </div>
+
     );
 };

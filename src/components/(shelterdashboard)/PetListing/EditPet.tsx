@@ -21,11 +21,10 @@ import { RiCloseLargeLine } from 'react-icons/ri';
 import { CloudDownload } from 'lucide-react';
 import { ImSpinner3 } from 'react-icons/im';
 import { toast } from 'sonner';
-import { useAddPetMutation, useDeletePetImageMutation, useUpdatePetMutation } from '@/redux/api/pet.api';
+import { useDeletePetImageMutation, useUpdatePetMutation } from '@/redux/api/pet.api';
 import { IPet } from '@/redux/types';
 import { UploadFileStatus } from 'antd/es/upload/interface';
 import SelectMap from './SelectMap';
-import moment from 'moment';
 import dayjs from 'dayjs';
 import Dragger from 'antd/es/upload/Dragger';
 
