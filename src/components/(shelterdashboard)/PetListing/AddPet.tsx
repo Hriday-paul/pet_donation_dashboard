@@ -96,7 +96,7 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
             toast.error("Choose your pet location")
             return;
         }
-       
+
         try {
 
             const formdata = new FormData();
@@ -207,12 +207,6 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
                         <Input size="large" placeholder="Enter Pet Name" />
                     </Form.Item>
 
-                    {/* <Form.Item<FieldType> name="location" label={"Location"} rules={[{ required: true, message: "Location is required" }]}>
-                        <Input size="large" placeholder="Enter Location" />
-                    </Form.Item> */}
-
-                    <SelectAddress pickupInputValue={pickupInputValue} selectedLocation={selectedLocation} setPickupInputValue={setPickupInputValue} setSelectedLocation={setSelectedLocation} />
-
                     <Form.Item<FieldType> name="description" label={"Description"} rules={[{ required: true, message: "Description is required" }]}>
                         <Input.TextArea rows={4} size="large" placeholder="Write pet Description" />
                     </Form.Item>
@@ -231,11 +225,7 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
                         />
                     </Form.Item>
 
-                    {/* <Form.Item<FieldType> name="address" label={"Address"}
-                    // rules={[{ required: true, message: "City is required" }]}
-                    >
-                        <Input size="large" placeholder="eg: Dublin, Ireland" />
-                    </Form.Item> */}
+                    <SelectAddress pickupInputValue={pickupInputValue} selectedLocation={selectedLocation} setPickupInputValue={setPickupInputValue} setSelectedLocation={setSelectedLocation} />
 
                     <Form.Item<FieldType> name="breed" label={"Pet Breed"}
                     // rules={[{ required: true, message: "Pet Breed is required" }]}
