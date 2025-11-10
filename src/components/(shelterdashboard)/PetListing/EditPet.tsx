@@ -11,9 +11,7 @@ const EditPet = ({ defaultdata }: { defaultdata: IPet }) => {
         <div>
             <Button type='primary' onClick={() => setOpen(true)} size='small'>Edit</Button>
 
-
-            <EditPetForm setOpen={setOpen} defaultdata={defaultdata} open={open}/>
-
+            <EditPetForm setOpen={setOpen} defaultdata={defaultdata} open={open} />
         </div>
     );
 };
@@ -36,7 +34,7 @@ import { config } from '@/utils/config';
 import SelectAddress from './SelectAddress';
 
 type TPropsType = {
-    open : boolean,
+    open: boolean,
     setOpen: (collapsed: boolean) => void;
     defaultdata: IPet;
 };
@@ -92,7 +90,29 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
             }));
 
             setFileList(formattedImages);
-            form.setFieldsValue({ pet_image: formattedImages }); // sync with form field
+
+            const defaultD = {
+                name: defaultdata.full_name,
+                description: defaultdata.description,
+                neutered: defaultdata.neutered,
+                vaccinated: defaultdata.vaccinated,
+                weight: defaultdata.weight !== "N/A" ? parseFloat(defaultdata.weight?.split(' ')[0]) : 0,
+                chipped: defaultdata.chipped,
+                chip_number: defaultdata.chip_number !== "N/A" ? defaultdata.chip_number : "",
+                breed: defaultdata.breed,
+                gender: defaultdata.gender,
+                date_of_birth: defaultdata?.date_of_birth ? dayjs(defaultdata.date_of_birth) : null,
+                pet_category: defaultdata.pet_category,
+
+                city: defaultdata.city,
+                address: defaultdata.address,
+
+                pet_status: defaultdata.pet_status,
+                medical_notes: defaultdata.medical_notes,
+                internal_notes: defaultdata.internal_notes
+            }
+
+            form.setFieldsValue({ ...defaultD, pet_image: formattedImages }); // sync with form field
         }
 
         if (defaultdata?.pet_reports) {
@@ -217,27 +237,7 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                         layout="vertical"
                         autoComplete="off"
                         style={{ width: '100%' }}
-                        initialValues={{
-                            name: defaultdata.full_name,
-                            description: defaultdata.description,
-                            neutered: defaultdata.neutered,
-                            vaccinated: defaultdata.vaccinated,
-                            weight: defaultdata.weight !== "N/A" ? parseFloat(defaultdata.weight?.split(' ')[0]) : 0,
-                            chipped: defaultdata.chipped,
-                            chip_number: defaultdata.chip_number !== "N/A" ? defaultdata.chip_number : "",
-                            breed: defaultdata.breed,
-                            gender: defaultdata.gender,
-                            date_of_birth: defaultdata?.date_of_birth ? dayjs(defaultdata.date_of_birth) : null,
-                            pet_category: defaultdata.pet_category,
 
-                            city: defaultdata.city,
-                            address: defaultdata.address,
-
-                            pet_status: defaultdata.pet_status,
-                            medical_notes: defaultdata.medical_notes,
-                            internal_notes: defaultdata.internal_notes
-
-                        }}
                         onFinish={onFinish}
                     >
                         <Form.Item<FieldType>
