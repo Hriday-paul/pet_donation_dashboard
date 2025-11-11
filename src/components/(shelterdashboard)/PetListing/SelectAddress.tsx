@@ -49,7 +49,7 @@ export default function SelectAddress(
             onLoad={onPickupAutocompleteLoad}
             onPlaceChanged={handlePickupPlaceSelect}
             options={{
-                // types: ["(cities)"],
+                types: ["(cities)"],
                 // fields: ["formatted_address", "geometry", "address_components"],
             }}>
             <Form.Item name="address" label={"Address"}>

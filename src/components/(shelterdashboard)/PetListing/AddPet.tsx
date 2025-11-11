@@ -68,18 +68,23 @@ type FieldType = {
     internal_notes?: string;
 }
 
+type Tcity = {
+    "id": number,
+    "name": string,
+    "latitude": number,
+    "longitude": number
+}
+
 export const AddPetForm = ({ setOpen }: TPropsType) => {
 
     const [handleAddPetApi, { isLoading }] = useAddPetMutation();
     const [form] = Form.useForm();
     const [pickupInputValue, setPickupInputValue] = useState<string>("");
 
-    const [cities, setCities] = useState<{
-        "id": number,
-        "name": string,
-        "latitude": number,
-        "longitude": number
-    }[]>([]);
+    const [allCities, setAllCities] = useState<Tcity[]>([]);
+
+    const [cities, setCities] = useState<Tcity[]>([]);
+
 
     const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
@@ -87,9 +92,25 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
         fetch("/data/cities.json")
             .then((res) => res.json())
             .then((data) => {
-                setCities(data);
+                setCities(data.sort((i: Tcity, b: Tcity) => i?.name.localeCompare(b?.name)));
+                setAllCities(data.sort((i: Tcity, b: Tcity) => i?.name.localeCompare(b?.name)));
             });
     }, []);
+
+    const onSearch = (value: string) => {
+        const searchTerm = value.toLowerCase();
+
+        if (!searchTerm || searchTerm == "") {
+            setCities(allCities);
+            return;
+        }
+
+        const results = allCities.filter((city) =>
+            city.name.toLowerCase().includes(searchTerm)
+        );
+
+        setCities(results);
+    };
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         if (!selectedLocation) {
@@ -219,6 +240,8 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
                             size="large"
                             placeholder="Select city"
                             className='!w-full'
+                            onSearch={onSearch}
+                            showSearch
                             options={cities?.map(i => {
                                 return { label: i?.name, value: i?.name }
                             })}
