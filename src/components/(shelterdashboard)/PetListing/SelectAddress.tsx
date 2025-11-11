@@ -49,19 +49,19 @@ export default function SelectAddress(
             onLoad={onPickupAutocompleteLoad}
             onPlaceChanged={handlePickupPlaceSelect}
             options={{
-                types: ["(cities)"],
+                // types: ["(cities)"],
+                // fields: ["formatted_address", "geometry", "address_components"],
             }}>
             <Form.Item name="address" label={"Address"}>
-            <Input
-                className=""
-                size="large"
-                placeholder="eg : Dublin, Dhaka"
-                value={pickupInputValue}
-                onChange={(e) => setPickupInputValue(e.target.value)}
-            />
+                <Input
+                    className=""
+                    size="large"
+                    placeholder="eg : Dublin, Dhaka"
+                    value={pickupInputValue}
+                    onChange={(e) => setPickupInputValue(e.target.value)}
+                />
             </Form.Item>
         </Autocomplete>
-
 
     );
 }
