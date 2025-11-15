@@ -4,20 +4,24 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaArrowLeft } from "react-icons/fa6";
 import { FiEdit } from "react-icons/fi";
-import profile from "@/assets/image/adminProfile.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Camera, LoaderCircle, Trash2, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useGetUserProfileQuery, useUpdateProfileMutation } from "@/redux/api/auth.api";
 import { ImSpinner3 } from "react-icons/im";
+import SelectAddress from "@/components/(shelterdashboard)/PetListing/SelectAddress";
+import { LoadScriptNext } from "@react-google-maps/api"
+import { config } from "@/utils/config";
+
+const GOOGLE_MAPS_API_KEY = config.MAP_KEY!
 
 type FieldType = {
   name: string,
   email: string,
   contact: string,
-  location?: string,
+  address?: string,
   webLink?: string,
 }
 
@@ -25,14 +29,18 @@ const PersonalInformationContainer = () => {
   const { data, isSuccess, isLoading } = useGetUserProfileQuery();
   const [updateProfile, { isLoading: updateLoading }] = useUpdateProfileMutation();
   const route = useRouter();
+  const [formHandler] = Form.useForm();
   const { user } = useSelector((root: RootState) => root?.userSlice)
   const [edit, setEdit] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
+  const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [pickupInputValue, setPickupInputValue] = useState<string>("");
+
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     try {
       const form = new FormData();
-      form.append('data', JSON.stringify({ first_name : values?.name, last_name : " ", email : values?.email, contact_number : values?.contact, webLink : values?.webLink }))
+      form.append('data', JSON.stringify({ first_name: values?.name, last_name: " ", email: values?.email, contact_number: values?.contact, webLink: values?.webLink, location: values?.address }))
 
       if (file) {
         form.append("profile_image", file)
@@ -58,6 +66,12 @@ const PersonalInformationContainer = () => {
       setFile(file)
     }
   };
+
+  useEffect(() => {
+    if (pickupInputValue) {
+      formHandler.setFieldsValue({ address: pickupInputValue !== "" ? pickupInputValue : data?.data?.location }); // sync with form field
+    }
+  }, [pickupInputValue, formHandler, data]);
 
   return (
     <div>
@@ -146,6 +160,7 @@ const PersonalInformationContainer = () => {
             <div className="w-2/4">
               <Form
                 onFinish={onFinish}
+                form={formHandler}
                 layout="vertical"
                 style={{
                   marginTop: "25px",
@@ -154,7 +169,7 @@ const PersonalInformationContainer = () => {
                   name: data?.data?.first_name,
                   email: data?.data?.email,
                   contact: data?.data?.contact_number,
-                  location: data?.data?.location,
+                  address: data?.data?.location,
                   webLink: data?.data?.webLink
                 }}
               >
@@ -190,13 +205,9 @@ const PersonalInformationContainer = () => {
                 {/* --------------------shelter extra fields--------------- */}
                 {
                   user?.role == "shelter" && <>
-                    <Form.Item<FieldType> label="Location" name="location" rules={[{ required: user?.role == "shelter", message: "Location is required" }]}>
-                      <Input
-                        size="large"
-                        placeholder="Enter Location"
-                        readOnly={!edit}
-                      ></Input>
-                    </Form.Item>
+                    <LoadScriptNext googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+                      <SelectAddress pickupInputValue={pickupInputValue} selectedLocation={selectedLocation} setPickupInputValue={setPickupInputValue} setSelectedLocation={setSelectedLocation} isReadonly={!edit}/>
+                    </LoadScriptNext>
 
                     <Form.Item<FieldType> label="Website Link" name="webLink" rules={[{ required: user?.role == "shelter", message: "Website link is required" }]}>
                       <Input
@@ -207,7 +218,6 @@ const PersonalInformationContainer = () => {
                     </Form.Item>
                   </>
                 }
-
 
                 <div className={edit ? "" : "hidden"}>
                   <Button

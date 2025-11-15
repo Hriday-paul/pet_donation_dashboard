@@ -9,6 +9,8 @@ import Image from 'next/image';
 import { useDeletePetMutation } from '@/redux/api/pet.api';
 import EditPet from './EditPet';
 import moment from 'moment';
+import { FaFileAlt } from 'react-icons/fa';
+import ViewAttachments from './ViewAttachments';
 
 const PetCard = ({ pet }: { pet: IPet }) => {
 
@@ -76,6 +78,9 @@ const PetCard = ({ pet }: { pet: IPet }) => {
                     </Popconfirm>
 
                     <EditPet defaultdata={pet} />
+
+                    <ViewAttachments pet_reports={pet?.pet_reports}/>
+
 
                 </div>
 

@@ -7,13 +7,15 @@ export default function SelectAddress(
     {
         setSelectedLocation,
         pickupInputValue,
-        setPickupInputValue
+        setPickupInputValue,
+        isReadonly = false
     }
         : {
             selectedLocation: { latitude: number; longitude: number } | null
             setSelectedLocation: React.Dispatch<React.SetStateAction<{ latitude: number; longitude: number } | null>>,
             pickupInputValue: string,
-            setPickupInputValue: React.Dispatch<React.SetStateAction<string>>
+            setPickupInputValue: React.Dispatch<React.SetStateAction<string>>,
+            isReadonly ?: boolean
         }
 ) {
 
@@ -49,15 +51,16 @@ export default function SelectAddress(
             onLoad={onPickupAutocompleteLoad}
             onPlaceChanged={handlePickupPlaceSelect}
             options={{
-                types: ["(cities)"],
+                // types: ["(cities)"],
                 // fields: ["formatted_address", "geometry", "address_components"],
             }}>
             <Form.Item name="address" label={"Address"}>
                 <Input
                     className=""
                     size="large"
-                    placeholder="eg : Dublin, Dhaka"
+                    placeholder="eg : Dublin, Ireland"
                     value={pickupInputValue}
+                    readOnly={isReadonly}
                     onChange={(e) => setPickupInputValue(e.target.value)}
                 />
             </Form.Item>

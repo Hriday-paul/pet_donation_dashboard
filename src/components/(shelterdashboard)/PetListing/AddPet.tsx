@@ -39,6 +39,8 @@ import SelectMap from './SelectMap';
 import Dragger from 'antd/es/upload/Dragger';
 import SelectAddress from './SelectAddress';
 import { config } from '@/utils/config';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 type TPropsType = {
     setOpen: (collapsed: boolean) => void;
@@ -84,6 +86,8 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
     const [allCities, setAllCities] = useState<Tcity[]>([]);
 
     const [cities, setCities] = useState<Tcity[]>([]);
+
+    const { user } = useSelector((state: RootState) => state?.userSlice);
 
 
     const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -162,10 +166,8 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
     };
 
     useEffect(() => {
-        if (pickupInputValue) {
-            form.setFieldsValue({ address: pickupInputValue }); // sync with form field
-        }
-    }, [pickupInputValue, form]);
+        form.setFieldsValue({ address: pickupInputValue != "" ? pickupInputValue : user?.address }); // sync with form field
+    }, [pickupInputValue, form, user]);
 
     return (
 

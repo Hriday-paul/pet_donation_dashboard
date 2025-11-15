@@ -8,15 +8,17 @@ const cookies = new Cookies();
 export interface userType {
     user: {
         name: string | null,
-        profilePicture: string | null, 
-        role: "admin" | "shelter"
+        profilePicture: string | null,
+        role: "admin" | "shelter",
+        address?: string
     }
 }
 
 type addUserType = {
     name: string,
-    profilePicture: string, 
-    role: "admin" | "shelter"
+    profilePicture: string,
+    role: "admin" | "shelter",
+    location: string
 }
 
 const initialState: userType = {
@@ -36,12 +38,14 @@ const userSlice = createSlice({
             state.user.name = payload?.name;
             state.user.profilePicture = payload?.profilePicture;
             state.user.role = payload?.role
+            state.user.address = payload?.location
         },
 
         removeUser: (state) => {
             state.user.name = null;
             state.user.profilePicture = null;
-            
+            state.user.address = undefined
+
             cookies.remove("accessToken", { path: "/" });
             cookies.remove("token", { path: "/" });
             cookies.remove("refreshToken", { path: "/" });

@@ -25,7 +25,7 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(addUserDetails({ name: res?.data?.first_name, role: res?.data?.role, profilePicture: res?.data?.profile_image || "/empty-user.png" }));
+      dispatch(addUserDetails({ name: res?.data?.first_name, role: res?.data?.role, profilePicture: res?.data?.profile_image || "/empty-user.png", location : res?.data?.location }));
     }
     if (isError) {
       dispatch(removeUser())

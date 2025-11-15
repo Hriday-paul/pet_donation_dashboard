@@ -97,7 +97,7 @@ export interface IPet {
 
     pet_status?: 'adopted' | 'deceased' | 'in quarantine' | 'reserved' | "available";
     medical_notes?: string;
-    pet_reports?: string[];
+    pet_reports: string[];
     internal_notes?: string;
 
     city: string,

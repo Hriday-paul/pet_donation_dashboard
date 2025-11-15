@@ -19,10 +19,6 @@ type FieldType = {
   role: "shelter" | "admin",
 };
 
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
-
 const LoginForm = () => {
   const [postLogin, { isLoading }] = useLoginUserMutation();
   const [_, setCookie] = useCookies(['accessToken', 'refreshToken']);
@@ -55,7 +51,7 @@ const LoginForm = () => {
         secure: config.hasSSL,
       });
 
-      dispatch(addUserDetails({ name: res?.data?.user?.first_name, role: res?.data?.user?.role, profilePicture: res?.data?.user?.profile_image || "/empty-user.png" }));
+      dispatch(addUserDetails({ name: res?.data?.user?.first_name, role: res?.data?.user?.role, profilePicture: res?.data?.user?.profile_image || "/empty-user.png" , location : res?.data?.user?.location}));
 
       toast.success('Signin successfully');
 
@@ -73,7 +69,6 @@ const LoginForm = () => {
       name="basic"
       initialValues={{ role: "shelter" }}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       autoComplete="off"
       layout="vertical"
       style={{ width: "354px" }}>
