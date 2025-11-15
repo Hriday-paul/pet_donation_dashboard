@@ -99,7 +99,7 @@ const baseApi = createApi({
 
         notifications: builder.query<{ data: {data : INotification[]} }, {}>({
             query: (query) => ({
-                url: '/notifications/all-notifications',
+                url: '/notifications/user-notifications',
                 params: query
             }),
             providesTags : ["notification"]
