@@ -50,7 +50,7 @@ function ViewAttachments({ pet_reports }: { pet_reports: string[] }) {
                     }
                 </div>
 
-                {pet_reports?.length == 0 && <div className='min-h-60 flex justify-center'>
+                {pet_reports?.length == 0 && <div className='min-h-60 flex justify-center items-center'>
                     <Empty />
                 </div>}
 
