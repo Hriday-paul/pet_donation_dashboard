@@ -204,6 +204,12 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                 }
             });
 
+            if (values?.pet_reports) {
+                values?.pet_reports.forEach(element => {
+                    formdata.append("pet_reports", element?.originFileObj as File)
+                });
+            }
+
             await handleUpdatePetApi({ formData: formdata, id: defaultdata?._id }).unwrap();
             toast.success('Pet updated successfully');
             form.resetFields();
