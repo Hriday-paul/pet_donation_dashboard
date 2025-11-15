@@ -1,4 +1,4 @@
-import { Button, Modal, Tooltip } from 'antd';
+import { Button, Empty, Modal, Tooltip } from 'antd';
 import React, { useState } from 'react'
 import { BsCloudDownload } from 'react-icons/bs';
 import { FaFileAlt } from 'react-icons/fa';
@@ -49,6 +49,10 @@ function ViewAttachments({ pet_reports }: { pet_reports: string[] }) {
                         })
                     }
                 </div>
+
+                {pet_reports?.length == 0 && <div className='min-h-60 flex justify-center'>
+                    <Empty />
+                </div>}
 
             </Modal>
         </div>
