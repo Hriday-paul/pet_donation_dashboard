@@ -82,7 +82,6 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
 
     const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(null);
     const [form] = Form.useForm();
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     useEffect(() => {
         if (defaultdata?.pet_image) {
@@ -92,8 +91,6 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                 status: 'done' as UploadFileStatus,
                 url,
             }));
-
-            setFileList(formattedImages);
 
             const defaultD = {
                 name: defaultdata.full_name,
@@ -126,8 +123,6 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                 status: 'done' as UploadFileStatus,
                 url,
             }));
-
-            setFileList(formattedImages);
             form.setFieldsValue({ pet_reports: formattedImages }); // sync with form field
         }
     }, [defaultdata, form]);
@@ -213,7 +208,6 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
             await handleUpdatePetApi({ formData: formdata, id: defaultdata?._id }).unwrap();
             toast.success('Pet updated successfully');
             form.resetFields();
-            setFileList([]);
             setSelectedLocation(null);
             setOpen(false);
         } catch (err: any) {
@@ -222,18 +216,21 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
     };
 
     const handleImageDlt = async (file: UploadFile) => {
+        if (file?.originFileObj) {
+            return true;
+        }
         if (file?.url) {
             const loader = toast.loading("Loading...")
             try {
                 await handleDltPetImageApi({ id: defaultdata?._id, url: file?.url }).unwrap();
                 toast.success("Image deleted successfully")
             } catch (err: any) {
-                toast.error(err?.data?.message || "Something went wrong, try again")
+                toast.error(err?.data?.message || "Something went wrong, try again");
+                return false;
             } finally {
                 toast.dismiss(loader)
             }
         }
-        setFileList((prev) => prev.filter((f) => f.uid !== file.uid));
     }
 
     return (
@@ -271,15 +268,13 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                             label="Pet Images"
                             valuePropName="fileList"
                             getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-                            rules={[{ required: fileList?.length < 1, message: 'Minimum 1 image is required' }]}
+                            rules={[{ required: true, message: 'Minimum 1 image is required' }]}
                         >
                             <Upload
                                 name="files"
                                 beforeUpload={() => false}
                                 accept="image/*"
                                 listType="picture-card"
-                                fileList={fileList}
-                                onChange={({ fileList }) => setFileList(fileList)}
                                 multiple
                                 onPreview={() => { }}
                                 onRemove={handleImageDlt}
