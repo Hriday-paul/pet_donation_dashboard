@@ -9,7 +9,6 @@ import Image from 'next/image';
 import { useDeletePetMutation } from '@/redux/api/pet.api';
 import EditPet from './EditPet';
 import moment from 'moment';
-import { FaFileAlt } from 'react-icons/fa';
 import ViewAttachments from './ViewAttachments';
 
 const PetCard = ({ pet }: { pet: IPet }) => {
@@ -21,7 +20,7 @@ const PetCard = ({ pet }: { pet: IPet }) => {
             await handleDeleteApi(id).unwrap();
             toast.success("Pet deleted successfully")
         } catch (err: any) {
-            toast.error(err?.data?.message || "Pet deleted successfully.")
+            toast.error(err?.data?.message || "something went wrong, try agin")
         }
     }
 

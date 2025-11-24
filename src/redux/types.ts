@@ -5,6 +5,10 @@ export type IUser = {
     "email": string,
     "role": "shelter" | "admin",
     "location": string,
+    address: {
+        type: "Point",
+        coordinates: number[]
+    },
     "isDeleted": boolean,
     "isVerified": boolean,
     "isActive": boolean,

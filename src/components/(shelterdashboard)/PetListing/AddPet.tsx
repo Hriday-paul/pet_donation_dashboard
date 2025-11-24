@@ -81,14 +81,12 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
 
     const [handleAddPetApi, { isLoading }] = useAddPetMutation();
     const [form] = Form.useForm();
-    const [pickupInputValue, setPickupInputValue] = useState<string>("");
+    const { user } = useSelector((state: RootState) => state?.userSlice);
+    const [pickupInputValue, setPickupInputValue] = useState<string>(user?.location || "");
 
     const [allCities, setAllCities] = useState<Tcity[]>([]);
 
     const [cities, setCities] = useState<Tcity[]>([]);
-
-    const { user } = useSelector((state: RootState) => state?.userSlice);
-
 
     const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
@@ -166,7 +164,10 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
     };
 
     useEffect(() => {
-        form.setFieldsValue({ address: pickupInputValue != "" ? pickupInputValue : user?.address }); // sync with form field
+        form.setFieldsValue({ address: pickupInputValue != "" ? pickupInputValue : user?.location}); // sync with form field
+        if (user?.address?.coordinates?.length == 2) {
+            setSelectedLocation({ longitude: user?.address?.coordinates[0], latitude: user?.address?.coordinates[1] })
+        }
     }, [pickupInputValue, form, user]);
 
     return (

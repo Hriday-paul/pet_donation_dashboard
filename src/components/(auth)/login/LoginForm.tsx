@@ -51,7 +51,7 @@ const LoginForm = () => {
         secure: config.hasSSL,
       });
 
-      dispatch(addUserDetails({ name: res?.data?.user?.first_name, role: res?.data?.user?.role, profilePicture: res?.data?.user?.profile_image || "/empty-user.png" , location : res?.data?.user?.location}));
+      dispatch(addUserDetails({ name: res?.data?.user?.first_name, role: res?.data?.user?.role, profilePicture: res?.data?.user?.profile_image || "/empty-user.png" , location : res?.data?.user?.location || null, coordinates : res?.data?.user?.address?.coordinates || []}));
 
       toast.success('Signin successfully');
 

@@ -15,7 +15,7 @@ export default function SelectAddress(
             setSelectedLocation: React.Dispatch<React.SetStateAction<{ latitude: number; longitude: number } | null>>,
             pickupInputValue: string,
             setPickupInputValue: React.Dispatch<React.SetStateAction<string>>,
-            isReadonly ?: boolean
+            isReadonly?: boolean
         }
 ) {
 
@@ -54,7 +54,9 @@ export default function SelectAddress(
                 // types: ["(cities)"],
                 // fields: ["formatted_address", "geometry", "address_components"],
             }}>
-            <Form.Item name="address" label={"Address"}>
+            <Form.Item name="address" label={"Address"}
+                rules={[{ required: true, message: "Address is required" }]}
+            >
                 <Input
                     className=""
                     size="large"

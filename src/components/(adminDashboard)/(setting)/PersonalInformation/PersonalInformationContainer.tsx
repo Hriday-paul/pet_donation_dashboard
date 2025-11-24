@@ -40,7 +40,7 @@ const PersonalInformationContainer = () => {
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     try {
       const form = new FormData();
-      form.append('data', JSON.stringify({ first_name: values?.name, last_name: " ", email: values?.email, contact_number: values?.contact, webLink: values?.webLink, location: values?.address }))
+      form.append('data', JSON.stringify({ first_name: values?.name, last_name: " ", email: values?.email, contact_number: values?.contact, webLink: values?.webLink, location: values?.address, address : {type : "Point", coordinates : selectedLocation ? [selectedLocation?.longitude, selectedLocation?.latitude] : []} }))
 
       if (file) {
         form.append("profile_image", file)

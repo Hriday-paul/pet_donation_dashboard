@@ -10,7 +10,11 @@ export interface userType {
         name: string | null,
         profilePicture: string | null,
         role: "admin" | "shelter",
-        address?: string
+        location: string | null,
+        address : {
+            type : "Point",
+            "coordinates" : number[]
+        }
     }
 }
 
@@ -18,14 +22,20 @@ type addUserType = {
     name: string,
     profilePicture: string,
     role: "admin" | "shelter",
-    location: string
+    location: string | null,
+    coordinates : number[]
 }
 
 const initialState: userType = {
     user: {
         name: null,
         profilePicture: null,
-        role: "shelter"
+        role: "shelter",
+        location: null,
+        address : {
+            type : "Point",
+            coordinates : []
+        }
     }
 }
 
@@ -38,13 +48,14 @@ const userSlice = createSlice({
             state.user.name = payload?.name;
             state.user.profilePicture = payload?.profilePicture;
             state.user.role = payload?.role
-            state.user.address = payload?.location
+            state.user.location = payload?.location
+            state.user.address = {type : "Point", coordinates : payload?.coordinates || []}
         },
 
         removeUser: (state) => {
             state.user.name = null;
             state.user.profilePicture = null;
-            state.user.address = undefined
+            state.user.location = null
 
             cookies.remove("accessToken", { path: "/" });
             cookies.remove("token", { path: "/" });
