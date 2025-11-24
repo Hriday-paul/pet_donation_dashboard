@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUserDetails, removeUser } from "@/redux/slices/userSlice";
 import { RootState } from "@/redux/store";
 import { LanguageSwitcher } from "@/utils/LanguageSwitcher";
-import { HandleLogoutServer } from "@/utils/ServerEffect";
 
 type TNavbarProps = {
   collapsed: boolean;
@@ -26,7 +25,7 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(addUserDetails({ name: res?.data?.first_name, role: res?.data?.role, profilePicture: res?.data?.profile_image || "/empty-user.png", location: res?.data?.location || null, coordinates: res?.data?.address?.coordinates || [] }));
+      dispatch(addUserDetails({ name: res?.data?.first_name, role: res?.data?.role, profilePicture: res?.data?.profile_image || "/empty-user.png", location : res?.data?.location || null, coordinates : res?.data?.address?.coordinates || [] }));
     }
     if (isError) {
       dispatch(removeUser())
@@ -36,9 +35,10 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
 
   const { user } = useSelector((state: RootState) => state.userSlice);
 
-  const handleLogout = async() => {
+  const handleLogout = () => {
     dispatch(removeUser())
-    await HandleLogoutServer();
+    router.refresh();
+    router.push("/login");
   };
 
   return (
