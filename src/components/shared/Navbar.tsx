@@ -28,7 +28,6 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
       dispatch(addUserDetails({ name: res?.data?.first_name, role: res?.data?.role, profilePicture: res?.data?.profile_image || "/empty-user.png", location : res?.data?.location || null, coordinates : res?.data?.address?.coordinates || [] }));
     }
     if (isError) {
-      dispatch(removeUser())
       router.push("/login")
     }
   }, [isError, router, isSuccess, res])

@@ -1,5 +1,6 @@
 "use client";
 import { useLoginUserMutation } from "@/redux/api/auth.api";
+import baseApi from "@/redux/api/baseApi";
 import { addUserDetails } from "@/redux/slices/userSlice";
 import { config } from "@/utils/config";
 import type { FormProps } from "antd";
@@ -52,6 +53,8 @@ const LoginForm = () => {
       });
 
       dispatch(addUserDetails({ name: res?.data?.user?.first_name, role: res?.data?.user?.role, profilePicture: res?.data?.user?.profile_image || "/empty-user.png" , location : res?.data?.user?.location || null, coordinates : res?.data?.user?.address?.coordinates || []}));
+
+      dispatch(baseApi.util.resetApiState());
 
       toast.success('Signin successfully');
 
