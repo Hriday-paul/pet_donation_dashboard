@@ -36,7 +36,6 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
 
   const handleLogout = () => {
     dispatch(removeUser())
-    router.refresh();
     router.push("/login");
   };
 
