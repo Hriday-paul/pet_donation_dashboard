@@ -59,6 +59,7 @@ const LoginForm = () => {
       toast.success('Signin successfully');
 
       route.push(res?.data?.user?.role == 'admin' ? "/admin/dashboard" : "/shelter/dashboard");
+      route.refresh();
 
 
     } catch (err: any) {
