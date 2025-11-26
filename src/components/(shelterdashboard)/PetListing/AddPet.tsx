@@ -164,11 +164,21 @@ export const AddPetForm = ({ setOpen }: TPropsType) => {
     };
 
     useEffect(() => {
-        form.setFieldsValue({ address: pickupInputValue != "" ? pickupInputValue : user?.location}); // sync with form field
+
+        if (user?.location) {
+            form.setFieldsValue({ address: user.location });
+            // setPickupInputValue(user.location); // optional, sync state
+        }
         if (user?.address?.coordinates?.length == 2) {
             setSelectedLocation({ longitude: user?.address?.coordinates[0], latitude: user?.address?.coordinates[1] })
         }
-    }, [pickupInputValue, form, user]);
+    }, [user]);
+
+    useEffect(() => {
+        if (pickupInputValue) {
+            form.setFieldsValue({ address: pickupInputValue });
+        }
+    }, [pickupInputValue])
 
     return (
 

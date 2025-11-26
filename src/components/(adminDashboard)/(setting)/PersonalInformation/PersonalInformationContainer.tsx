@@ -40,7 +40,7 @@ const PersonalInformationContainer = () => {
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     try {
       const form = new FormData();
-      form.append('data', JSON.stringify({ first_name: values?.name, last_name: " ", email: values?.email, contact_number: values?.contact, webLink: values?.webLink, location: values?.address, address : {type : "Point", coordinates : selectedLocation ? [selectedLocation?.longitude, selectedLocation?.latitude] : []} }))
+      form.append('data', JSON.stringify({ first_name: values?.name, last_name: " ", email: values?.email, contact_number: values?.contact, webLink: values?.webLink, location: values?.address, address: { type: "Point", coordinates: selectedLocation ? [selectedLocation?.longitude, selectedLocation?.latitude] : [] } }))
 
       if (file) {
         form.append("profile_image", file)
@@ -68,10 +68,16 @@ const PersonalInformationContainer = () => {
   };
 
   useEffect(() => {
-    if (pickupInputValue) {
-      formHandler.setFieldsValue({ address: pickupInputValue !== "" ? pickupInputValue : data?.data?.location }); // sync with form field
+    if (data?.data?.location) {
+      formHandler.setFieldsValue({ address: data?.data?.location }); // sync with form field
     }
-  }, [pickupInputValue, formHandler, data]);
+  }, [data]);
+
+  useEffect(() => {
+    if (pickupInputValue) {
+      formHandler.setFieldsValue({ address: pickupInputValue }); // sync with form field
+    }
+  }, [pickupInputValue]);
 
   return (
     <div>
@@ -206,7 +212,7 @@ const PersonalInformationContainer = () => {
                 {
                   user?.role == "shelter" && <>
                     <LoadScriptNext googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
-                      <SelectAddress pickupInputValue={pickupInputValue} selectedLocation={selectedLocation} setPickupInputValue={setPickupInputValue} setSelectedLocation={setSelectedLocation} isReadonly={!edit}/>
+                      <SelectAddress pickupInputValue={pickupInputValue} selectedLocation={selectedLocation} setPickupInputValue={setPickupInputValue} setSelectedLocation={setSelectedLocation} isReadonly={!edit} />
                     </LoadScriptNext>
 
                     <Form.Item<FieldType> label="Website Link" name="webLink" rules={[{ required: user?.role == "shelter", message: "Website link is required" }]}>

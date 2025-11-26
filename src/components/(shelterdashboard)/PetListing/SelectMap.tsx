@@ -17,7 +17,8 @@ const SelectMap = ({
     const handleMapClick = (e: google.maps.MapMouseEvent) => {
         if (e.latLng) {
             const lat = e.latLng.lat()
-            const lng = e.latLng.lng()
+            const lng = e.latLng.lng();
+            console.log(lat, lng);
             setSelectedLocation({ latitude: lat, longitude: lng })
         }
     }

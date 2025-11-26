@@ -155,7 +155,7 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
         if (pickupInputValue) {
             form.setFieldsValue({ address: pickupInputValue }); // sync with form field
         }
-    }, [pickupInputValue, form]);
+    }, [pickupInputValue]);
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         try {
