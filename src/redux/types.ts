@@ -26,6 +26,7 @@ export type TService = {
     "name": string,
     "icon": string,
     "isActive": boolean,
+    "position" ?: number
 }
 
 export type TSubService = {

@@ -35,6 +35,19 @@ const ServicesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["services"],
     }),
+
+    addServicePosition: builder.mutation<
+      { message: string },
+      {body : any, id : string}
+    >({
+      query: ({body, id}) => ({
+        url: `/admin/change-position/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["services"],
+    }),
+
     updateService: builder.mutation<
       { message: string },
       { body: any, id: string }
@@ -183,7 +196,7 @@ const ServicesApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useAllServicesQuery, useAddServiceMutation, useDeleteServiceMutation, useServiceDetailsQuery, useUpdateServiceMutation, useSwapWebserviceMutation,
+export const { useAllServicesQuery, useAddServiceMutation, useAddServicePositionMutation, useDeleteServiceMutation, useServiceDetailsQuery, useUpdateServiceMutation, useSwapWebserviceMutation,
   useAllSubServicesQuery, useAddSubServiceMutation, useDeleteSubserviceMutation, useEditSubServiceMutation,
   useUpdateBannerMutation, useGetBannerQuery, useAddBannerMutation, useDeleteBannerMutation,
 } = ServicesApi;

@@ -7,11 +7,14 @@ import Link from 'next/link';
 import { TService } from '@/redux/types';
 import { placeHolderBlurImg } from '@/utils/config';
 import { useDeleteServiceMutation } from '@/redux/api/service.api';
+import SetServicePosition from './SetServicePosition';
 
 const ServiceCard = ({ service }: { service: TService }) => {
+    const [addPositionOpen, setAddPositionOpen] = useState(false);
+    const [handleDeleteApi, { }] = useDeleteServiceMutation();
 
     const [open, setOpen] = useState(false);
-    const [handleDeleteApi, { }] = useDeleteServiceMutation();
+    
 
     const handleDelete = async (id: string) => {
         try {
@@ -44,10 +47,12 @@ const ServiceCard = ({ service }: { service: TService }) => {
                 </Popconfirm>
 
                 <Button type='primary' onClick={() => setOpen(true)}>Edit</Button>
+                <Button type='primary' onClick={() => setAddPositionOpen(true)}>Position</Button>
 
             </section>
 
             <AddService open={open} setOpen={setOpen} isEdit={true} defaultdata={service} />
+            <SetServicePosition open={addPositionOpen} setOpen={setAddPositionOpen} defaultdata={service}/>
 
         </div>
     );
