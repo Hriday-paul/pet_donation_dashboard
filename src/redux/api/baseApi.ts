@@ -97,21 +97,21 @@ const baseApi = createApi({
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
 
-        notifications: builder.query<{ data: {data : INotification[]} }, {}>({
+        notifications: builder.query<{ data: {data : {notifications : INotification[]}} }, {}>({
             query: (query) => ({
                 url: '/notifications/user-notifications',
                 params: query
             }),
             providesTags : ["notification"]
         }),
-        deleteNotifications: builder.mutation<{ data: {data : INotification[]} }, {id : string}>({
+        deleteNotifications: builder.mutation<{ data: {}}, {id : string}>({
             query: ({id}) => ({
                 url: `/notifications/delete-notification/${id}`,
                 method : "DELETE"
             }),
             invalidatesTags : ["notification"]
         }),
-        deleteAllNotifications: builder.mutation<{ data: {data : INotification[]} }, void>({
+        deleteAllNotifications: builder.mutation<{ data: {} }, void>({
             query: () => ({
                 url: `/notifications/delete-all-notifications`,
                 method : "DELETE"

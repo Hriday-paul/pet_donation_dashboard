@@ -32,7 +32,7 @@ function ViewAttachments({ pet_reports }: { pet_reports: string[] }) {
                 onCancel={() => setOpen(false)}
                 title="Attachments"
             // closeIcon={false}
-            >
+>
 
                 <div className='space-y-5 w-full'>
                     {
