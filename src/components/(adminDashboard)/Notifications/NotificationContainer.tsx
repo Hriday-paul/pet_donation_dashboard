@@ -43,11 +43,11 @@ const NotificationContainer = () => {
         <div className="xl:mt-8 mt-6 xl:px-10 px-6 text-text-color">
           {/* showing today notification */}
           <div className="space-y-5">
-            {data?.data?.data?.notifications?.map((notification, index) => (
+            {data?.data?.notifications?.map((notification, index) => (
               <Notification notification={notification} key={notification?._id} />
             ))}
             {
-              isSuccess && data?.data?.data?.notifications?.length <= 0 && <Empty />
+              isSuccess && data?.data?.notifications?.length <= 0 && <Empty />
             }
           </div>
         </div>
