@@ -21,7 +21,7 @@ const WebCardsContainer = ({ serviceId }: { serviceId: string }) => {
 
                 <Input
                     className="!w-[250px] lg:!w-[350px] !py-2 !bg-white  placeholder:text-white"
-                    placeholder="Search Service..."
+                    placeholder="Search..."
                     prefix={<Search size={20} color="#000" />}
                     onChange={(e) => setSearchText(e?.target?.value)}
                 ></Input>

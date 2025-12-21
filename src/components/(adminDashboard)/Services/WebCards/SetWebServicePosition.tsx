@@ -1,30 +1,30 @@
-import { useAddServicePositionMutation } from "@/redux/api/service.api";
+import { useAddWebservicePositionMutation } from "@/redux/api/service.api";
 import { Button, Form, FormProps, InputNumber, Modal } from "antd";
 import { ImSpinner3 } from "react-icons/im";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { toast } from "sonner";
-import { TService } from "@/redux/types";
+import { TSubService } from "@/redux/types";
 
 type TPropsType = {
     open: boolean;
     setOpen: (collapsed: boolean) => void;
     isEdit?: boolean,
-    defaultdata: TService
+    defaultdata: TSubService
 };
 
 type FieldType = {
     position: number,
 }
 
-const SetServicePosition = ({ open, setOpen, defaultdata }: TPropsType) => {
+const SetWebServicePosition = ({ open, setOpen, defaultdata }: TPropsType) => {
 
-    const [handleUpdateApi, { isLoading }] = useAddServicePositionMutation();
+    const [handleUpdateApi, { isLoading }] = useAddWebservicePositionMutation();
     const [form] = Form.useForm();
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         try {
-            const res = await handleUpdateApi({ body: { position: values?.position }, id: defaultdata?._id }).unwrap();
-            toast.success("Service position updated successfully");
+            const res = await handleUpdateApi({ body: { position: values?.position }, id: defaultdata?._id, serviceId : defaultdata?.service }).unwrap();
+            toast.success("Position updated successfully");
 
         } catch (err: any) {
             toast.error(err?.data?.message || "something went wrong, try again")
@@ -82,4 +82,4 @@ const SetServicePosition = ({ open, setOpen, defaultdata }: TPropsType) => {
     );
 };
 
-export default SetServicePosition
+export default SetWebServicePosition
