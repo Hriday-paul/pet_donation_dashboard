@@ -1,4 +1,5 @@
 import { Button, Empty, Modal, Tooltip } from 'antd';
+import Link from 'next/link';
 import React, { useState } from 'react'
 import { BsCloudDownload } from 'react-icons/bs';
 import { FaFileAlt } from 'react-icons/fa';
@@ -32,7 +33,7 @@ function ViewAttachments({ pet_reports }: { pet_reports: string[] }) {
                 onCancel={() => setOpen(false)}
                 title="Attachments"
             // closeIcon={false}
->
+            >
 
                 <div className='space-y-5 w-full'>
                     {
@@ -42,9 +43,14 @@ function ViewAttachments({ pet_reports }: { pet_reports: string[] }) {
                                 <p className="mt-2.5">
                                     {report.substring(report.lastIndexOf("/") + 1)}
                                 </p>
-                                <Button onClick={() => handleDownload(report, report.substring(report.lastIndexOf("/") + 1))} size='small' className='absolute right-5 top-5'>
-                                    <BsCloudDownload />
-                                </Button>
+
+                                {/* onClick={() => handleDownload(report, report.substring(report.lastIndexOf("/") + 1))} */}
+
+                                <a href={report} download={true}>
+                                    <Button size='small' className='absolute right-5 top-5'>
+                                        <BsCloudDownload />
+                                    </Button>
+                                </a>
                             </div>
                         })
                     }

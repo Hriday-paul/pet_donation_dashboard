@@ -26,7 +26,8 @@ export type TService = {
     "name": string,
     "icon": string,
     "isActive": boolean,
-    "position" ?: number
+    "position"?: number,
+    service_tags: string[]
 }
 
 export type TSubService = {

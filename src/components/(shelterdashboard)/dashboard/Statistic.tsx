@@ -34,7 +34,7 @@ const Statistic = () => {
             <PawPrint className="w-6 h-6 text-white" />
           </div>
           <div className="flex flex-col">
-            <span className="text-[#3D5473] text-lg font-medium">Total Pet Donated</span>
+            <span className="text-[#3D5473] text-lg font-medium">Total Pet Adopted</span>
             {isLoading ? <Loader size={25} className='text-main-color animate-spin' /> : <span className="text-main-color text-3xl font-semibold">{data?.data?.totalPetDonations}</span>}
           </div>
         </div>

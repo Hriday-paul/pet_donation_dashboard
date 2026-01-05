@@ -24,7 +24,7 @@ import { RiCloseLargeLine } from 'react-icons/ri';
 import { CloudDownload } from 'lucide-react';
 import { ImSpinner3 } from 'react-icons/im';
 import { toast } from 'sonner';
-import { useDeletePetImageMutation, useUpdatePetMutation } from '@/redux/api/pet.api';
+import { useDeletePetImageMutation, useDeletePetReportMutation, useUpdatePetMutation } from '@/redux/api/pet.api';
 import { IPet } from '@/redux/types';
 import { UploadFileStatus } from 'antd/es/upload/interface';
 import SelectMap from './SelectMap';
@@ -73,6 +73,7 @@ type Tcity = {
 export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
     const [handleUpdatePetApi, { isLoading }] = useUpdatePetMutation();
     const [handleDltPetImageApi] = useDeletePetImageMutation();
+    const [handleDltPetReportApi] = useDeletePetReportMutation();
 
     const [pickupInputValue, setPickupInputValue] = useState<string>("");
 
@@ -85,7 +86,7 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
 
     useEffect(() => {
         if (defaultdata?.pet_image) {
-            const formattedImages: UploadFile[] = defaultdata.pet_image.map((url, index) => ({
+            const formattedImages: UploadFile[] = defaultdata?.pet_image?.map((url, index) => ({
                 uid: `${Date.now()}-${index}`,
                 name: `image-${index}.png`,
                 status: 'done' as UploadFileStatus,
@@ -93,24 +94,24 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
             }));
 
             const defaultD = {
-                name: defaultdata.full_name,
-                description: defaultdata.description,
-                neutered: defaultdata.neutered,
-                vaccinated: defaultdata.vaccinated,
-                weight: defaultdata.weight !== "N/A" ? parseFloat(defaultdata.weight?.split(' ')[0]) : 0,
-                chipped: defaultdata.chipped,
-                chip_number: defaultdata.chip_number !== "N/A" ? defaultdata.chip_number : "",
-                breed: defaultdata.breed,
-                gender: defaultdata.gender,
+                name: defaultdata?.full_name,
+                description: defaultdata?.description,
+                neutered: defaultdata?.neutered,
+                vaccinated: defaultdata?.vaccinated,
+                weight: defaultdata?.weight !== "N/A" ? parseFloat(defaultdata.weight?.split(' ')[0]) : 0,
+                chipped: defaultdata?.chipped,
+                chip_number: defaultdata?.chip_number !== "N/A" ? defaultdata.chip_number : "",
+                breed: defaultdata?.breed,
+                gender: defaultdata?.gender,
                 date_of_birth: defaultdata?.date_of_birth ? dayjs(defaultdata.date_of_birth) : null,
-                pet_category: defaultdata.pet_category,
+                pet_category: defaultdata?.pet_category,
 
-                city: defaultdata.city,
-                address: defaultdata.address,
+                city: defaultdata?.city,
+                address: defaultdata?.address,
 
-                pet_status: defaultdata.pet_status,
-                medical_notes: defaultdata.medical_notes,
-                internal_notes: defaultdata.internal_notes
+                pet_status: defaultdata?.pet_status,
+                medical_notes: defaultdata?.medical_notes,
+                internal_notes: defaultdata?.internal_notes
             }
 
             form.setFieldsValue({ ...defaultD, pet_image: formattedImages }); // sync with form field
@@ -224,6 +225,24 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
             try {
                 await handleDltPetImageApi({ id: defaultdata?._id, url: file?.url }).unwrap();
                 toast.success("Image deleted successfully")
+            } catch (err: any) {
+                toast.error(err?.data?.message || "Something went wrong, try again");
+                return false;
+            } finally {
+                toast.dismiss(loader)
+            }
+        }
+    }
+
+    const handleReportDlt = async (file: UploadFile) => {
+        if (file?.originFileObj) {
+            return true;
+        }
+        if (file?.url) {
+            const loader = toast.loading("Loading...")
+            try {
+                await handleDltPetReportApi({ id: defaultdata?._id, report: file?.url }).unwrap();
+                toast.success("Report deleted successfully")
             } catch (err: any) {
                 toast.error(err?.data?.message || "Something went wrong, try again");
                 return false;
@@ -449,6 +468,7 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                             <Input.TextArea rows={4} size="large" placeholder="Write internal notes..." />
                         </Form.Item>
 
+
                         <Form.Item<FieldType>
                             name="pet_reports"
                             label="Attach reports"
@@ -473,6 +493,7 @@ export const EditPetForm = ({ open, setOpen, defaultdata }: TPropsType) => {
                                     showPreviewIcon: false,
                                     showRemoveIcon: true,
                                 }}
+                                onRemove={handleReportDlt}
                             >
                                 <div className='flex flex-col justify-center'>
                                     <p className="ant-upload-drag-icon flex justify-center">

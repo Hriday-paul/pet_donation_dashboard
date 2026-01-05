@@ -44,7 +44,7 @@ const PetDonationOverviewChart = () => {
   return (
     <div className="bg-secondary-color border border-stroke rounded-3xl p-8 ">
       <div className="text-text-color flex lg:flex-wrap xl:flex-nowrap justify-between items-center mb-10 gap-2">
-        <h1 className="text-xl text-black font-medium">Pet Donated Overview</h1>
+        <h1 className="text-xl text-black font-medium">Pet Adoption Overview</h1>
 
         <Select
           value={selectedYear}
@@ -94,7 +94,7 @@ const PetDonationOverviewChart = () => {
           <Area
             activeDot={false}
             type="monotone"
-            dataKey="donates"
+            dataKey="adopted"
             strokeWidth={0}
             stroke="#080E0E"
             fill="#95bed7"
