@@ -31,13 +31,13 @@ const PetDonationOverviewChart = () => {
 
   if (isError) return <ErrorComponent />
 
-  const realdata: { name: string, donates: number }[] = [];
+  const realdata: { name: string, adopted: number }[] = [];
 
   const monthlyData = data?.data?.monthlyDonatedPet;
 
   for (let i in monthlyData) {
     const month = i as keyof IMonth;
-    realdata.push({ name: month.substring(0, 3), donates: monthlyData[month] })
+    realdata.push({ name: month.substring(0, 3), adopted: monthlyData[month] })
   }
 
 

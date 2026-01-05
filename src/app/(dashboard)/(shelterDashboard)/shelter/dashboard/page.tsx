@@ -8,7 +8,7 @@ const ShelterDashboard = () => {
     return (
         <div className="lg:space-y-10 space-y-5 ">
             <Statistic></Statistic>
-            <div className="grid grid-cols-2 gap-5 items-center">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 items-center">
                 <PetsOverviewChart />
                 <PetDonationOverviewChart />
             </div>
