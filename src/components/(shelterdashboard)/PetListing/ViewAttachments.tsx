@@ -1,21 +1,37 @@
+import { useDownloadAttachmentMutation } from '@/redux/api/baseApi';
 import { Button, Empty, Modal, Tooltip } from 'antd';
 import Link from 'next/link';
 import React, { useState } from 'react'
 import { BsCloudDownload } from 'react-icons/bs';
 import { FaFileAlt } from 'react-icons/fa';
+import { toast } from 'sonner';
 
 function ViewAttachments({ pet_reports }: { pet_reports: string[] }) {
     const [open, setOpen] = useState(false)
+    const [downloadFile, { }] = useDownloadAttachmentMutation();
 
-    const handleDownload = (fileUrl: string, filename: string) => {
-        // Create a temporary anchor element to trigger download
-        const link = document.createElement("a");
-        link.href = fileUrl;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    const handleDownload = async (fileUrl: string) => {
+        try {
+            const blob = await downloadFile({ url: fileUrl }).unwrap();
+
+            const fileName = fileUrl.split('/').pop() || 'download';
+
+            const link = document.createElement('a');
+            const urlBlob = window.URL.createObjectURL(blob);
+
+            link.href = urlBlob;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+
+            link.remove();
+            window.URL.revokeObjectURL(urlBlob);
+        } catch (err: any) {
+            console.log(err)
+            toast.error(err?.data?.message || "Something went wrong, try again");
+        }
     };
+
 
     return (
         <div>
@@ -46,11 +62,11 @@ function ViewAttachments({ pet_reports }: { pet_reports: string[] }) {
 
                                 {/* onClick={() => handleDownload(report, report.substring(report.lastIndexOf("/") + 1))} */}
 
-                                <a href={report} download={true}>
-                                    <Button size='small' className='absolute right-5 top-5'>
-                                        <BsCloudDownload />
-                                    </Button>
-                                </a>
+                                {/* <a href={report} download={true}> */}
+                                <Button onClick={() => handleDownload(report)} size='small' className='absolute right-5 top-5'>
+                                    <BsCloudDownload />
+                                </Button>
+                                {/* </a> */}
                             </div>
                         })
                     }

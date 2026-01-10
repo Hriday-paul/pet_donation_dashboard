@@ -73,12 +73,11 @@ const ServicesApi = baseApi.injectEndpoints({
 
     allSubServices: builder.query<
       { message: string; data: TSubService[] },
-      { id: string, sort: string, searchTerm: string }
-    //   { page: number; limit: number, searchTerm: string }
+      { id: string, searchTerm: string }
     >({
-      query: ({ id, searchTerm, sort }) => ({
+      query: ({ id, searchTerm }) => ({
         url: `/admin/service-base-webs/${id}`,
-        params: { sort, searchTerm }
+        params: {searchTerm }
       }),
       providesTags: (result, error, { id }) => [{ type: "sub_survice", id }],
     }),

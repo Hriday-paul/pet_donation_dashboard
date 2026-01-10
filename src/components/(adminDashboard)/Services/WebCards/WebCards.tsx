@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 const WebCards = ({ serviceId, searchText }: { serviceId: string, searchText: string }) => {
 
-    const { isLoading, data, isSuccess } = useAllSubServicesQuery({ id: serviceId, sort: "-position", searchTerm: searchText });
+    const { isLoading, data, isSuccess } = useAllSubServicesQuery({ id: serviceId, searchTerm: searchText });
 
     return (
         <div>
@@ -20,7 +20,7 @@ const WebCards = ({ serviceId, searchText }: { serviceId: string, searchText: st
 
                         {
                             data?.data?.map(item => {
-                                return <WebCard key={item?.position} carddata={item} serviceId={serviceId} />
+                                return <WebCard key={item?._id} carddata={item} serviceId={serviceId} />
                             })
                         }
 

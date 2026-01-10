@@ -118,9 +118,17 @@ const baseApi = createApi({
             }),
             invalidatesTags: ["notification"]
         }),
+        downloadAttachment: builder.mutation<Blob, { url: string }>({
+            query: (payload) => ({
+                url: `/downloads/download-throw-url`,
+                method: "POST",
+                body: payload,
+                responseHandler: (response) => response.blob()
+            }),
+        }),
 
     })
 });
 
-export const { useNotificationsQuery, useDeleteNotificationsMutation, useDeleteAllNotificationsMutation } = baseApi;
+export const { useNotificationsQuery, useDeleteNotificationsMutation, useDeleteAllNotificationsMutation, useDownloadAttachmentMutation } = baseApi;
 export default baseApi;

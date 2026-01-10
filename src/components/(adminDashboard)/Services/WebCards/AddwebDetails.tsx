@@ -23,6 +23,8 @@ type FieldType = {
     location: string,
     web_link: string,
 
+    service_tags: string[]
+
 }
 
 const AddwebDetails = ({ open, setOpen, isEdit, serviceId, defaultdata }: TPropsType) => {
@@ -48,7 +50,8 @@ const AddwebDetails = ({ open, setOpen, isEdit, serviceId, defaultdata }: TProps
                     "pet_type": values?.pet_type,
                     "description": values?.description,
                     "location": values?.location,
-                    "service": serviceId
+                    "service": serviceId,
+                    service_tags: values?.service_tags
                 }))
 
                 await handleSubServiceEditApi({ formData: formdata, service: serviceId, subServiceId: defaultdata?._id }).unwrap();
@@ -63,7 +66,8 @@ const AddwebDetails = ({ open, setOpen, isEdit, serviceId, defaultdata }: TProps
                     "pet_type": values?.pet_type,
                     "description": values?.description,
                     "location": values?.location,
-                    "service": serviceId
+                    "service": serviceId,
+                    service_tags: values?.service_tags
                 }))
 
                 formdata.append("web_img", values?.image?.[0]?.originFileObj as File);
@@ -177,6 +181,18 @@ const AddwebDetails = ({ open, setOpen, isEdit, serviceId, defaultdata }: TProps
                             <p className="ant-upload-text">Click or drag file to this area to upload</p>
                             <p className="ant-upload-hint">(162 X 162 will be perfect)</p>
                         </Upload.Dragger>
+                    </Form.Item>
+
+                    <Form.Item<FieldType> name="service_tags" label={"keywords"}
+                    // rules={[{ required: true, message: "Description is required" }]}
+                    >
+                        <Select
+                            mode="tags"
+                            size="large"
+                            style={{ width: '100%' }}
+                            placeholder="write keyword and press enter"
+                            options={[]}
+                        />
                     </Form.Item>
 
                     <Form.Item>

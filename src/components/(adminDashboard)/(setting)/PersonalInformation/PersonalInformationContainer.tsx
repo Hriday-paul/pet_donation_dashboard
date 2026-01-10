@@ -70,6 +70,8 @@ const PersonalInformationContainer = () => {
   useEffect(() => {
     if (data?.data?.location) {
       formHandler.setFieldsValue({ address: data?.data?.location }); // sync with form field
+
+      if (data?.data?.address?.coordinates?.length > 1) setSelectedLocation({ longitude: data?.data?.address?.coordinates[0], latitude: data?.data?.address?.coordinates[1] })
     }
   }, [data]);
 
@@ -78,6 +80,8 @@ const PersonalInformationContainer = () => {
       formHandler.setFieldsValue({ address: pickupInputValue }); // sync with form field
     }
   }, [pickupInputValue]);
+
+  console.log(selectedLocation)
 
   return (
     <div>

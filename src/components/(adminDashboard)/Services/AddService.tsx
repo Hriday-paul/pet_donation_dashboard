@@ -18,9 +18,7 @@ type TPropsType = {
 
 type FieldType = {
     name: string,
-    icon: UploadFile[],
-
-    service_tags: string[]
+    icon: UploadFile[]
 }
 
 const AddService = ({ open, setOpen, isEdit, defaultdata }: TPropsType) => {
@@ -34,7 +32,7 @@ const AddService = ({ open, setOpen, isEdit, defaultdata }: TPropsType) => {
         try {
             if (isEdit && defaultdata) {
                 const formdata = new FormData();
-                formdata.append("data", JSON.stringify({ name: values?.name, service_tags : values?.service_tags }))
+                formdata.append("data", JSON.stringify({ name: values?.name,}))
                 if (values?.icon) {
                     formdata.append("icon", values?.icon?.[0]?.originFileObj as File)
                 }
@@ -42,7 +40,7 @@ const AddService = ({ open, setOpen, isEdit, defaultdata }: TPropsType) => {
                 toast.success("Service updated successfully");
             } else {
                 const formdata = new FormData();
-                formdata.append("data", JSON.stringify({ name: values?.name, service_tags : values?.service_tags }))
+                formdata.append("data", JSON.stringify({ name: values?.name }))
                 formdata.append("icon", values?.icon?.[0]?.originFileObj as File)
                 const res = await handleApi(formdata).unwrap();
                 toast.success("New service added successfully");
@@ -78,7 +76,7 @@ const AddService = ({ open, setOpen, isEdit, defaultdata }: TPropsType) => {
                 <Form
                     name="basic"
                     style={{ width: '100%' }}
-                    initialValues={isEdit ? { name: defaultdata?.name, service_tags: defaultdata?.service_tags } : {}}
+                    initialValues={isEdit ? { name: defaultdata?.name } : {}}
                     onFinish={onFinish}
                     autoComplete="off"
                     form={form}
@@ -124,18 +122,6 @@ const AddService = ({ open, setOpen, isEdit, defaultdata }: TPropsType) => {
 
                     <Form.Item<FieldType> name="name" label={"Service Name"} rules={[{ required: true, message: "Service name is required" }]}>
                         <Input size="large" placeholder="Service Name" />
-                    </Form.Item>
-
-                    <Form.Item<FieldType> name="service_tags" label={"keywords"}
-                    // rules={[{ required: true, message: "Description is required" }]}
-                    >
-                        <Select
-                            mode="tags"
-                            size="large"
-                            style={{ width: '100%' }}
-                            placeholder="write keyword and press enter"
-                            options={[]}
-                        />
                     </Form.Item>
 
                     <Form.Item>

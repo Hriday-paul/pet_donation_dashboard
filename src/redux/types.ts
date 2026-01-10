@@ -27,7 +27,6 @@ export type TService = {
     "icon": string,
     "isActive": boolean,
     "position"?: number,
-    service_tags: string[]
 }
 
 export type TSubService = {
@@ -40,7 +39,9 @@ export type TSubService = {
     "location": string,
     "service": string,
     "serviceName": string,
-    position: number
+    position: number,
+
+    service_tags: string[]
 }
 
 export interface IMeta {
