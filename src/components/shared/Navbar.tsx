@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUserDetails, removeUser } from "@/redux/slices/userSlice";
 import { RootState } from "@/redux/store";
 import { LanguageSwitcher } from "@/utils/LanguageSwitcher";
+import { useNotificationsQuery, useReadAllNotificationMutation } from "@/redux/api/baseApi";
 
 type TNavbarProps = {
   collapsed: boolean;
@@ -18,6 +19,10 @@ type TNavbarProps = {
 
 const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
 
+  const [readAllNotification] = useReadAllNotificationMutation();
+
+  const { data: notification, isSuccess: notiSuccess } = useNotificationsQuery({ sort: "-createdAt" });
+
   const { data: res, isSuccess, isError } = useGetUserProfileQuery();
   const router = useRouter();
 
@@ -25,7 +30,7 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(addUserDetails({ name: res?.data?.first_name, role: res?.data?.role, profilePicture: res?.data?.profile_image || "/empty-user.png", location : res?.data?.location || null, coordinates : res?.data?.address?.coordinates || [] }));
+      dispatch(addUserDetails({ name: res?.data?.first_name, role: res?.data?.role, profilePicture: res?.data?.profile_image || "/empty-user.png", location: res?.data?.location || null, coordinates: res?.data?.address?.coordinates || [] }));
     }
     if (isError) {
       router.push("/login")
@@ -38,6 +43,11 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
     dispatch(removeUser())
     router.push("/login");
   };
+
+  const HandleNotification = async () => {
+    readAllNotification()
+    router.push('/notifications')
+  }
 
   return (
     <div className="flex items-center justify-between w-[97%] font-poppins pl-5">
@@ -63,13 +73,13 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
         <LanguageSwitcher />
 
         {/* Notification */}
-        <Link href={"/notifications"}>
+        <button onClick={HandleNotification}>
           <div className="flex justify-center bg-[#eceef1] items-center size-12 rounded-full cursor-pointer relative">
             {/* <IoNotificationsOutline size={24} color="#3A3C3B" /> */}
             <Bell size={24} color="#3A3C3B" />
 
             <Badge
-              count={0}
+              count={notiSuccess ? notification?.data?.unreadNotificationCount : 0}
               style={{
                 border: "none",
                 boxShadow: "none",
@@ -81,7 +91,7 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
               }}
             ></Badge>
           </div>
-        </Link>
+        </button>
 
         <Popover arrow={false} placement="topRight" content={<div className="w-40">
 

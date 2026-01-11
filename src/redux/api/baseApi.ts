@@ -2,7 +2,7 @@
 import { config } from '@/utils/config';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Cookies } from "react-cookie";
-import { IAdminStats, INotification } from '../types';
+import { IAdminStats, IMeta, INotification } from '../types';
 
 const cookies = new Cookies();
 
@@ -97,12 +97,19 @@ const baseApi = createApi({
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
 
-        notifications: builder.query<{ data: { notifications: INotification[] } }, {}>({
+        notifications: builder.query<{ data: { notifications: INotification[], unreadNotificationCount : number } }, {}>({
             query: (query) => ({
                 url: '/notifications/user-notifications',
                 params: query
             }),
             providesTags: ["notification"]
+        }),
+        readAllNotification: builder.mutation<{ data: { notifications: INotification[], meta : IMeta } }, void>({
+            query: () => ({
+                url: '/notifications/mark-notifications-as-read',
+                method : "PATCH",
+            }),
+            invalidatesTags: ["notification"]
         }),
         deleteNotifications: builder.mutation<{ data: {} }, { id: string }>({
             query: ({ id }) => ({
@@ -130,5 +137,5 @@ const baseApi = createApi({
     })
 });
 
-export const { useNotificationsQuery, useDeleteNotificationsMutation, useDeleteAllNotificationsMutation, useDownloadAttachmentMutation } = baseApi;
+export const { useNotificationsQuery, useDeleteNotificationsMutation, useDeleteAllNotificationsMutation, useDownloadAttachmentMutation, useReadAllNotificationMutation } = baseApi;
 export default baseApi;
