@@ -24,7 +24,7 @@ const AllPetLists = () => {
     const [status, setStatus] = useState<string>("");
     const [page, setpage] = useState(1);
 
-    const query: { searchTerm: string, pet_status?: string } = { searchTerm: searchText }
+    const query: { searchTerm: string, pet_status?: string, page : number } = { searchTerm: searchText, page }
 
     if (status && status != "") {
         query.pet_status = status
