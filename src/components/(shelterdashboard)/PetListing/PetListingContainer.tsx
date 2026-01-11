@@ -6,7 +6,6 @@ import AddPet from './AddPet';
 import PetCard from './PetCard';
 import { usePetListQuery } from '@/redux/api/pet.api';
 import ErrorComponent from '@/utils/ErrorComponent';
-import Image from 'next/image';
 
 const PetListingContainer = () => {
     return (
@@ -105,8 +104,7 @@ const AllPetLists = () => {
                     }
                 </div>
 
-                <Pagination defaultCurrent={page} total={data?.meta?.total} pageSize={10} align="end" showSizeChanger={false} onChange={(page) => setpage(page)} />
-
+                <Pagination defaultCurrent={page} total={data?.data?.meta?.total} pageSize={10} align="end" showSizeChanger={false} onChange={(page) => setpage(page)} />
                 {
                     data?.data?.data?.length <= 0 && <Empty />
                 }

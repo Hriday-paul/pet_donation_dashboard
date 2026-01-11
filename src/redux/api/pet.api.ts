@@ -7,7 +7,7 @@ const PetApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
         petList: builder.query<
-            { message: string; data: { data: IPet[] }, meta: IMeta },
+            { message: string; data: { data: IPet[], meta: IMeta} },
             {}
         >({
             query: (query) => ({
